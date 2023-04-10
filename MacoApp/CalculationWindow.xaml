@@ -69,8 +69,8 @@
         </ListView>
 
         <StackPanel x:Name="stackPanel" Orientation="Horizontal" Grid.Row="1">
-            <RadioButton GroupName="Kompl" Content="Поворот/откид." IsChecked="True" FontSize="11" Margin="10,0,0,0" Checked="RadioButton_Checked"/>
-            <RadioButton GroupName="Kompl" Content="Поворотн." Margin="10,0,0,0" Checked="RadioButton_Checked"/>
+            <RadioButton x:Name="P" GroupName="Kompl" Content="Поворотн." Checked="RadioButton_Checked"/>
+            <RadioButton x:Name="PO" GroupName="Kompl" Content="Поворот/откид." IsChecked="True" FontSize="11" Margin="10,0,0,0" Checked="RadioButton_Checked"/>
         </StackPanel>
         <TextBlock Text="Шифр"  Grid.Column="0" Grid.Row="2" Width="70" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
         <TextBox Name="Code" Grid.Column="0" Grid.Row="2" Width="80" PreviewTextInput="TextBox_PreviewTextInput" PreviewKeyDown="TextBox_PreviewKeyDown" FontSize="12" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,15,0"/>
@@ -90,23 +90,22 @@
             <ComboBoxItem>Да</ComboBoxItem>
             <ComboBoxItem IsSelected="True">Нет</ComboBoxItem>
         </ComboBox>
-        <ComboBox Name="ComboBoxMv" Grid.Column="0" Grid.Row="9" Width="60" FontSize="12" Height="25" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,15,0">
+        <ComboBox Name="ComboBoxMv" Grid.Column="0" Grid.Row="9" Width="60" FontSize="12" Height="25" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,15,0" >
             <ComboBoxItem>Да</ComboBoxItem>
             <ComboBoxItem IsSelected="True">Нет</ComboBoxItem>
         </ComboBox>
         <TextBox Name="TextBoxColvo" Text="1" PreviewTextInput="TextBox_PreviewTextInput" PreviewKeyDown="TextBox_PreviewKeyDown" Grid.Row="12" Width="60" HorizontalAlignment="Right" FontSize="12" VerticalAlignment="Center" Margin="0,0,15,0"/>
 
         <Button Name="ButtonCalc" Content="Рассчитать" Grid.Row="13" Height="22" HorizontalContentAlignment="Center" 
-                    VerticalAlignment="Center" Margin="15,0,15,0" Click="ButtonCalc_Click" FontSize="11" Cursor="Hand" 
+                    VerticalAlignment="Top" Margin="15,0,15,0" Click="ButtonCalc_Click" FontSize="11" Cursor="Hand" 
                     ToolTip="Нажми, чтобы рассчитать комплект"
                     IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" 
                     Style="{StaticResource MaterialDesignRaisedLightButton}"/>
-        <Button Name="SaveCalc" Content="Сохранить расчет" Grid.Row="14" Margin="15,0,15,0" HorizontalContentAlignment="Center"
-                    VerticalAlignment="Center" Click="SaveCalc_Click" Height="21" FontSize="10" 
+        <Button Name="SaveCalc" Content="Сохранить расчет" Grid.Row="14" Margin="15,0,15,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Stretch"
+                    VerticalAlignment="Bottom" Click="SaveCalc_Click" Height="21" FontSize="10" 
                     ToolTip="Нажми, чтобы добавить расчет к списку на сохранение"
                     IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" 
-                    Style="{StaticResource MaterialDesignRaisedLightButton}">
-        </Button>
+                    Style="{StaticResource MaterialDesignRaisedLightButton}" FontWeight="Bold"/>
 
         <TextBlock Text="Высота"  Grid.Column="0" Grid.Row="5" Width="70" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
         <TextBlock Text="Ширина"  Grid.Column="0" Width="70" FontSize="12" Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>

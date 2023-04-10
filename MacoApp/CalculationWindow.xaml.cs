@@ -22,8 +22,8 @@ namespace MacoApp
 
         int Count = 1;
         string rotation;
+        string rotationTwoArg;
         public int quantityBar = 0;
-
 
 
         public CalculationWindow()
@@ -49,12 +49,16 @@ namespace MacoApp
             if (pressed.Content.ToString() == "Поворот/откид.")
             {
                 rotation = "Нет";
+                rotationTwoArg = "Да/Нет";
             }    
             else if(pressed.Content.ToString() == "Поворотн.")
             {
                 rotation = "Да";
+                rotationTwoArg = "Да/Нет";
             }
         }
+        
+
 
         private void ButtonCalc_Click(object sender, RoutedEventArgs e)
         {
@@ -69,8 +73,7 @@ namespace MacoApp
                 int FFH = Int32.Parse(TextBoxFFH.Text);
                 int FFB = Int32.Parse(TextBoxFFB.Text);
                 string Lower_loop = ComboBoxLL.Text;
-                string Micro_ventilation = ComboBoxMv.Text;
-                string Rotation = ComboBoxMv.Text;
+                string Micro_ventilation = ComboBoxMv.Text; 
 
                 if (FFH < 601)
                 {
@@ -98,15 +101,13 @@ namespace MacoApp
                     MaterialMessageBox.ShowDialog("Укажите корректное количество комплектов");
                     return;
                 }
-
-
-                //queryString = sqlRequests.QueryString(System, side, FFH, FFB, Lower_loop, Micro_ventilation); //Вытаскиваем из класса команду для SQL-запроса
+                
+               
                 queryString = $"Select * from Elements where (Name_Furn like '"+Furn+"') and(System  = 'Не имеет значения' or System  = "+System+") and(Side like 'Не имеет значения' or Side like '"+side+ "') " +
-                    "and(Lower_loop like '"+Lower_loop+ "' or Lower_loop like 'Нет') and(Micro_ventilation like '"+Micro_ventilation+ "' or Micro_ventilation like 'Нет')" +
-                    "and(Rotation like '"+rotation+ "' or Rotation like 'Да') and(FFH_before = 0 or '"+FFH+"'>=FFH_before) and(FFH_after = 0 or '" + FFH+ "' <= FFH_after)" +
+                    "and(Lower_loop like '"+Lower_loop+ "' or Lower_loop like 'Нет') and(Micro_ventilation like '"+ Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +
+                    "and(Rotation like '"+rotation+ "' or Rotation like '"+rotationTwoArg+"') and(FFH_before = 0 or '" + FFH+"'>=FFH_before) and(FFH_after = 0 or '" + FFH+ "' <= FFH_after)" +
                     " and(FFB_before = 0 or '"+FFB+"'>=FFB_before) and(FFB_after = 0 or '" + FFB+ "' <= FFB_after)";
-                quantityBar = sqlRequests.Que(); //Вытаскиваем из класса количество ответных планок
-                //queryString = $"Select * from Elements where(System = 'Не имеет значения' or System = 9) and(Side like 'Не имеет значения' or Side like 'Левая') and(FFH = 0 or FFH = 601900) and(FFB = 0 or FFB = 431600) and(Lower_loop like 'Нет') and(Micro_ventilation like 'Нет' or Micro_ventilation like '2'); ";
+                quantityBar = sqlRequests.Que(FFH, FFB); //Вытаскиваем из класса количество ответных планок
 
 
 
@@ -125,7 +126,7 @@ namespace MacoApp
                             {
                                 count++;
                                 //Записываем данные в объект класса и ,тем самым, передаём в таблицу
-                                if (reader.GetValue(2).ToString() == "34623" || reader.GetValue(2).ToString() == "34850")
+                                if (reader.GetValue(3).ToString() == "34623" || reader.GetValue(3).ToString() == "34850")
                                 {
                                     collection.Add(new ClassList() { Id = count, Article = "" + reader.GetValue(3).ToString(), Name = "" + reader.GetValue(2).ToString(), Quantity = (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantityBar });
 
@@ -158,6 +159,7 @@ namespace MacoApp
             int FFB = Int32.Parse(TextBoxFFB.Text);
             string Lower_loop = ComboBoxLL.Text;
             string Micro_ventilation = ComboBoxMv.Text;
+            string Furn = ComboBoxFurn.Text;
 
             string Article;
             string Name;
@@ -165,8 +167,11 @@ namespace MacoApp
 
             LBListCalc.Items.Add("" + Count + ". " + TextBoxFFB.Text + "/" + TextBoxFFH.Text + ", " + ComboBoxSystem.Text + "я, Откр. " + ComboBoxSide.Text + ", Ниж. петл.- " + ComboBoxLL.Text);
             Count++;
-            queryString = sqlRequests.QueryString(System, side, FFH, FFB, Lower_loop, Micro_ventilation); //Вытаскиваем из класса команду для SQL-запроса
-            quantityBar = sqlRequests.Que(); //Вытаскиваем из класса количество ответных планок
+            queryString = $"Select * from Elements where (Name_Furn like '" + Furn + "') and(System  = 'Не имеет значения' or System  = " + System + ") and(Side like 'Не имеет значения' or Side like '" + side + "') " +
+                    "and(Lower_loop like '" + Lower_loop + "' or Lower_loop like 'Нет') and(Micro_ventilation like '" + Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +
+                    "and(Rotation like '" + rotation + "' or Rotation like '" + rotationTwoArg + "') and(FFH_before = 0 or '" + FFH + "'>=FFH_before) and(FFH_after = 0 or '" + FFH + "' <= FFH_after)" +
+                    " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after)";
+            quantityBar = sqlRequests.Que(FFH, FFB); //Вытаскиваем из класса количество ответных планок
 
             using (var connection = new SqliteConnection("Data Source=Furnapp.db"))
             {
@@ -181,9 +186,9 @@ namespace MacoApp
                     {
                         while (reader.Read())
                         {
-                            Article = reader.GetValue(2).ToString();
-                            Name = reader.GetValue(1).ToString();
-                            Qantity = (int.Parse(reader.GetValue(3).ToString()));
+                            Article = reader.GetValue(3).ToString();
+                            Name = reader.GetValue(2).ToString();
+                            Qantity = (int.Parse(reader.GetValue(4).ToString()));
 
                             int article = Article.Length;
                             int name = Name.Length;
@@ -338,5 +343,7 @@ namespace MacoApp
             }
             ButtonSaveTxt.IsEnabled = false;
         }
+
+        
     }
 }
