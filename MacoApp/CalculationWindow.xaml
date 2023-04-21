@@ -57,17 +57,20 @@
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
 
-        <ListView x:Name="GridList"  Grid.Column="1" Margin="0,0,15,0" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=1}" FontSize="11" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" ItemContainerStyle="{StaticResource alternatingStyle}" AlternationCount="2" Opacity="1" Grid.ColumnSpan="7" Grid.RowSpan="15">
+
+        <ListView x:Name="GridList"  Grid.Column="1" Margin="0,0,15,0" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=1}" 
+                  FontSize="11" ItemContainerStyle="{StaticResource alternatingStyle}" 
+                  AlternationCount="2" Opacity="1" Grid.ColumnSpan="7" Grid.RowSpan="15"
+                  HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Width="30" DisplayMemberBinding="{Binding Path=Id}" Header="№" HeaderContainerStyle="{StaticResource GVHeaderRightAlignedStyle}"/>
-                    <GridViewColumn Width="80" DisplayMemberBinding="{Binding Path=Article}" Header="Артикул" HeaderContainerStyle="{StaticResource GVHeaderRightAlignedStyle}" />
-                    <GridViewColumn Width="410" DisplayMemberBinding="{Binding Path=Name}" Header="Название" HeaderContainerStyle="{StaticResource GVHeaderRightAlignedStyle}"/>
-                    <GridViewColumn Width="60" DisplayMemberBinding="{Binding Path=Quantity}" Header="Кол-во" HeaderContainerStyle="{StaticResource GVHeaderRightAlignedStyle}"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Id}" Header="№" HeaderContainerStyle="{StaticResource GVHeaderRightAlignedStyle}"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Article}" Header="Артикул" HeaderContainerStyle="{StaticResource GVHeaderRightAlignedStyle}" />
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Header="Название" HeaderContainerStyle="{StaticResource GVHeaderRightAlignedStyle}"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Quantity}" Header="Кол-во" HeaderContainerStyle="{StaticResource GVHeaderRightAlignedStyle}"/>
                 </GridView>
             </ListView.View>
         </ListView>
-
         <StackPanel x:Name="stackPanel" Orientation="Horizontal" Grid.Row="1">
             <RadioButton x:Name="P" GroupName="Kompl" Content="Поворотн." Checked="RadioButton_Checked"/>
             <RadioButton x:Name="PO" GroupName="Kompl" Content="Поворот/откид." IsChecked="True" FontSize="11" Margin="10,0,0,0" Checked="RadioButton_Checked"/>
@@ -115,9 +118,6 @@
         <TextBlock Text="Микровентиляция"  Grid.Column="0" Grid.Row="9" Width="110" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
         <TextBlock Text="Колич. комплектов"  Grid.Column="0" Grid.Row="12" Width="110" HorizontalAlignment="Left" FontSize="12" VerticalAlignment="Center" Margin="10,0,0,0"/>
 
-
-
-
         <ListBox Name="LBListCalc"  Grid.ColumnSpan="2" Grid.Row="16" Width="300" FontSize="10" Background="#FFEFF9F8" 
                  BorderThickness="1,1,1,1" BorderBrush="#FFFFECEC" VerticalAlignment="Bottom" Height="54" HorizontalAlignment="Left" Margin="15,0,0,15" Grid.RowSpan="1" >
             <ListBox.ItemContainerStyle>
@@ -126,6 +126,7 @@
                 </Style>
             </ListBox.ItemContainerStyle>
         </ListBox>
+
         <ListBox Name="LBList"   Grid.Column="1" Margin="143,112,72,40" Grid.Row="1" Visibility="Hidden"/>
         <Button Name="ButtonSaveTxt" Content="Сохранить в .txt" Grid.Column="1" Grid.Row="16" 
                 Click="Button_Click" FontSize="10" ToolTip="Нажми, чтобы сохранить расчеты в файл. Найти его можно в папке C:\FURNTBM\"

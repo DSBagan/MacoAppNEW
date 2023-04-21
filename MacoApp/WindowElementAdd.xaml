@@ -57,9 +57,9 @@
         <TextBlock Text="Микровентиляция" Grid.Row="9" Margin="8,8,8,8" />
 
         <TextBox Text="{Binding Name_Furn}" Grid.Column="1" TextAlignment="Left" ToolTip="Название фурнитуры" Grid.ColumnSpan="1" Grid.RowSpan="1" Margin="8,8,8,8"/>
-        <TextBox Text="{Binding Title}" Grid.Column="1" TextAlignment="Left" ToolTip="Название элемента фурнитуры" Grid.ColumnSpan="3" Margin="8,8,8,8" Grid.RowSpan="1" Grid.Row="1"/>
+        <TextBox Text="{Binding Title}" Grid.Column="1" TextAlignment="Left" ToolTip="Название элемента фурнитуры" Grid.ColumnSpan="3" Margin="8,8,8,8" Grid.RowSpan="1" Grid.Row="1" MaxLength="55"/>
         <TextBox Text="{Binding Article}" Grid.Column="1" Grid.Row="2" TextAlignment="Left" ToolTip="Тут все понятно" Grid.ColumnSpan="3" Margin="8,8,8,8"/>
-        <TextBox Text="{Binding Quantity}" Grid.Column="1" Grid.Row="3" TextAlignment="Left" ToolTip="Сколько шт. в одном комплекте фурнитуры" Grid.ColumnSpan="3" Margin="8,8,8,8"/>
+        <TextBox Text="{Binding Quantity}" Grid.Column="1" Grid.Row="3" TextAlignment="Left" ToolTip="Сколько шт. в одном комплекте фурнитуры" Margin="8,8,8,8"/>
         <ComboBox Text="{Binding System}" Grid.Column="1" Grid.Row="4" Margin="8,0,142,0" VerticalContentAlignment="Top" FontSize="12" Height="30" ToolTip="Ну тут все понятно">
             <ComboBoxItem>9</ComboBoxItem>
             <ComboBoxItem IsSelected="True">13</ComboBoxItem>
