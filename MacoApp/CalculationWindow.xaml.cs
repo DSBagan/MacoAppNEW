@@ -41,12 +41,25 @@ namespace MacoApp
             table1.Columns.Add(new DataColumn("Артикул", typeof(string)));
             table1.Columns.Add(new DataColumn("Название", typeof(string)));
             table1.Columns.Add(new DataColumn("Количество", typeof(int)));
-            
+
             table2.Columns.Add(new DataColumn("Артикул", typeof(string)));
             table2.Columns.Add(new DataColumn("Название", typeof(string)));
             table2.Columns.Add(new DataColumn("Количество", typeof(int)));
         }
-
+        private void RadioButton_Checked(object sender, RoutedEventArgs e) // Обработчик радиобаттона
+        {
+            RadioButton pressed = (RadioButton)sender;
+            if (pressed.Content.ToString() == "Поворот/откид.")
+            {
+                rotation = "Нет";
+                rotationTwoArg = "Да/Нет";
+            }
+            else if (pressed.Content.ToString() == "Поворотная")
+            {
+                rotation = "Да";
+                rotationTwoArg = "Да/Нет";
+            }
+        }
         private void CalculationWindow_Loaded(object sender, RoutedEventArgs e)
         {
             ButtonSaveTxt.IsEnabled = false;
@@ -57,21 +70,6 @@ namespace MacoApp
             timer.Start();
         }
 
-        private void RadioButton_Checked(object sender, RoutedEventArgs e) // Обработчик радиобаттона
-        {
-            RadioButton pressed = (RadioButton)sender;
-            if (pressed.Content.ToString() == "Поворот/откид.")
-            {
-                rotation = "Нет";
-                rotationTwoArg = "Да/Нет";
-            }    
-            else if(pressed.Content.ToString() == "Поворотн.")
-            {
-                rotation = "Да";
-                rotationTwoArg = "Да/Нет";
-            }
-        }
-
         private void ButtonCalc_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -80,14 +78,15 @@ namespace MacoApp
                 string queryString;
                 string Furn = ComboBoxFurn.Text;
                 int quantity = Int32.Parse(TextBoxColvo.Text);
+                int quantitySrPr = Int32.Parse(TextBoxColvo.Text);
                 int System = Int32.Parse(ComboBoxSystem.Text);
                 string side = ComboBoxSide.Text;
                 int FFH = Int32.Parse(TextBoxFFH.Text);
                 int FFB = Int32.Parse(TextBoxFFB.Text);
                 string Lower_loop = ComboBoxLL.Text;
-                string Micro_ventilation = ComboBoxMv.Text; 
+                string Micro_ventilation = ComboBoxMv.Text;
 
-                if (FFH < 601)
+                /*if (FFH < 601)
                 {
                     MaterialMessageBox.ShowDialog("Высота не может быть менее 601 мм");
                     //MessageBox.Show("Высота не может быть менее 601 мм", "Не вышло");
@@ -112,13 +111,14 @@ namespace MacoApp
                 {
                     MaterialMessageBox.ShowDialog("Укажите корректное количество комплектов");
                     return;
-                }     
-               
-                queryString = $"Select * from Elements where (Name_Furn like '"+Furn+"') and(System  = 'Не имеет значения' or System  = "+System+") and(Side like 'Не имеет значения' or Side like '"+side+ "') " +
-                    "and(Lower_loop like '"+Lower_loop+ "' or Lower_loop like 'Нет') and(Micro_ventilation like '"+ Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +
-                    "and(Rotation like '"+rotation+ "' or Rotation like '"+rotationTwoArg+"') and(FFH_before = 0 or '" + FFH+"'>=FFH_before) and(FFH_after = 0 or '" + FFH+ "' <= FFH_after)" +
-                    " and(FFB_before = 0 or '"+FFB+"'>=FFB_before) and(FFB_after = 0 or '" + FFB+ "' <= FFB_after)";
-                quantityBar = sqlRequests.Que(FFH, FFB); //Вытаскиваем из класса количество ответных планок
+                }*/
+
+                queryString = $"Select * from Elements where (Name_Furn like '" + Furn + "') and(System  = 'Не имеет значения' or System  = " + System + ") and(Side like 'Не имеет значения' or Side like '" + side + "') " +
+                    "and(Lower_loop like '" + Lower_loop + "' or Lower_loop like 'Нет') and(Micro_ventilation like '" + Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +
+                    "and(Rotation like '" + rotation + "' or Rotation like '" + rotationTwoArg + "') and(FFH_before = 0 or '" + FFH + "'>=FFH_before) and(FFH_after = 0 or '" + FFH + "' <= FFH_after)" +
+                    " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after)";
+                quantityBar = sqlRequests.Que(rotation, Furn, FFH, FFB); //Вытаскиваем из класса количество ответных планок
+                quantitySrPr = sqlRequests.QueSrPr(rotation, Furn, FFH); //Количество средних прижимов на поворотной створке
 
                 using (var connection = new SqliteConnection("Data Source=Furnapp.db"))
                 {
@@ -134,10 +134,32 @@ namespace MacoApp
                             while (reader.Read())   // построчно считываем данные
                             {
                                 count++;
+                                string response_bars1 = "";
+                                string response_bars2 = "";
+                                string SrPr = "";
+                                string SrPrN1 = "";
+                                string SrPrN2 = "";
+                                if (Furn == "Maco_Eco" || Furn == "Maco_MM")
+                                {
+                                    response_bars1 = "34623";
+                                    response_bars2 = "34850";
+                                    SrPr = "54783";
+                                    SrPrN1 = "41342";
+                                    SrPrN2 = "41339";
+                                }
+                                else if (Furn == "Vorne")
+                                {
+                                    response_bars1 = "";
+                                    response_bars2 = "";
+                                }
                                 //Записываем данные в объект класса и ,тем самым, передаём в таблицу
-                                if (reader.GetValue(3).ToString() == "34623" || reader.GetValue(3).ToString() == "34850")
+                                if (reader.GetValue(3).ToString() == response_bars1 || reader.GetValue(3).ToString() == response_bars2)
                                 {
                                     collection.Add(new ClassList() { Id = count, Article = "" + reader.GetValue(3).ToString(), Name = "" + reader.GetValue(2).ToString(), Quantity = (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantityBar });
+                                }
+                                else if (reader.GetValue(3).ToString() == SrPr || reader.GetValue(3).ToString() == SrPrN1 || reader.GetValue(3).ToString() == SrPrN2)
+                                {
+                                    collection.Add(new ClassList() { Id = count, Article = "" + reader.GetValue(3).ToString(), Name = "" + reader.GetValue(2).ToString(), Quantity = (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantitySrPr });
                                 }
                                 else
                                 {
@@ -150,7 +172,7 @@ namespace MacoApp
                 }
                 SaveCalc.IsEnabled = true;
             }
-            catch 
+            catch
             {
                 //MaterialMessageBox.ShowDialog("Одно или несколько полей пустое");
                 return;
@@ -167,6 +189,7 @@ namespace MacoApp
                 string queryStringCreateTable;
                 string Furn = ComboBoxFurn.Text;
                 int quantity = Int32.Parse(TextBoxColvo.Text);
+                int quantitySrPr = Int32.Parse(TextBoxColvo.Text);
                 int System = Int32.Parse(ComboBoxSystem.Text);
                 string side = ComboBoxSide.Text;
                 int FFH = Int32.Parse(TextBoxFFH.Text);
@@ -178,7 +201,8 @@ namespace MacoApp
                     "and(Lower_loop like '" + Lower_loop + "' or Lower_loop like 'Нет') and(Micro_ventilation like '" + Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +
                     "and(Rotation like '" + rotation + "' or Rotation like '" + rotationTwoArg + "') and(FFH_before = 0 or '" + FFH + "'>=FFH_before) and(FFH_after = 0 or '" + FFH + "' <= FFH_after)" +
                     " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after)";
-                quantityBar = sqlRequests.Que(FFH, FFB); //Вытаскиваем из класса количество ответных планок               
+                quantityBar = sqlRequests.Que(rotation, Furn, FFH, FFB); //Вытаскиваем из класса количество ответных планок               
+                quantitySrPr = sqlRequests.QueSrPr(rotation, Furn, FFH); //Количество средних прижимов на поворотной створке
 
                 using (var connection = new SqliteConnection("Data Source=Furnapp.db"))
                 {
@@ -187,52 +211,70 @@ namespace MacoApp
                     collection = new ObservableCollection<ClassList>();
                     GridList.ItemsSource = collection;
                     connection.Open();
-                    
                     SqliteCommand command = new SqliteCommand(queryString, connection);
 
                     using (SqliteDataReader reader = command.ExecuteReader())
                     {
                         if (reader.HasRows) // если есть данные
                         {
-
                             while (reader.Read())   // построчно считываем данные
                             {
                                 count++;
-                                //Записываем данные в объект класса и ,тем самым, передаём в таблицу
-                                if (reader.GetValue(3).ToString() == "34623" || reader.GetValue(3).ToString() == "34850")
+                                string response_bars1 = "";
+                                string response_bars2 = "";
+                                string SrPr = "";
+                                string SrPrN1 = "";
+                                string SrPrN2 = "";
+                                if (Furn == "Maco_Eco" || Furn == "Maco_MM")
                                 {
-                                    //collection.Add(new ClassList() { Id = count, Article = "" + reader.GetValue(3).ToString(), Name = "" + reader.GetValue(2).ToString(), Quantity = (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantityBar });
+                                    response_bars1 = "34623";
+                                    response_bars2 = "34850";
+                                    SrPr = "54783";
+                                    SrPrN1 = "41342";
+                                    SrPrN2 = "41339";
+                                }
+                                else if (Furn == "Vorne")
+                                {
+                                    response_bars1 = "";
+                                    response_bars2 = "";
+                                }
+                                //Записываем данные в объект класса и ,тем самым, передаём в таблицу
+                                if (reader.GetValue(3).ToString() == response_bars1 || reader.GetValue(3).ToString() == response_bars2)
+                                {
                                     table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantityBar);
-                            
+                                }
+                                else if (reader.GetValue(3).ToString() == SrPr || reader.GetValue(3).ToString() == SrPrN1 || reader.GetValue(3).ToString() == SrPrN2)
+                                {
+                                    table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantitySrPr );
                                 }
                                 else
                                 {
-                                    //collection.Add(new ClassList() { Id = count, Article = "" + reader.GetValue(3).ToString(), Name = "" + reader.GetValue(2).ToString(), Quantity = (int.Parse(reader.GetValue(4).ToString()) * quantity) });
-
                                     table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), (int.Parse(reader.GetValue(4).ToString()) * quantity));
                                 }
                             }
                             // Получаем таблицы
                             SaveTable2();
+                            LBListCalc.Items.Add("" + Count + ". " + Furn + ": " + TextBoxFFB.Text + "/" +
+                                TextBoxFFH.Text + ", " + ComboBoxSystem.Text + "я, Откр. " + ComboBoxSide.Text + ", Ниж. петл.- " + ComboBoxLL.Text +
+                                ", Микр.- " + ComboBoxMv.Text + " " + TextBoxColvo.Text + " шт.");
                         }
                     }
                     connection.Close();
                 }
-                    SaveCalc.IsEnabled = true;
+                SaveCalc.IsEnabled = true;
             }
             catch
             {
                 //MaterialMessageBox.ShowDialog("Одно или несколько полей пустое");
                 return;
             }
-
             ButtonSaveTxt.IsEnabled = true;
             SaveCalc.IsEnabled = false;
             TextBoxColvo.Text = "1";
         }
 
 
-        public void SaveTable2()
+        public void SaveTable2() // Сохранение каждого нового расчета в таблицу 2 для дальнейшего сохранения
         {
             // Итерируем по строкам таблицы 1
             foreach (DataRow row1 in table1.Rows)
@@ -286,6 +328,7 @@ namespace MacoApp
             this.Close();
         }
 
+        
 
         //Сохранение расчета в файл
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -294,15 +337,13 @@ namespace MacoApp
             {
                 MaterialMessageBox.ShowDialog("Введите шифр фирмы");
                 return;
-                
-            }
 
+            }
             if (LBList.Items == null)
             {
                 MaterialMessageBox.ShowDialog("Сначала произведите расчет, нечего сохранять.");
                 return;
             }
-
             else
             {
                 // Проверяем есть ли на диске C папка, если нет- создаем
@@ -311,7 +352,7 @@ namespace MacoApp
                 int CTlangth = Code.Text.Length;
                 if (CTlangth < 6)
                 {
-                    for (int i = 0; i < 6-CTlangth; i++)
+                    for (int i = 0; i < 6 - CTlangth; i++)
                     {
                         Code.Text = "0" + Code.Text;
                     }
@@ -337,25 +378,21 @@ namespace MacoApp
 
                         if (art.Length < 10)
                         {
-                            for (int i = 0; i < 10-art.Length; i++)
+                            for (int i = 0; i < 10 - art.Length; i++)
                             {
                                 art += " ";
                             }
                         }
                         if (nam.Length < 55)
                         {
-                            int a = 55-nam.Length;
+                            int a = 55 - nam.Length;
                             for (int i = 0; i < a; i++)
                             {
                                 nam += " ";
                             }
                         }
-                        else 
-                        {
 
-                        }
-
-                        streamWriter.WriteLine(art+nam+"   "+qua);
+                        streamWriter.WriteLine(art + nam + "   " + qua);
                     }
 
                     streamWriter.WriteLine("--------------------------------------------------------------------------------");
@@ -367,7 +404,7 @@ namespace MacoApp
                     fs.Close();
                     table2.Rows.Clear();
 
-                    MaterialMessageBox.ShowDialog("Файл успешно сохранен");                  
+                    MaterialMessageBox.ShowDialog("Файл успешно сохранен");
                 }
                 catch
                 {
@@ -377,20 +414,7 @@ namespace MacoApp
                 LBList.Items.Clear();
                 Count = 1;
             }
-            /*using (var connection = new SqliteConnection("Data Source=Furnapp.db"))
-            {
-                connection.Open();
-                string queryStringCreateTable = $"DROP TABLE CALCTABLE";
-                SqliteCommand command1 = new SqliteCommand(queryStringCreateTable, connection);
-                
-                connection.Close();
-            }*/
             ButtonSaveTxt.IsEnabled = false;
-        }
-
-        private void SaveDataGridToTxtFile(DataTable table2, string v)
-        {
-            throw new NotImplementedException();
         }
     }
 }
