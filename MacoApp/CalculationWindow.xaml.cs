@@ -149,8 +149,11 @@ namespace MacoApp
                                 }
                                 else if (Furn == "Vorne")
                                 {
-                                    response_bars1 = "";
-                                    response_bars2 = "";
+                                    response_bars1 = "V25070102";
+                                    response_bars2 = "V26010102";
+                                    SrPr = "V17010102";
+                                    SrPrN1 = "V44020107";
+                                    SrPrN2 = "V44030107";
                                 }
                                 //Записываем данные в объект класса и ,тем самым, передаём в таблицу
                                 if (reader.GetValue(3).ToString() == response_bars1 || reader.GetValue(3).ToString() == response_bars2)
@@ -235,8 +238,11 @@ namespace MacoApp
                                 }
                                 else if (Furn == "Vorne")
                                 {
-                                    response_bars1 = "";
-                                    response_bars2 = "";
+                                    response_bars1 = "V25070102";
+                                    response_bars2 = "V26010102";
+                                    SrPr = "V17010102";
+                                    SrPrN1 = "V44020107";
+                                    SrPrN2 = "V44030107";
                                 }
                                 //Записываем данные в объект класса и ,тем самым, передаём в таблицу
                                 if (reader.GetValue(3).ToString() == response_bars1 || reader.GetValue(3).ToString() == response_bars2)

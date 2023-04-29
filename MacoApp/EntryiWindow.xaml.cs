@@ -39,31 +39,31 @@ namespace MacoApp
 
         private void EntryiWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            /*if (CheckNet() == true)  // Проверяем подключение к сети
+            if (CheckNet() == true)  // Проверяем подключение к сети
             {
                 try
                 {
                     //Если доступ к сети есть, то удаляем файл с БД и далее качаем новый
-                    FileInfo fileInf = new FileInfo(path);
+                    /*FileInfo fileInf = new FileInfo(path);
                     if (fileInf.Exists)
                     {
                         fileInf.Delete();                   
-                    }
+                    }*/
                 }
                 catch (System.Exception)
                 {                   
                     return;
                 }
-                WebClient webClient = new WebClient();
+                /*WebClient webClient = new WebClient();
                 //Качаем БД с Google Drive
                 webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1h5QLQcTigVHLYVCMMLhluXELOC4Oc2gk", path);
-                webClient.Dispose();
+                webClient.Dispose();*/
 
             }
             else 
             {
                 return;
-            }*/
+            }
         }
 
         private void ButtonEditor_Click(object sender, RoutedEventArgs e)
@@ -88,7 +88,7 @@ namespace MacoApp
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            workGoogleDrive.DeleteFile("123");
+            //workGoogleDrive.DeleteFile("123");
         }
     }
 }
