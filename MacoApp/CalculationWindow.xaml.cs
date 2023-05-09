@@ -23,6 +23,7 @@ namespace MacoApp
     public partial class CalculationWindow : Window
     {
         SqlRequests sqlRequests = new SqlRequests();
+        ClassError classError = new ClassError();
         public ObservableCollection<ClassList> ClassLists { get; set; }
 
         DataTable table1 = new DataTable("Table1"); //Таблица для сохранения расчета
@@ -86,6 +87,7 @@ namespace MacoApp
                 string Lower_loop = ComboBoxLL.Text;
                 string Micro_ventilation = ComboBoxMv.Text;
 
+                classError.Err(Furn,FFH, FFB, quantity);
                 /*if (FFH < 601)
                 {
                     MaterialMessageBox.ShowDialog("Высота не может быть менее 601 мм");

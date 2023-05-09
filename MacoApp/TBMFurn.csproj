@@ -5,11 +5,18 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>Maco_Logo-1774x2048.ico</ApplicationIcon>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="Maco_Logo-1774x2048.ico" />
+    <None Remove="28.png" />
+    <None Remove="maco.png" />
+    <None Remove="roto-transformed.png" />
+    <None Remove="Vorne-logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="favicon.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,6 +36,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MaterialDesignMessageBox\MaterialDesignMessageBox.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="28.png" />
+    <Resource Include="maco.png" />
+    <Resource Include="roto-transformed.png" />
+    <Resource Include="Vorne-logo.png" />
   </ItemGroup>
 
 </Project>

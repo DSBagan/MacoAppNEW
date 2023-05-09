@@ -174,7 +174,7 @@ namespace MacoApp
                 //Передем файл в стрим для передачи в Google Drive
                 FileStream fs = new FileStream(path2,FileMode.Open);
                 //Передаем файл в Google Drive
-                workGoogle.UpdateFile(fs, "1h5QLQcTigVHLYVCMMLhluXELOC4Oc2gk", "Data Base File/db");
+                workGoogle.UpdateFile(fs, "1xfKqKlY6V-k6mjQlnKit8qQ7t_Z4_eSb/view?usp=share_link", "Data Base File/db");
             }
             catch (System.Exception)
             {

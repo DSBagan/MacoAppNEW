@@ -27,12 +27,12 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <DockPanel LastChildFill="True" Height="27" Background="#FFFFEAEA">
-                        <Label DockPanel.Dock="Left" Width="40" Background="#FFF3F2F1" Content="{Binding Name_Furn}" VerticalContentAlignment="Top" FontSize="12"/>
-                        <Label DockPanel.Dock="Left" Width="60" Background="#FFF3F2F1" Content="{Binding Article}" VerticalContentAlignment="Top" FontSize="12"/>
-                        <Label DockPanel.Dock="Left" Width="230" Background="#FFF3F2F1" Content="{Binding Title}" VerticalContentAlignment="Top" FontSize="12"/>
+                        <Label DockPanel.Dock="Left" Width="60" Background="#FFF3F2F1" Content="{Binding Name_Furn}" VerticalContentAlignment="Top" FontSize="12"/>
+                        <Label DockPanel.Dock="Left" Width="80" Background="#FFF3F2F1" Content="{Binding Article}" VerticalContentAlignment="Top" FontSize="12"/>
+                        <Label DockPanel.Dock="Left" Width="300" Background="#FFF3F2F1" Content="{Binding Title}" VerticalContentAlignment="Top" FontSize="12"/>
                         <Label DockPanel.Dock="Left" Width="30" Background="#FFF3F2F1" Content="{Binding Quantity}" VerticalContentAlignment="Top" FontSize="12"/>
-                        <Label DockPanel.Dock="Left" Width="75" Background="#FFF3F2F1" Content="{Binding System}" VerticalContentAlignment="Top" FontSize="12"/>
-                        <Label DockPanel.Dock="Left" Width="75" Background="#FFF3F2F1" Content="{Binding Side}" VerticalContentAlignment="Top" FontSize="12"/>
+                        <Label DockPanel.Dock="Left" Width="100" Background="#FFF3F2F1" Content="{Binding System}" VerticalContentAlignment="Top" FontSize="12"/>
+                        <Label DockPanel.Dock="Left" Width="100" Background="#FFF3F2F1" Content="{Binding Side}" VerticalContentAlignment="Top" FontSize="12"/>
                         <Label DockPanel.Dock="Left" Width="80" Background="#FFF3F2F1" Content="{Binding FFH_before}" VerticalContentAlignment="Top" FontSize="12"/>
                         <Label DockPanel.Dock="Left" Width="80" Background="#FFF3F2F1" Content="{Binding FFH_after}" VerticalContentAlignment="Top" FontSize="12"/>
                         <Label DockPanel.Dock="Left" Width="80" Background="#FFF3F2F1" Content="{Binding FFB_before}" VerticalContentAlignment="Top" FontSize="12" />

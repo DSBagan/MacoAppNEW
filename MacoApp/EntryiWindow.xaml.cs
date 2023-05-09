@@ -22,17 +22,23 @@ namespace MacoApp
         private bool CheckNet() // Проверка подключения к сети
         {
             bool stats;
-            if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable() == true)
+            try
             {
-                stats = true;
-                IntOff.Visibility = Visibility.Collapsed;
-                IntOn.Visibility = Visibility.Visible;
+                using (var client = new System.Net.WebClient())
+                using (var stream = client.OpenRead("https://www.google.com"))
+                {
+                    stats = true;
+                    IntOff.Visibility = Visibility.Collapsed;
+                    IntOn.Visibility = Visibility.Visible;
+                }
             }
-            else
+            catch
             {
                 stats = false;
                 IntOn.Visibility = Visibility.Collapsed;
                 IntOff.Visibility = Visibility.Visible;
+                LabelBD.Foreground = Brushes.Red;
+                LabelBD.Content = "Нет подкдючения к сети, БД не обновлена";
             }
             return stats;
         }
@@ -44,21 +50,24 @@ namespace MacoApp
                 try
                 {
                     //Если доступ к сети есть, то удаляем файл с БД и далее качаем новый
-                    /*FileInfo fileInf = new FileInfo(path);
+                    FileInfo fileInf = new FileInfo(path);
                     if (fileInf.Exists)
                     {
                         fileInf.Delete();                   
-                    }*/
+                    }
+                    WebClient webClient = new WebClient();
+                    //Качаем БД с Google Drive
+                    webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1xfKqKlY6V-k6mjQlnKit8qQ7t_Z4_eSb", path);
+                    webClient.Dispose();
+                    LabelBD.Foreground = Brushes.Green;
+                    LabelBD.Content = "БД обновлена";
+
                 }
                 catch (System.Exception)
                 {                   
                     return;
                 }
-                /*WebClient webClient = new WebClient();
-                //Качаем БД с Google Drive
-                webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1h5QLQcTigVHLYVCMMLhluXELOC4Oc2gk", path);
-                webClient.Dispose();*/
-
+                
             }
             else 
             {

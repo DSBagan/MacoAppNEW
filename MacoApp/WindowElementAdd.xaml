@@ -80,6 +80,7 @@
         </ComboBox>
         <ComboBox Text="{Binding Micro_ventilation}" Grid.Column="1" Grid.Row="9" Margin="8,0,142,0" VerticalContentAlignment="Top" FontSize="12" Height="30" ToolTip="Да- если элемент относится к микропроветриванию, нет- нет, 1 и 2 трогать не нужно, это 'костыль')">
             <ComboBoxItem>Да</ComboBoxItem>
+            <ComboBoxItem>Да/Нет</ComboBoxItem>
             <ComboBoxItem IsSelected="True">Нет</ComboBoxItem>
         </ComboBox>
 
@@ -88,10 +89,11 @@
                     Style="{StaticResource MaterialDesignRaisedLightButton}" HorizontalAlignment="Center" Width="144" VerticalAlignment="Top" FontWeight="Bold" FontSize="12" Height="22" Margin="0,19,0,0">OK</Button>
         <Button Grid.Row="11" Grid.Column="3"
                     IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" 
-                    Style="{StaticResource MaterialDesignRaisedLightButton}" Content="Отмена" HorizontalAlignment="Left" Margin="63,19,0,0" VerticalAlignment="Top" FontSize="12" FontWeight="Bold" Height="22"/>
+                    Style="{StaticResource MaterialDesignRaisedLightButton}" Content="Отмена" HorizontalAlignment="Left" Margin="63,19,0,0" VerticalAlignment="Top" FontSize="12" FontWeight="Bold" Height="22" Click="Button_Click"/>
         <TextBlock Text="Исп-тся в поворот окне?" Grid.Row="10" Margin="8,8,8,8" />
         <ComboBox Text="{Binding Rotation}" Grid.Column="1" Grid.Row="10" Margin="8,0,142,0" VerticalContentAlignment="Top" FontSize="12" Height="30" ToolTip="Да- если элемент используется в расчете поворотного окна)">
             <ComboBoxItem Content="Да"/>
+            <ComboBoxItem>Да/Нет</ComboBoxItem>
             <ComboBoxItem IsSelected="True" Content="Нет"/>
         </ComboBox>
 
