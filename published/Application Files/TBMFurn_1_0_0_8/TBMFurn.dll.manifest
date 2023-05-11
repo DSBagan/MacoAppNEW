@@ -639,22 +639,22 @@
       <dsig:DigestValue>pHzZSqosTo+k1ZA4zqq/b+EeyZpgdSoeVuwypWont2U=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="TBMFurn.dll" size="1146368">
+  <file name="TBMFurn.dll" size="1145856">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>U1RqAZaBXlrqKw2j1zbVBnhyaWL5xoSI8UP36utBxeM=</dsig:DigestValue>
+      <dsig:DigestValue>0yyKde+oid1ADXmc3nv4eDsoR8Ho2cTPpG/nrY1Jv2Y=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="TBMFurn.exe" size="153600">
+  <file name="TBMFurn.exe" size="153088">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>yC70C8U8sycKHRVKML1eabkGZqX496XioQdlPb5pZ4U=</dsig:DigestValue>
+      <dsig:DigestValue>KD+h7bOWNNu2+1n5OO3PvFX3swyBBOjoectY2Kl6ge4=</dsig:DigestValue>
     </hash>
   </file>
   <file name="TBMFurn.runtimeconfig.json" size="441">
