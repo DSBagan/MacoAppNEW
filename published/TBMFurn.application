@@ -8,7 +8,7 @@
         <beforeApplicationStartup />
       </update>
     </subscription>
-    <deploymentProvider codebase="https://github.com/DSBagan/MacoAppNEW/tree/master/published/TBMFurn.application" />
+    <deploymentProvider codebase="https://github.com/DSBagan/MacoAppNEW/tree/05600a036a8ae795f3ab4453433c34b36e4c91da/published/TBMFurn.application" />
   </deployment>
   <compatibleFrameworks xmlns="urn:schemas-microsoft-com:clickonce.v2">
     <framework targetVersion="4.5" profile="Full" supportedRuntime="4.0.30319" />
@@ -21,7 +21,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>oZBAndGB52K6lUUD/z6B0fCnCUhxf6cyrlf26200ca4=</dsig:DigestValue>
+        <dsig:DigestValue>MCJqDJaPlYIhytIflJDoFl4gF2gHyLKQ0jc8wH2ZZSw=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

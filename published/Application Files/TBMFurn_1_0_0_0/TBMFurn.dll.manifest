@@ -123,7 +123,7 @@
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>UY81AuEPl9+9cUz8v1z5RW3RtaAQo1jzSmPvu8uTvLs=</dsig:DigestValue>
+      <dsig:DigestValue>n/B6UgS0jvXxxHXiVClvjXQRd4mNENlf2HZ96NfFZIw=</dsig:DigestValue>
     </hash>
   </file>
   <file name="MaterialDesignThemes.Wpf.dll" size="9327616">
@@ -639,22 +639,22 @@
       <dsig:DigestValue>pHzZSqosTo+k1ZA4zqq/b+EeyZpgdSoeVuwypWont2U=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="TBMFurn.dll" size="1145856">
+  <file name="TBMFurn.dll" size="1146368">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>0yyKde+oid1ADXmc3nv4eDsoR8Ho2cTPpG/nrY1Jv2Y=</dsig:DigestValue>
+      <dsig:DigestValue>0bckiYayT2Q0nwwVevlqrGDA/Cj5zJk3rnXEocN09d8=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="TBMFurn.exe" size="153088">
+  <file name="TBMFurn.exe" size="153600">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>KD+h7bOWNNu2+1n5OO3PvFX3swyBBOjoectY2Kl6ge4=</dsig:DigestValue>
+      <dsig:DigestValue>yC70C8U8sycKHRVKML1eabkGZqX496XioQdlPb5pZ4U=</dsig:DigestValue>
     </hash>
   </file>
   <file name="TBMFurn.runtimeconfig.json" size="441">
