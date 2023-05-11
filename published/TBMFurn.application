@@ -8,7 +8,7 @@
         <beforeApplicationStartup />
       </update>
     </subscription>
-    <deploymentProvider codebase="https://github.com/DSBagan/MacoAppNEW/tree/master/publish/TBMFurn.application" />
+    <deploymentProvider codebase="https://github.com/DSBagan/MacoAppNEW/tree/master/published/TBMFurn.application" />
   </deployment>
   <compatibleFrameworks xmlns="urn:schemas-microsoft-com:clickonce.v2">
     <framework targetVersion="4.5" profile="Full" supportedRuntime="4.0.30319" />
