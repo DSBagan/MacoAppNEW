@@ -48,7 +48,6 @@
             <Image Height="25" Width="45" Source="/Vorne-logo.png" VerticalAlignment="Bottom" Margin="0,0,0,5"/>
             <Image Height="18" Width="58" Source="/28.png" VerticalAlignment="Bottom" Margin="0,0,0,10"/>
         </StackPanel>
-        <Button Grid.Column="1" Content="Button" HorizontalAlignment="Left" Margin="133,45,0,0" VerticalAlignment="Top"/>
 
 
     </Grid>
