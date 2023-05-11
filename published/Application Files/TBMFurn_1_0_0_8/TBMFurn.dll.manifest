@@ -645,7 +645,7 @@
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>kB8z33IlU7oo5NUDnXEBOvw/GGE+TIWtMsK4nSXOtfc=</dsig:DigestValue>
+      <dsig:DigestValue>q8OwvGfyxUUU7k2w5OGkmhzqxTAjDx3xw18ccmL42ZM=</dsig:DigestValue>
     </hash>
   </file>
   <file name="TBMFurn.exe" size="153600">
