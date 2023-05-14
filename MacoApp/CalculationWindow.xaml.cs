@@ -160,15 +160,15 @@ namespace MacoApp
                                 //Записываем данные в объект класса и ,тем самым, передаём в таблицу
                                 if (reader.GetValue(3).ToString() == response_bars1 || reader.GetValue(3).ToString() == response_bars2)
                                 {
-                                    collection.Add(new ClassList() { Id = count, Article = "" + reader.GetValue(3).ToString(), Name = "" + reader.GetValue(2).ToString(), Quantity = (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantityBar });
+                                    collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantityBar });
                                 }
                                 else if (reader.GetValue(3).ToString() == SrPr || reader.GetValue(3).ToString() == SrPrN1 || reader.GetValue(3).ToString() == SrPrN2)
                                 {
-                                    collection.Add(new ClassList() { Id = count, Article = "" + reader.GetValue(3).ToString(), Name = "" + reader.GetValue(2).ToString(), Quantity = (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantitySrPr });
+                                    collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantitySrPr });
                                 }
                                 else
                                 {
-                                    collection.Add(new ClassList() { Id = count, Article = "" + reader.GetValue(3).ToString(), Name = "" + reader.GetValue(2).ToString(), Quantity = (int.Parse(reader.GetValue(4).ToString()) * quantity) });
+                                    collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) });
                                 }
                             }
                         }
@@ -334,11 +334,10 @@ namespace MacoApp
             EntryiWindow entryiWindow = new EntryiWindow();
             entryiWindow.Show();
             this.Close();
-        }
-
-        
+        }        
 
         //Сохранение расчета в файл
+        //***************************************************************************************************************
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             if (Code.Text == "")
@@ -355,7 +354,7 @@ namespace MacoApp
             else
             {
                 // Проверяем есть ли на диске C папка, если нет- создаем
-                Directory.CreateDirectory(@"C:\FURNMACO\");
+                Directory.CreateDirectory(@"C:\TBMFurn\");
                 String date = DateTime.Now.ToString(" dd.MM.yyyy HH-mm-ss");
                 int CTlangth = Code.Text.Length;
                 if (CTlangth < 6)
@@ -365,9 +364,8 @@ namespace MacoApp
                         Code.Text = "0" + Code.Text;
                     }
                 }
-                FileStream fs = new FileStream(@"C:\FURNMACO\" + "Z" + Code.Text + " " + date + ".txt", FileMode.Create); //Присваеваем имя файлу
+                FileStream fs = new FileStream(@"C:\TBMFurn\" + "Z" + Code.Text + " " + date + ".txt", FileMode.Create); //Присваеваем имя файлу
                 StreamWriter streamWriter = new StreamWriter(fs);
-
                 streamWriter.WriteLine("                    Шифр фирмы " + Code.Text);
                 streamWriter.WriteLine("                    Фирма 123");
                 streamWriter.WriteLine("                    Заявка №");
@@ -399,7 +397,6 @@ namespace MacoApp
                                 nam += " ";
                             }
                         }
-
                         streamWriter.WriteLine(art + nam + "   " + qua);
                     }
 

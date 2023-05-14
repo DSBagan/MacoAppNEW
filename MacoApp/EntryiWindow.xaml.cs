@@ -37,8 +37,6 @@ namespace MacoApp
                 stats = false;
                 IntOn.Visibility = Visibility.Collapsed;
                 IntOff.Visibility = Visibility.Visible;
-                LabelBD.Foreground = Brushes.Red;
-                LabelBD.Content = "Нет подкдючения к сети, БД не обновлена";
             }
             return stats;
         }
@@ -59,8 +57,6 @@ namespace MacoApp
                     //Качаем БД с Google Drive
                     webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1xfKqKlY6V-k6mjQlnKit8qQ7t_Z4_eSb", path);
                     webClient.Dispose();
-                    LabelBD.Foreground = Brushes.Green;
-                    LabelBD.Content = "БД обновлена";
 
                 }
                 catch (System.Exception)
