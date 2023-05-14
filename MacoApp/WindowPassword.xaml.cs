@@ -6,11 +6,13 @@ namespace MacoApp
 {
     public partial class WindowPassword : Window
     {
-        private string Login = "admin";
-        private string Password = "admin";
+        private string Login;
+        private string Password;
+
         public WindowPassword()
         {
             InitializeComponent();
+            ButtonEnter.Visibility = Visibility.Collapsed;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

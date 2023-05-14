@@ -62,8 +62,7 @@ namespace MacoApp
                 catch (System.Exception)
                 {                   
                     return;
-                }
-                
+                }                
             }
             else 
             {

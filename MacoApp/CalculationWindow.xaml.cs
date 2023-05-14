@@ -5,6 +5,7 @@ using MaterialDesignThemes.Wpf;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Data.Sqlite;
 using Microsoft.Office.Interop.Outlook;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,7 +17,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Shapes;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Net.WebRequestMethods;
 
 namespace MacoApp
 {
@@ -87,34 +91,11 @@ namespace MacoApp
                 string Lower_loop = ComboBoxLL.Text;
                 string Micro_ventilation = ComboBoxMv.Text;
 
-                classError.Err(Furn,FFH, FFB, quantity);
-                /*if (FFH < 601)
+                if (classError.Err(Furn, FFH, FFB, quantity, rotation) == 1)
                 {
-                    MaterialMessageBox.ShowDialog("Высота не может быть менее 601 мм");
-                    //MessageBox.Show("Высота не может быть менее 601 мм", "Не вышло");
                     return;
                 }
-                else if (FFB < 400)
-                {
-                    MaterialMessageBox.ShowDialog("Ширина не может быть менее 400 мм");
-                    return;
-                }
-                else if (FFH > 2350)
-                {
-                    MaterialMessageBox.ShowDialog("Высота не может быть более 2350 мм");
-                    return;
-                }
-                else if (FFB > 1050)
-                {
-                    MaterialMessageBox.ShowDialog("Ширина не может быть ,более 1050 мм");
-                    return;
-                }
-                if (quantity == 0)
-                {
-                    MaterialMessageBox.ShowDialog("Укажите корректное количество комплектов");
-                    return;
-                }*/
-
+               
                 queryString = $"Select * from Elements where (Name_Furn like '" + Furn + "') and(System  = 'Не имеет значения' or System  = " + System + ") and(Side like 'Не имеет значения' or Side like '" + side + "') " +
                     "and(Lower_loop like '" + Lower_loop + "' or Lower_loop like 'Нет') and(Micro_ventilation like '" + Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +
                     "and(Rotation like '" + rotation + "' or Rotation like '" + rotationTwoArg + "') and(FFH_before = 0 or '" + FFH + "'>=FFH_before) and(FFH_after = 0 or '" + FFH + "' <= FFH_after)" +
@@ -364,57 +345,65 @@ namespace MacoApp
                         Code.Text = "0" + Code.Text;
                     }
                 }
-                FileStream fs = new FileStream(@"C:\TBMFurn\" + "Z" + Code.Text + " " + date + ".txt", FileMode.Create); //Присваеваем имя файлу
-                StreamWriter streamWriter = new StreamWriter(fs);
-                streamWriter.WriteLine("                    Шифр фирмы " + Code.Text);
-                streamWriter.WriteLine("                    Фирма 123");
-                streamWriter.WriteLine("                    Заявка №");
-                streamWriter.WriteLine("                    Название");
-                streamWriter.WriteLine("                    Дата заявки" + date);
-                streamWriter.WriteLine("--------------------------------------------------------------------------------");
-                streamWriter.WriteLine("    Артикул                       Название                      Кол.  Ед.изм.");
-                streamWriter.WriteLine("--------------------------------------------------------------------------------");
-                try
+                //FileStream fs = new FileStream(@"C:\TBMFurn\" + "Z" + Code.Text + " " + date + ".txt", FileMode.Create); //Присваеваем имя файлу
+                using (StreamWriter streamWriter = new StreamWriter(@"C:\TBMFurn\" + "Z" + Code.Text + " " + date + ".txt", false, Encoding.Default))
                 {
-                    foreach (DataRow row in table2.Rows)
-                    {
-                        string art = Convert.ToString(row["Артикул"]);
-                        string nam = Convert.ToString(row["Название"]);
-                        int qua = Convert.ToInt32(row["Количество"]);
-
-                        if (art.Length < 10)
-                        {
-                            for (int i = 0; i < 10 - art.Length; i++)
-                            {
-                                art += " ";
-                            }
-                        }
-                        if (nam.Length < 55)
-                        {
-                            int a = 55 - nam.Length;
-                            for (int i = 0; i < a; i++)
-                            {
-                                nam += " ";
-                            }
-                        }
-                        streamWriter.WriteLine(art + nam + "   " + qua);
-                    }
-
+                    streamWriter.WriteLine("                    Шифр фирмы " + Code.Text);
+                    streamWriter.WriteLine("                    Фирма 123");
+                    streamWriter.WriteLine("                    Заявка №");
+                    streamWriter.WriteLine("                    Название");
+                    streamWriter.WriteLine("                    Дата заявки" + date);
                     streamWriter.WriteLine("--------------------------------------------------------------------------------");
-                    streamWriter.WriteLine();
-                    streamWriter.WriteLine("                    Заявку составил________________________");
+                    streamWriter.WriteLine("    Артикул                       Название                      Кол.  Ед.изм.");
+                    streamWriter.WriteLine("--------------------------------------------------------------------------------");
+                    try
+                    {
+                        foreach (DataRow row in table2.Rows)
+                        {
+                            string art = Convert.ToString(row["Артикул"]);
+                            string nam = Convert.ToString(row["Название"]);
+                            int qua = Convert.ToInt32(row["Количество"]);
+
+                            if (art.Length < 16)
+                            {
+                                int b = 16 - art.Length;
+                                for (int i = 0; i < b; i++)
+                                {
+                                    art += " ";
+                                }
+                            }
+                            /*if (nam.Length < 55)
+                            {
+                                int a = 55 - nam.Length;
+                                for (int i = 0; i < a; i++)
+                                {
+                                    nam += " ";
+                                }
+                            }*/
+                            string n = "                                                   ";
+                            streamWriter.WriteLine(art + /*nam + "   " */n + qua);
+                        }
+
+                        streamWriter.WriteLine("--------------------------------------------------------------------------------");
+                        streamWriter.WriteLine();
+                        streamWriter.WriteLine("                    Заявку составил________________________");
 
 
-                    streamWriter.Close();
-                    fs.Close();
-                    table2.Rows.Clear();
+                        streamWriter.Close();
+                        //fs.Close();
+                        table2.Rows.Clear();
 
-                    MaterialMessageBox.ShowDialog("Файл успешно сохранен");
+                        MaterialMessageBox.ShowDialog("Файл успешно сохранен");
+                    }
+                    catch
+                    {
+                        MaterialMessageBox.ShowDialog("Ошибка при сохранении файла!");
+                    }
                 }
-                catch
-                {
-                    MaterialMessageBox.ShowDialog("Ошибка при сохранении файла!");
-                }
+
+
+
+                
                 LBListCalc.Items.Clear();
                 LBList.Items.Clear();
                 Count = 1;
