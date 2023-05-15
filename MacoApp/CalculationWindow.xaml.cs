@@ -380,7 +380,7 @@ namespace MacoApp
                                     nam += " ";
                                 }
                             }*/
-                            string n = "                                                 ";
+                            string n = "                                                ";
                             streamWriter.WriteLine(art + /*nam + "   " */n + qua);
                         }
 
