@@ -90,7 +90,7 @@
             <ComboBoxItem>Да</ComboBoxItem>
             <ComboBoxItem IsSelected="True">Нет</ComboBoxItem>
         </ComboBox>
-        <TextBox Name="TextBoxColvo" Text="1" PreviewTextInput="TextBox_PreviewTextInput" PreviewKeyDown="TextBox_PreviewKeyDown" Grid.Row="12" Width="60" HorizontalAlignment="Right" FontSize="12" VerticalAlignment="Center" Margin="0,0,15,0"/>
+        <TextBox Name="TextBoxColvo" Text="1" PreviewTextInput="TextBox_PreviewTextInput" MaxLength="3" PreviewKeyDown="TextBox_PreviewKeyDown" Grid.Row="12" Width="60" HorizontalAlignment="Right" FontSize="12" VerticalAlignment="Center" Margin="0,0,15,0"/>
 
         <Button Name="ButtonCalc" Content="Рассчитать" Grid.Row="13" Height="22" HorizontalContentAlignment="Center" 
                     VerticalAlignment="Top" Margin="15,0,15,0" Click="ButtonCalc_Click" FontSize="11" Cursor="Hand" 

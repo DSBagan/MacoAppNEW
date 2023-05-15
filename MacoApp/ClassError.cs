@@ -28,9 +28,9 @@ namespace MacoApp
                     MaterialMessageBox.ShowDialog("Высота не может быть более 2350 мм");
                     return 1;
                 }
-                else if (FFB > 1050)
+                else if (FFB > 1300)
                 {
-                    MaterialMessageBox.ShowDialog("Ширина не может быть ,более 1050 мм");
+                    MaterialMessageBox.ShowDialog("Ширина не может быть ,более 1300 мм");
                     return 1;
                 }
                 else if (quantity == 0)

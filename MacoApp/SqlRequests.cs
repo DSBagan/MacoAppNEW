@@ -397,7 +397,7 @@ namespace MacoApp
                 }
                 else if (FFH >= 1801 && FFH <= 2400)
                 {
-                    return quantitySrPr = 3;
+                    return quantitySrPr = 2;
                 }
                 else
                 {
@@ -417,7 +417,7 @@ namespace MacoApp
                 }
                 else if (FFH >= 2001 && FFH <= 2400)
                 {
-                    return quantitySrPr = 3;
+                    return quantitySrPr = 2;
                 }
                 else
                 {
