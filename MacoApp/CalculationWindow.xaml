@@ -90,18 +90,18 @@
             <ComboBoxItem>Да</ComboBoxItem>
             <ComboBoxItem IsSelected="True">Нет</ComboBoxItem>
         </ComboBox>
-        <TextBox Name="TextBoxColvo" Text="1" PreviewTextInput="TextBox_PreviewTextInput" MaxLength="3" PreviewKeyDown="TextBox_PreviewKeyDown" Grid.Row="12" Width="60" HorizontalAlignment="Right" FontSize="12" VerticalAlignment="Center" Margin="0,0,15,0"/>
+        <TextBox Name="TextBoxColvo" Text="1" PreviewTextInput="TextBox_PreviewTextInput" MaxLength="3" PreviewKeyDown="TextBox_PreviewKeyDown" Grid.Row="11" Width="60" HorizontalAlignment="Right" FontSize="12" VerticalAlignment="Center" Margin="0,0,15,0"/>
 
-        <Button Name="ButtonCalc" Content="Рассчитать" Grid.Row="13" Height="22" HorizontalContentAlignment="Center" 
-                    VerticalAlignment="Top" Margin="15,0,15,0" Click="ButtonCalc_Click" FontSize="11" Cursor="Hand" 
+        <Button Name="ButtonCalc" Content="Рассчитать" Grid.Row="12" Height="30" HorizontalContentAlignment="Center" 
+                    VerticalAlignment="Top" Margin="15,26,15,0" Click="ButtonCalc_Click" FontSize="14" Cursor="Hand" 
                     ToolTip="Нажми, чтобы рассчитать комплект"
-                    IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" 
-                    Style="{StaticResource MaterialDesignRaisedLightButton}"/>
-        <Button Name="SaveCalc" Content="Сохранить расчет" Grid.Row="14" Margin="15,0,15,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Stretch"
-                    VerticalAlignment="Top" Click="SaveCalc_Click" Height="21" FontSize="10" 
+                    IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                    Style="{StaticResource MaterialDesignPaperLightButton}" FontWeight="Normal" FontStretch="Normal" Grid.RowSpan="3"/>
+        <Button Name="SaveCalc" Content="Сохранить расчет" Grid.Row="14" Margin="15,17,15,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Stretch"
+                    VerticalAlignment="Top" Click="SaveCalc_Click" Height="30" FontSize="14" 
                     ToolTip="Нажми, чтобы добавить расчет к списку на сохранение"
-                    IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" 
-                    Style="{StaticResource MaterialDesignRaisedLightButton}" FontWeight="Bold"/>
+                    IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                    Style="{StaticResource MaterialDesignPaperLightButton}" FontWeight="Normal" Grid.RowSpan="2"/>
 
         <TextBlock Text="Высота"  Grid.Column="0" Grid.Row="5" Width="70" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
         <TextBlock Text="Ширина"  Grid.Column="0" Width="70" FontSize="12" Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
@@ -109,7 +109,7 @@
         <TextBlock Text="Сторона"  Grid.Column="0" Grid.Row="7" Width="70" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
         <TextBlock Text="Нижняя петля"  Grid.Column="0" Grid.Row="8" Width="110" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
         <TextBlock Text="Микровентиляция"  Grid.Column="0" Grid.Row="9" Width="110" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
-        <TextBlock Text="Колич. комплектов"  Grid.Column="0" Grid.Row="12" Width="110" HorizontalAlignment="Left" FontSize="12" VerticalAlignment="Center" Margin="10,0,0,0"/>
+        <TextBlock Text="Колич. комплектов"  Grid.Column="0" Grid.Row="11" Width="110" HorizontalAlignment="Left" FontSize="12" VerticalAlignment="Center" Margin="10,0,0,0"/>
 
         <ListBox Name="LBListCalc"  Grid.ColumnSpan="2" Grid.Row="16" Width="384" FontSize="10" Background="#FFEFF9F8" 
                  BorderThickness="1,1,1,1" BorderBrush="#FFFFECEC" VerticalAlignment="Bottom" Height="59" HorizontalAlignment="Left" Margin="10,0,0,15" >
@@ -122,13 +122,16 @@
 
         <ListBox Name="LBList"   Grid.Column="1" Margin="143,112,72,40" Grid.Row="1" Visibility="Hidden"/>
         <Button Name="ButtonSaveTxt" Content="Сохранить в .txt" Grid.Column="1" Grid.Row="16" 
-                Click="Button_Click" FontSize="10" ToolTip="Нажми, чтобы сохранить расчеты в файл. Найти его можно в папке C:\FURNTBM\"
-                IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" 
-                Style="{StaticResource MaterialDesignRaisedLightButton}" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="119,0,0,15"/>
+                Click="Button_Click" FontSize="10" ToolTip="Нажми, чтобы сохранить расчеты в файл. Найти его можно в папке C:\TBMFurn\"
+                IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                Style="{StaticResource MaterialDesignPaperLightButton}"
+                HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="119,0,0,15"/>
         <Button x:Name="ButtonExit" Content="Назад" Click="ButtonExit_Click" 
                 HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="12"
-                IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" 
-                Style="{StaticResource MaterialDesignRaisedLightButton}" Grid.Column="2" Grid.Row="16" Height="29" Margin="0,0,15,15"/>
+                IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                Style="{StaticResource MaterialDesignPaperLightButton}"
+                ToolTip="Нажми, чтобы выйти в меню выбора"
+                Grid.Column="2" Grid.Row="16" Height="29" Margin="0,0,15,15"/>
         <TextBlock x:Name="TBDate" Grid.Column="2" HorizontalAlignment="Right" Margin="0,0,15,0" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="12"/>
         <TextBlock Text="Фурнитура"  Grid.Column="0" Width="70" FontSize="12" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
         <ComboBox x:Name="ComboBoxFurn" Grid.Column="0" Grid.Row="3" Width="80" FontSize="12" HorizontalAlignment="Right" Margin="0,0,15,0">
