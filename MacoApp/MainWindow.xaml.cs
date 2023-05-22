@@ -60,7 +60,7 @@ namespace MacoApp
                 MaterialMessageBox.ShowDialog("Судя по всему не верно заполнено одно из значений");
                 return;
             }
-            backup(pathSaveFolder);
+            //backup(pathSaveFolder);
         }
         // редактирование
         private void Edit_Click(object sender, RoutedEventArgs e)
@@ -122,7 +122,7 @@ namespace MacoApp
                 MaterialMessageBox.ShowDialog("Ой, что-то пошло не так...");
                 return;
             }
-            backup(pathSaveFolder);
+            //backup(pathSaveFolder);
         }
         // удаление
         private void Delete_Click(object sender, RoutedEventArgs e)
@@ -145,7 +145,7 @@ namespace MacoApp
                 case MessageBoxResult.No:
                     break;
             }
-            backup(pathSaveFolder);
+            //backup(pathSaveFolder);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -153,7 +153,7 @@ namespace MacoApp
             EntryiWindow entryiWindow = new EntryiWindow();
             entryiWindow.Show();
             this.Close();
-            //backup(pathSaveFolder);
+            backup(pathSaveFolder);
         }
 
         public void backup(string strDestination)
@@ -174,7 +174,7 @@ namespace MacoApp
                 //Передем файл в стрим для передачи в Google Drive
                 FileStream fs = new FileStream(path2,FileMode.Open);
                 //Передаем файл в Google Drive
-                workGoogle.UpdateFile(fs, "1xfKqKlY6V-k6mjQlnKit8qQ7t_Z4_eSb/view?usp=share_link", "Data Base File/db");
+                workGoogle.UpdateFile(fs, "1xfKqKlY6V-k6mjQlnKit8qQ7t_Z4_eSb", "Data Base File/db");
             }
             catch (System.Exception)
             {

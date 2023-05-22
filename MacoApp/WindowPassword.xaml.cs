@@ -12,7 +12,7 @@ namespace MacoApp
         public WindowPassword()
         {
             InitializeComponent();
-            ButtonEnter.Visibility = Visibility.Collapsed;
+            //ButtonEnter.Visibility = Visibility.Collapsed;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
