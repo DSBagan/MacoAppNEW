@@ -18,6 +18,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Net.WebRequestMethods;
@@ -50,21 +51,9 @@ namespace MacoApp
             table2.Columns.Add(new DataColumn("Артикул", typeof(string)));
             table2.Columns.Add(new DataColumn("Название", typeof(string)));
             table2.Columns.Add(new DataColumn("Количество", typeof(int)));
+            
         }
-        private void RadioButton_Checked(object sender, RoutedEventArgs e) // Обработчик радиобаттона
-        {
-            RadioButton pressed = (RadioButton)sender;
-            if (pressed.Content.ToString() == "Поворот/откид.")
-            {
-                rotation = "Нет";
-                rotationTwoArg = "Да/Нет";
-            }
-            else if (pressed.Content.ToString() == "Поворотная")
-            {
-                rotation = "Да";
-                rotationTwoArg = "Да/Нет";
-            }
-        }
+
         private void CalculationWindow_Loaded(object sender, RoutedEventArgs e)
         {
             ButtonSaveTxt.IsEnabled = false;
@@ -73,6 +62,9 @@ namespace MacoApp
             timer.IsEnabled = true;
             timer.Tick += (o, t) => { TBDate.Text = DateTime.Now.ToString(); };
             timer.Start();
+            ButtonP_O.BorderBrush = Brushes.Red;
+            rotation = "Нет";
+            rotationTwoArg = "Да/Нет";
         }
 
         private void ButtonCalc_Click(object sender, RoutedEventArgs e)
@@ -345,7 +337,6 @@ namespace MacoApp
                         Code.Text = "0" + Code.Text;
                     }
                 }
-                //FileStream fs = new FileStream(@"C:\TBMFurn\" + "Z" + Code.Text + " " + date + ".txt", FileMode.Create); //Присваеваем имя файлу
                 using (StreamWriter streamWriter = new StreamWriter(@"C:\TBMFurn\" + "Z" + Code.Text + " " + date + ".txt", false, Encoding.Default))
                 {
                     streamWriter.WriteLine("                    Шифр фирмы " + Code.Text);
@@ -390,7 +381,6 @@ namespace MacoApp
 
 
                         streamWriter.Close();
-                        //fs.Close();
                         table2.Rows.Clear();
 
                         MaterialMessageBox.ShowDialog("Файл успешно сохранен");
@@ -400,15 +390,38 @@ namespace MacoApp
                         MaterialMessageBox.ShowDialog("Ошибка при сохранении файла!");
                     }
                 }
-
-
-
-                
+              
                 LBListCalc.Items.Clear();
                 LBList.Items.Clear();
                 Count = 1;
             }
             ButtonSaveTxt.IsEnabled = false;
+        }
+
+        private void ButtonP_O_Click(object sender, RoutedEventArgs e)
+        {
+            ButtonP_O.BorderBrush = Brushes.Red;
+            ButtonP.BorderBrush = Brushes.White;
+            ButtonFram.BorderBrush = Brushes.White;
+
+            rotation = "Нет";
+            rotationTwoArg = "Да/Нет";
+        }
+
+        private void ButtonP_Click(object sender, RoutedEventArgs e)
+        {
+            ButtonP.BorderBrush = Brushes.Red;
+            ButtonP_O.BorderBrush = Brushes.White;
+            ButtonFram.BorderBrush = Brushes.White;
+            rotation = "Да";
+            rotationTwoArg = "Да/Нет";
+        }
+
+        private void ButtonFram_Click(object sender, RoutedEventArgs e)
+        {
+            ButtonP_O.BorderBrush = Brushes.White;
+            ButtonP.BorderBrush = Brushes.White;
+            ButtonFram.BorderBrush = Brushes.Red;
         }
     }
 }

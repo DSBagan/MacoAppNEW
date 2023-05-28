@@ -10,7 +10,15 @@
 
   <ItemGroup>
     <None Remove="28.png" />
+    <None Remove="FRAM.PNG" />
+    <None Remove="FRAMCB.PNG" />
     <None Remove="maco.png" />
+    <None Remove="PO.PNG" />
+    <None Remove="PP.PNG" />
+    <None Remove="PPCB.png" />
+    <None Remove="P_O.png" />
+    <None Remove="P_OP.PNG" />
+    <None Remove="P_OPCB.PNG" />
     <None Remove="roto-transformed.png" />
     <None Remove="Vorne-logo.png" />
   </ItemGroup>
@@ -40,7 +48,13 @@
 
   <ItemGroup>
     <Resource Include="28.png" />
+    <Resource Include="FRAM.PNG" />
+    <Resource Include="FRAMCB.PNG" />
     <Resource Include="maco.png" />
+    <Resource Include="PP.PNG" />
+    <Resource Include="PPCB.png" />
+    <Resource Include="P_OP.PNG" />
+    <Resource Include="P_OPCB.PNG" />
     <Resource Include="roto-transformed.png" />
     <Resource Include="Vorne-logo.png" />
   </ItemGroup>

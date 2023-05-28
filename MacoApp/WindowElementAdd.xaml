@@ -77,6 +77,7 @@
         <ComboBox Text="{Binding Lower_loop}" Grid.Column="1" Grid.Row="8" Margin="8,0,142,0" FontSize="12" VerticalContentAlignment="Top" Height="30" ToolTip="Да- если элемент относится к узлу нижней петли, нет- нет">
             <ComboBoxItem>Да</ComboBoxItem>
             <ComboBoxItem IsSelected="True">Нет</ComboBoxItem>
+            <ComboBoxItem>Да/Нет</ComboBoxItem>
         </ComboBox>
         <ComboBox Text="{Binding Micro_ventilation}" Grid.Column="1" Grid.Row="9" Margin="8,0,142,0" VerticalContentAlignment="Top" FontSize="12" Height="30" ToolTip="Да- если элемент относится к микропроветриванию, нет- нет, 1 и 2 трогать не нужно, это 'костыль')">
             <ComboBoxItem>Да</ComboBoxItem>

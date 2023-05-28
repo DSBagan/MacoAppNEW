@@ -24,8 +24,7 @@ namespace MacoApp
         public MainWindow()
         {
             InitializeComponent();
-            Loaded += MainWindow_Loaded;
-            
+            Loaded += MainWindow_Loaded;    
         }
 
         // при загрузке окна
@@ -60,7 +59,7 @@ namespace MacoApp
                 MaterialMessageBox.ShowDialog("Судя по всему не верно заполнено одно из значений");
                 return;
             }
-            //backup(pathSaveFolder);
+            backup(pathSaveFolder);
         }
         // редактирование
         private void Edit_Click(object sender, RoutedEventArgs e)
@@ -122,7 +121,7 @@ namespace MacoApp
                 MaterialMessageBox.ShowDialog("Ой, что-то пошло не так...");
                 return;
             }
-            //backup(pathSaveFolder);
+            backup(pathSaveFolder);
         }
         // удаление
         private void Delete_Click(object sender, RoutedEventArgs e)
@@ -145,7 +144,7 @@ namespace MacoApp
                 case MessageBoxResult.No:
                     break;
             }
-            //backup(pathSaveFolder);
+            backup(pathSaveFolder);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
