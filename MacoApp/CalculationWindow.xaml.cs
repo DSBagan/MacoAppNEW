@@ -39,6 +39,7 @@ namespace MacoApp
         string rotationTwoArg;
         public int quantityBar = 0;
 
+
         public CalculationWindow()
         {
             InitializeComponent();
