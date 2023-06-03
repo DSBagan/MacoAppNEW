@@ -151,10 +151,37 @@ namespace MacoApp
                     return 0;
                 }
             }
-            else if (Furn == "Roto_NT")
+            else if (Furn == "Roto_NT" && rotation == "Нет")
             {
-                MaterialMessageBox.ShowDialog("Roto пока не умею считать");
-                return 1;
+                if (FFH < 310)
+                {
+                    MaterialMessageBox.ShowDialog("Высота п/о Roto_NT не может быть менее 310 мм");
+                    return 1;
+                }
+                else if (FFB < 290)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина п/о Roto_NT не может быть менее 290 мм");
+                    return 1;
+                }
+                else if (FFH > 2400)
+                {
+                    MaterialMessageBox.ShowDialog("Высота п/о Roto_NT не может быть более 2400 мм");
+                    return 1;
+                }
+                else if (FFB > 1400)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина п/о Roto_NT не может быть ,более 1400 мм");
+                    return 1;
+                }
+                else if (quantity == 0)
+                {
+                    MaterialMessageBox.ShowDialog("Укажите корректное количество комплектов");
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
             }
             else if (Furn == "Internika")
             {

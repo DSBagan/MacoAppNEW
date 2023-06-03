@@ -140,7 +140,7 @@
         <Button x:Name="ButtonP_O" Grid.ColumnSpan="1" Margin="8,0,8,0" Grid.RowSpan="3" Height="60"
                 IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
                 Style="{StaticResource MaterialDesignPaperLightButton}" Foreground="{x:Null}"
-                ToolTip="Поворотно-откидной комплект" Click="ButtonP_O_Click">
+                ToolTip="Поворотно-откидной комплект" Click="ButtonP_O_Click" BorderThickness="2,2,2,2" BorderBrush="White">
             <Button.Background>
                 <ImageBrush ImageSource="/P_OP.PNG"/>
             </Button.Background>
@@ -148,7 +148,7 @@
         <Button x:Name="ButtonP" Grid.ColumnSpan="1" Margin="8,0,8,0" Grid.RowSpan="3" Height="60"
             IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
             Style="{StaticResource MaterialDesignPaperLightButton}" Foreground="{x:Null}" Grid.Row="3"
-            ToolTip="Поворотный комплект" Click="ButtonP_Click">
+            ToolTip="Поворотный комплект" Click="ButtonP_Click" BorderBrush="White" BorderThickness="2,2,2,2">
             <Button.Background>
                 <ImageBrush ImageSource="/PP.PNG"/>
             </Button.Background>
@@ -156,7 +156,7 @@
         <Button x:Name="ButtonFram" Grid.ColumnSpan="1" Grid.RowSpan="2" Height="36"
             IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
             Style="{StaticResource MaterialDesignPaperLightButton}" Foreground="{x:Null}" Grid.Row="6" Width="60"
-            ToolTip="Фрамуга" Click="ButtonFram_Click">
+            ToolTip="Фрамуга" Click="ButtonFram_Click" BorderThickness="2,2,2,2" BorderBrush="White">
             <Button.Background>
                 <ImageBrush ImageSource="/FRAM.PNG"/>
             </Button.Background>

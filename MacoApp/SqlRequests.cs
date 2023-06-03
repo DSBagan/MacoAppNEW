@@ -377,9 +377,95 @@ namespace MacoApp
                     return 0;
                 }
             }
-            else { return 0; }
 
+            //Roto_NT************************************************************************************
+
+            else if (Furn == "Roto_NT")
+            {
+                if (FFH >= 310 && FFH <= 620 && FFB <= 800 && Rotation == "Нет")
+                {
+                    return quantityBar = 4;
+                }
+                else if (FFH >= 310 && FFH <= 620 && FFB >= 601 && FFB <= 801 && Rotation == "Нет")
+                {
+                    return quantityBar = 5;
+                }
+                else if (FFH >= 310 && FFH <= 620 && FFB >= 801 && Rotation == "Нет")
+                {
+                    return quantityBar = 6;
+                }
+                //**********************
+                if (FFH >= 621 && FFH <= 1200 && FFB <= 800 && Rotation == "Нет")
+                {
+                    return quantityBar = 5;
+                }
+                else if (FFH >= 621 && FFH <= 1200 && FFB >= 601 && FFB <= 801 && Rotation == "Нет")
+                {
+                    return quantityBar = 6;
+                }
+                else if (FFH >= 621 && FFH <= 1200 && FFB >= 801 && Rotation == "Нет")
+                {
+                    return quantityBar = 7;
+                }
+
+                //*********************
+
+                if (FFH >= 1201 && FFH <= 2000 && FFB <= 800 && Rotation == "Нет")
+                {
+                    return quantityBar = 6;
+                }
+                else if (FFH >= 1201 && FFH <= 2000 && FFB >= 601 && FFB <= 801 && Rotation == "Нет")
+                {
+                    return quantityBar = 7;
+                }
+                else if (FFH >= 1201 && FFH <= 2000 && FFB >= 801 && Rotation == "Нет")
+                {
+                    return quantityBar = 8;
+                }
+
+                //*********************
+
+                else if (FFH >= 2001 && FFH <= 2400 && FFB <= 700 && Rotation == "Нет")
+                {
+                    return quantityBar = 7;
+                }
+                else if (FFH >= 2001 && FFH <= 2400 && FFB >= 701 && FFB <= 800 && Rotation == "Нет")
+                {
+                    return quantityBar = 9;
+                }
+                else if (FFH >= 2001 && FFH <= 2400 && FFB >= 801 && Rotation == "Нет")
+                {
+                    return quantityBar = 11;
+                }
+
+
+                //Поворотная 
+                else if (Rotation == "Да" && FFH >= 251 && FFH <= 500)
+                {
+                    return quantityBar = 1;
+                }
+                else if (Rotation == "Да" && FFH >= 501 && FFH <= 800)
+                {
+                    return quantityBar = 2;
+                }
+                else if (Rotation == "Да" && FFH >= 801 && FFH <= 1400)
+                {
+                    return quantityBar = 3;
+                }
+                else if (Rotation == "Да" && FFH >= 1401 && FFH <= 2400)
+                {
+                    return quantityBar = 4;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+
+            else { return 0; }
         }
+
+
 
         //СРЕДНИЕ ПРИЖИМЫ++++++++++++++++++++++++++++
 
@@ -402,8 +488,7 @@ namespace MacoApp
                 else
                 {
                     return 0;
-                }
-                
+                }            
             }
             else if (Rotation == "Да" && Furn == "Vorne")
             {
@@ -423,7 +508,25 @@ namespace MacoApp
                 {
                     return 0;
                 }
-
+            }
+            else if (Rotation == "Да" && Furn == "Roto_NT")
+            {
+                if (FFH >= 251 && FFH <= 500)
+                {
+                    return quantitySrPr = 1;
+                }
+                else if (FFH >= 501 && FFH <= 800)
+                {
+                    return quantitySrPr = 2;
+                }
+                else if (FFH >= 801 && FFH <= 2400)
+                {
+                    return quantitySrPr = 2;
+                }
+                else
+                {
+                    return 0;
+                }
             }
             else
                 return 0;

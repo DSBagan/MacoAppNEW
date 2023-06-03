@@ -52,6 +52,8 @@ namespace MacoApp
             table2.Columns.Add(new DataColumn("Артикул", typeof(string)));
             table2.Columns.Add(new DataColumn("Название", typeof(string)));
             table2.Columns.Add(new DataColumn("Количество", typeof(int)));
+
+            ButtonFram.Visibility = Visibility.Hidden;
             
         }
 
@@ -115,6 +117,7 @@ namespace MacoApp
                                 string SrPr = "";
                                 string SrPrN1 = "";
                                 string SrPrN2 = "";
+                                string SrPrRama = "";
                                 if (Furn == "Maco_Eco" || Furn == "Maco_MM")
                                 {
                                     response_bars1 = "34623";
@@ -131,12 +134,21 @@ namespace MacoApp
                                     SrPrN1 = "V44020107";
                                     SrPrN2 = "V44030107";
                                 }
+                                else if (Furn == "Roto_NT")
+                                {
+                                    response_bars1 = "338070";
+                                    response_bars2 = "260367";
+                                    SrPr = "281639";
+                                    SrPrRama = "281638";
+                                    SrPrN1 = "208598";
+                                    SrPrN2 = "208600";
+                                }
                                 //Записываем данные в объект класса и ,тем самым, передаём в таблицу
                                 if (reader.GetValue(3).ToString() == response_bars1 || reader.GetValue(3).ToString() == response_bars2)
                                 {
                                     collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantityBar });
                                 }
-                                else if (reader.GetValue(3).ToString() == SrPr || reader.GetValue(3).ToString() == SrPrN1 || reader.GetValue(3).ToString() == SrPrN2)
+                                else if (reader.GetValue(3).ToString() == SrPr || reader.GetValue(3).ToString() == SrPrN1 || reader.GetValue(3).ToString() == SrPrN2|| reader.GetValue(3).ToString() == SrPrRama)
                                 {
                                     collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantitySrPr });
                                 }
@@ -219,6 +231,14 @@ namespace MacoApp
                                     SrPr = "V17010102";
                                     SrPrN1 = "V44020107";
                                     SrPrN2 = "V44030107";
+                                }
+                                else if (Furn == "Roto_NT")
+                                {
+                                    response_bars1 = "338070";
+                                    response_bars2 = "260367";
+                                    /*SrPr = "V17010102";
+                                    SrPrN1 = "V44020107";
+                                    SrPrN2 = "V44030107";*/
                                 }
                                 //Записываем данные в объект класса и ,тем самым, передаём в таблицу
                                 if (reader.GetValue(3).ToString() == response_bars1 || reader.GetValue(3).ToString() == response_bars2)
@@ -328,7 +348,7 @@ namespace MacoApp
             else
             {
                 // Проверяем есть ли на диске C папка, если нет- создаем
-                Directory.CreateDirectory(@"C:\TBMFurn\");
+                Directory.CreateDirectory(@"C:\aTBMFURN\");
                 String date = DateTime.Now.ToString(" dd.MM.yyyy HH-mm-ss");
                 int CTlangth = Code.Text.Length;
                 if (CTlangth < 6)
@@ -338,7 +358,7 @@ namespace MacoApp
                         Code.Text = "0" + Code.Text;
                     }
                 }
-                using (StreamWriter streamWriter = new StreamWriter(@"C:\TBMFurn\" + "Z" + Code.Text + " " + date + ".txt", false, Encoding.Default))
+                using (StreamWriter streamWriter = new StreamWriter(@"C:\aTBMFURN\" + "Z" + Code.Text + " " + date + ".txt", false, Encoding.Default))
                 {
                     streamWriter.WriteLine("                    Шифр фирмы " + Code.Text);
                     streamWriter.WriteLine("                    Фирма 123");
