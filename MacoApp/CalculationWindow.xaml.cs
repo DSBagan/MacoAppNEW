@@ -91,6 +91,8 @@ namespace MacoApp
                     return;
                 }
                
+                //фоновый рисунок для списка артикулов
+
                 queryString = $"Select * from Elements where (Name_Furn like '" + Furn + "') and(System  = 'Не имеет значения' or System  = " + System + ") and(Side like 'Не имеет значения' or Side like '" + side + "') " +
                     "and(Lower_loop like '" + Lower_loop + "' or Lower_loop like 'Нет') and(Micro_ventilation like '" + Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +
                     "and(Rotation like '" + rotation + "' or Rotation like '" + rotationTwoArg + "') and(FFH_before = 0 or '" + FFH + "'>=FFH_before) and(FFH_after = 0 or '" + FFH + "' <= FFH_after)" +
@@ -443,6 +445,46 @@ namespace MacoApp
             ButtonP_O.BorderBrush = Brushes.White;
             ButtonP.BorderBrush = Brushes.White;
             ButtonFram.BorderBrush = Brushes.Red;
+        }
+
+
+
+        //Фон для GridList
+        private void ComboBoxFurn_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ComboBoxFurn.SelectedIndex == 3)
+            {
+                // Загружаем изображение
+                BitmapImage image = new BitmapImage(new Uri("image/RotoFon.png", UriKind.RelativeOrAbsolute));
+
+                // Создаем новый ImageBrush с изображением
+                ImageBrush imageBrush = new ImageBrush();
+                imageBrush.ImageSource = image;
+
+                // Устанавливаем ImageBrush в качестве фона DataGrid
+                GridList.Background = imageBrush;
+            }
+            if (ComboBoxFurn.SelectedIndex == 1|| ComboBoxFurn.SelectedIndex == 0)
+            {
+                BitmapImage image = new BitmapImage(new Uri("image/MacoFon.png", UriKind.RelativeOrAbsolute));
+                ImageBrush imageBrush = new ImageBrush();
+                imageBrush.ImageSource = image;
+                GridList.Background = imageBrush;
+            }
+            if (ComboBoxFurn.SelectedIndex == 2)
+            {
+                BitmapImage image = new BitmapImage(new Uri("image/vorneFon.png", UriKind.RelativeOrAbsolute));
+                ImageBrush imageBrush = new ImageBrush();
+                imageBrush.ImageSource = image;
+                GridList.Background = imageBrush;
+            }
+            if (ComboBoxFurn.SelectedIndex == 4)
+            {
+                BitmapImage image = new BitmapImage(new Uri("image/internikaFon.png", UriKind.RelativeOrAbsolute));
+                ImageBrush imageBrush = new ImageBrush();
+                imageBrush.ImageSource = image;
+                GridList.Background = imageBrush;
+            }
         }
     }
 }

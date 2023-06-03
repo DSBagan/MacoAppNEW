@@ -130,7 +130,7 @@
                 Grid.Column="5" Grid.Row="16" Height="29" Margin="0,0,15,15"/>
         <TextBlock x:Name="TBDate" Grid.Column="5" HorizontalAlignment="Left" Margin="149,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="12"/>
         <TextBlock Text="Фурнитура"  Grid.Column="1" Width="70" FontSize="12" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
-        <ComboBox x:Name="ComboBoxFurn" Grid.Row="1" Width="80" FontSize="12" HorizontalAlignment="Right" Margin="8,0,0,0" Grid.Column="1" Grid.ColumnSpan="1">
+        <ComboBox x:Name="ComboBoxFurn" Grid.Row="1" Width="80" FontSize="12" HorizontalAlignment="Right" Margin="8,0,0,0" Grid.Column="1" Grid.ColumnSpan="1" SelectionChanged="ComboBoxFurn_SelectionChanged">
             <ComboBoxItem IsSelected="True" Content="Maco_Eco"/>
             <ComboBoxItem Content="Maco_MM"/>
             <ComboBoxItem Content="Vorne"/>
