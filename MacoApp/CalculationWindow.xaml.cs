@@ -455,7 +455,7 @@ namespace MacoApp
             if (ComboBoxFurn.SelectedIndex == 3)
             {
                 // Загружаем изображение
-                BitmapImage image = new BitmapImage(new Uri("image/RotoFon.png", UriKind.RelativeOrAbsolute));
+                BitmapImage image = new BitmapImage(new Uri("RotoFon.png", UriKind.RelativeOrAbsolute));
 
                 // Создаем новый ImageBrush с изображением
                 ImageBrush imageBrush = new ImageBrush();
@@ -466,21 +466,21 @@ namespace MacoApp
             }
             if (ComboBoxFurn.SelectedIndex == 1|| ComboBoxFurn.SelectedIndex == 0)
             {
-                BitmapImage image = new BitmapImage(new Uri("image/MacoFon.png", UriKind.RelativeOrAbsolute));
+                BitmapImage image = new BitmapImage(new Uri("MacoFon.png", UriKind.RelativeOrAbsolute));
                 ImageBrush imageBrush = new ImageBrush();
                 imageBrush.ImageSource = image;
                 GridList.Background = imageBrush;
             }
             if (ComboBoxFurn.SelectedIndex == 2)
             {
-                BitmapImage image = new BitmapImage(new Uri("image/vorneFon.png", UriKind.RelativeOrAbsolute));
+                BitmapImage image = new BitmapImage(new Uri("vorneFon.png", UriKind.RelativeOrAbsolute));
                 ImageBrush imageBrush = new ImageBrush();
                 imageBrush.ImageSource = image;
                 GridList.Background = imageBrush;
             }
             if (ComboBoxFurn.SelectedIndex == 4)
             {
-                BitmapImage image = new BitmapImage(new Uri("image/internikaFon.png", UriKind.RelativeOrAbsolute));
+                BitmapImage image = new BitmapImage(new Uri("internikaFon.png", UriKind.RelativeOrAbsolute));
                 ImageBrush imageBrush = new ImageBrush();
                 imageBrush.ImageSource = image;
                 GridList.Background = imageBrush;
