@@ -452,7 +452,7 @@ namespace MacoApp
         //Фон для GridList
         private void ComboBoxFurn_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (ComboBoxFurn.SelectedIndex == 3)
+            /*if (ComboBoxFurn.SelectedIndex == 3)
             {
                 // Загружаем изображение
                 BitmapImage image = new BitmapImage(new Uri("RotoFon.png", UriKind.RelativeOrAbsolute));
@@ -484,7 +484,7 @@ namespace MacoApp
                 ImageBrush imageBrush = new ImageBrush();
                 imageBrush.ImageSource = image;
                 GridList.Background = imageBrush;
-            }
+            }*/
         }
     }
 }
