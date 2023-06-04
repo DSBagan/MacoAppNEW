@@ -476,15 +476,12 @@ namespace MacoApp
                 imageBrush.ImageSource = image;
                 GridList.Background = imageBrush;*/
 
-                // Задаем путь к фото в относительном формате, начинающийся с pack://application:,,,/
-                string imagePath = path+"/MacoFon.png";
 
-                // Создаем BitmapImage из файла по указанному пути
+                string imagePath = "pack://application:,,,/images/MacoFon.png";
                 BitmapImage image = new BitmapImage(new Uri(imagePath));
-
-                // Создаем ImageBrush с фоновым изображением и устанавливаем его в качестве фона таблицы DataGrid
                 ImageBrush imageBrush = new ImageBrush(image);
                 GridList.Background = imageBrush;
+
             }
             if (ComboBoxFurn.SelectedIndex == 2)
             {
