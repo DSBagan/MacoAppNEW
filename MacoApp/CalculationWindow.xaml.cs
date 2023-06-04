@@ -22,6 +22,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Net.WebRequestMethods;
+using System.Runtime.Serialization;
+using System.Reflection;
 
 namespace MacoApp
 {
@@ -30,6 +32,8 @@ namespace MacoApp
         SqlRequests sqlRequests = new SqlRequests();
         ClassError classError = new ClassError();
         public ObservableCollection<ClassList> ClassLists { get; set; }
+
+        static string path = new FileInfo(Assembly.GetEntryAssembly().Location).Directory.ToString();
 
         DataTable table1 = new DataTable("Table1"); //Таблица для сохранения расчета
         DataTable table2 = new DataTable("Table2"); // Таблица для сохранения всех расчетов
@@ -452,10 +456,10 @@ namespace MacoApp
         //Фон для GridList
         private void ComboBoxFurn_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            /*if (ComboBoxFurn.SelectedIndex == 3)
+            if (ComboBoxFurn.SelectedIndex == 3)
             {
                 // Загружаем изображение
-                BitmapImage image = new BitmapImage(new Uri("RotoFon.png", UriKind.RelativeOrAbsolute));
+                BitmapImage image = new BitmapImage(new Uri(path+ "\\RotoFon.png", UriKind.RelativeOrAbsolute));
 
                 // Создаем новый ImageBrush с изображением
                 ImageBrush imageBrush = new ImageBrush();
@@ -466,25 +470,26 @@ namespace MacoApp
             }
             if (ComboBoxFurn.SelectedIndex == 1|| ComboBoxFurn.SelectedIndex == 0)
             {
-                BitmapImage image = new BitmapImage(new Uri("MacoFon.png", UriKind.RelativeOrAbsolute));
+                BitmapImage image = new BitmapImage(new Uri(path + "\\MacoFon.png", UriKind.RelativeOrAbsolute));
                 ImageBrush imageBrush = new ImageBrush();
                 imageBrush.ImageSource = image;
                 GridList.Background = imageBrush;
             }
             if (ComboBoxFurn.SelectedIndex == 2)
             {
-                BitmapImage image = new BitmapImage(new Uri("vorneFon.png", UriKind.RelativeOrAbsolute));
+                BitmapImage image = new BitmapImage(new Uri(path + "\\vorneFon.png", UriKind.RelativeOrAbsolute));
                 ImageBrush imageBrush = new ImageBrush();
                 imageBrush.ImageSource = image;
                 GridList.Background = imageBrush;
             }
             if (ComboBoxFurn.SelectedIndex == 4)
             {
-                BitmapImage image = new BitmapImage(new Uri("internikaFon.png", UriKind.RelativeOrAbsolute));
+                BitmapImage image = new BitmapImage(new Uri(path + "\\internikaFon.png", UriKind.RelativeOrAbsolute));
                 ImageBrush imageBrush = new ImageBrush();
                 imageBrush.ImageSource = image;
                 GridList.Background = imageBrush;
-            }*/
+            }
         }
+        
     }
 }

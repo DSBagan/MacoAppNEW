@@ -511,15 +511,11 @@ namespace MacoApp
             }
             else if (Rotation == "Да" && Furn == "Roto_NT")
             {
-                if (FFH >= 251 && FFH <= 500)
+                if (FFH >= 251 && FFH <= 1400)
                 {
                     return quantitySrPr = 1;
                 }
-                else if (FFH >= 501 && FFH <= 800)
-                {
-                    return quantitySrPr = 2;
-                }
-                else if (FFH >= 801 && FFH <= 2400)
+                else if (FFH >= 1401 && FFH <= 2400)
                 {
                     return quantitySrPr = 2;
                 }
