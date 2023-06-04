@@ -460,7 +460,7 @@ namespace MacoApp
             if (ComboBoxFurn.SelectedIndex == 3)
             {
                 // Загружаем изображение
-                BitmapImage image = new BitmapImage(new Uri(path+ "\\RotoFon.png", UriKind.RelativeOrAbsolute));
+                BitmapImage image = new BitmapImage(new Uri("/RotoFon.png", UriKind.RelativeOrAbsolute));
 
                 // Создаем новый ImageBrush с изображением
                 ImageBrush imageBrush = new ImageBrush();
@@ -471,17 +471,17 @@ namespace MacoApp
             }
             if (ComboBoxFurn.SelectedIndex == 1|| ComboBoxFurn.SelectedIndex == 0)
             {
-                /*BitmapImage image = new BitmapImage(new Uri(path + "\\MacoFon.png", UriKind.RelativeOrAbsolute));
+                /*BitmapImage image = new BitmapImage(new Uri("/MacoFon.png", UriKind.RelativeOrAbsolute));
                 ImageBrush imageBrush = new ImageBrush();
                 imageBrush.ImageSource = image;
                 GridList.Background = imageBrush;*/
+                string path = @"C:\Users\bagan\source\repos\MacoAppNEW\MacoApp\images\MacoFon.png";
+                string uriString = new Uri(path).AbsoluteUri;
 
 
-                string imagePath = "pack://application:,,,/images/MacoFon.png";
-                BitmapImage image = new BitmapImage(new Uri(imagePath));
+                BitmapImage image = new BitmapImage(new Uri(uriString));
                 ImageBrush imageBrush = new ImageBrush(image);
                 GridList.Background = imageBrush;
-
             }
             if (ComboBoxFurn.SelectedIndex == 2)
             {
@@ -496,8 +496,6 @@ namespace MacoApp
                 ImageBrush imageBrush = new ImageBrush();
                 imageBrush.ImageSource = image;
                 GridList.Background = imageBrush;
-
-
             }
         }
 
