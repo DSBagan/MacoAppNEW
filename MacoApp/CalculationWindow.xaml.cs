@@ -459,42 +459,34 @@ namespace MacoApp
         {
             if (ComboBoxFurn.SelectedIndex == 3)
             {
-                // Загружаем изображение
-                BitmapImage image = new BitmapImage(new Uri("/RotoFon.png", UriKind.RelativeOrAbsolute));
-
-                // Создаем новый ImageBrush с изображением
-                ImageBrush imageBrush = new ImageBrush();
-                imageBrush.ImageSource = image;
-
-                // Устанавливаем ImageBrush в качестве фона DataGrid
+                string path = @"C:\Users\bagan\source\repos\MacoAppNEW\MacoApp\images\RotoFon.png";
+                string uriString = new Uri(path).AbsoluteUri;
+                BitmapImage image = new BitmapImage(new Uri(uriString));
+                ImageBrush imageBrush = new ImageBrush(image);
                 GridList.Background = imageBrush;
             }
             if (ComboBoxFurn.SelectedIndex == 1|| ComboBoxFurn.SelectedIndex == 0)
             {
-                /*BitmapImage image = new BitmapImage(new Uri("/MacoFon.png", UriKind.RelativeOrAbsolute));
-                ImageBrush imageBrush = new ImageBrush();
-                imageBrush.ImageSource = image;
-                GridList.Background = imageBrush;*/
                 string path = @"C:\Users\bagan\source\repos\MacoAppNEW\MacoApp\images\MacoFon.png";
                 string uriString = new Uri(path).AbsoluteUri;
-
-
                 BitmapImage image = new BitmapImage(new Uri(uriString));
                 ImageBrush imageBrush = new ImageBrush(image);
                 GridList.Background = imageBrush;
             }
             if (ComboBoxFurn.SelectedIndex == 2)
             {
-                BitmapImage image = new BitmapImage(new Uri(path + "\\vorneFon.png", UriKind.RelativeOrAbsolute));
-                ImageBrush imageBrush = new ImageBrush();
-                imageBrush.ImageSource = image;
+                string path = @"C:\Users\bagan\source\repos\MacoAppNEW\MacoApp\images\vorneFon.png";
+                string uriString = new Uri(path).AbsoluteUri;
+                BitmapImage image = new BitmapImage(new Uri(uriString));
+                ImageBrush imageBrush = new ImageBrush(image);
                 GridList.Background = imageBrush;
             }
             if (ComboBoxFurn.SelectedIndex == 4)
             {
-                BitmapImage image = new BitmapImage(new Uri(path + "\\internikaFon.png", UriKind.RelativeOrAbsolute));
-                ImageBrush imageBrush = new ImageBrush();
-                imageBrush.ImageSource = image;
+                string path = @"C:\Users\bagan\source\repos\MacoAppNEW\MacoApp\images\internikaFon.png";
+                string uriString = new Uri(path).AbsoluteUri;
+                BitmapImage image = new BitmapImage(new Uri(uriString));
+                ImageBrush imageBrush = new ImageBrush(image);
                 GridList.Background = imageBrush;
             }
         }

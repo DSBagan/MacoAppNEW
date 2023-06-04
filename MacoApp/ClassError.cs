@@ -185,7 +185,7 @@ namespace MacoApp
             }
             else if (Furn == "Internika")
             {
-                MaterialMessageBox.ShowDialog("InternikУ пока не умею считать");
+                //MaterialMessageBox.ShowDialog("InternikУ пока не умею считать");
                 return 1;
             }
             else
