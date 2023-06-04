@@ -32,6 +32,7 @@ namespace MacoApp
         SqlRequests sqlRequests = new SqlRequests();
         ClassError classError = new ClassError();
         public ObservableCollection<ClassList> ClassLists { get; set; }
+        public SerializationInfo BaseUri { get; private set; }
 
         static string path = new FileInfo(Assembly.GetEntryAssembly().Location).Directory.ToString();
 
@@ -470,9 +471,19 @@ namespace MacoApp
             }
             if (ComboBoxFurn.SelectedIndex == 1|| ComboBoxFurn.SelectedIndex == 0)
             {
-                BitmapImage image = new BitmapImage(new Uri(path + "\\MacoFon.png", UriKind.RelativeOrAbsolute));
+                /*BitmapImage image = new BitmapImage(new Uri(path + "\\MacoFon.png", UriKind.RelativeOrAbsolute));
                 ImageBrush imageBrush = new ImageBrush();
                 imageBrush.ImageSource = image;
+                GridList.Background = imageBrush;*/
+
+                // Задаем путь к фото в относительном формате, начинающийся с pack://application:,,,/
+                string imagePath = path+"/MacoFon.png";
+
+                // Создаем BitmapImage из файла по указанному пути
+                BitmapImage image = new BitmapImage(new Uri(imagePath));
+
+                // Создаем ImageBrush с фоновым изображением и устанавливаем его в качестве фона таблицы DataGrid
+                ImageBrush imageBrush = new ImageBrush(image);
                 GridList.Background = imageBrush;
             }
             if (ComboBoxFurn.SelectedIndex == 2)
@@ -488,8 +499,11 @@ namespace MacoApp
                 ImageBrush imageBrush = new ImageBrush();
                 imageBrush.ImageSource = image;
                 GridList.Background = imageBrush;
+
+
             }
         }
+
         
     }
 }
