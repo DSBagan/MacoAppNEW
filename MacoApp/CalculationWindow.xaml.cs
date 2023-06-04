@@ -466,6 +466,9 @@ namespace MacoApp
                 BitmapImage image = new BitmapImage(new Uri(uriString));
                 ImageBrush imageBrush = new ImageBrush(image);
                 GridList.Background = imageBrush;
+
+                ComboBoxMv.Visibility = Visibility.Collapsed;
+
             }
             if (ComboBoxFurn.SelectedIndex == 1|| ComboBoxFurn.SelectedIndex == 0)
             {
@@ -474,6 +477,9 @@ namespace MacoApp
                 BitmapImage image = new BitmapImage(new Uri(uriString));
                 ImageBrush imageBrush = new ImageBrush(image);
                 GridList.Background = imageBrush;
+
+                ComboBoxMv.Visibility = Visibility.Visible;
+                
             }
             if (ComboBoxFurn.SelectedIndex == 2)
             {
@@ -482,6 +488,8 @@ namespace MacoApp
                 BitmapImage image = new BitmapImage(new Uri(uriString));
                 ImageBrush imageBrush = new ImageBrush(image);
                 GridList.Background = imageBrush;
+
+                ComboBoxMv.Visibility = Visibility.Visible;
             }
             if (ComboBoxFurn.SelectedIndex == 4)
             {
@@ -490,6 +498,9 @@ namespace MacoApp
                 BitmapImage image = new BitmapImage(new Uri(uriString));
                 ImageBrush imageBrush = new ImageBrush(image);
                 GridList.Background = imageBrush;
+
+                ComboBoxMv.Visibility = Visibility.Visible;
+
             }
         }
 
