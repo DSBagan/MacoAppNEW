@@ -459,7 +459,9 @@ namespace MacoApp
         {
             if (ComboBoxFurn.SelectedIndex == 3)
             {
+                //Сначала указываю путь в файле
                 string path = @"C:\Users\bagan\source\repos\MacoAppNEW\MacoApp\images\RotoFon.png";
+                //Получаем абсолютный URI 
                 string uriString = new Uri(path).AbsoluteUri;
                 BitmapImage image = new BitmapImage(new Uri(uriString));
                 ImageBrush imageBrush = new ImageBrush(image);
@@ -491,6 +493,40 @@ namespace MacoApp
             }
         }
 
-        
+        private void ComboBoxSide_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ButtonP_O != null && ButtonP != null)
+            {
+                if (ComboBoxSide.SelectedIndex == 1)
+                {
+                    string path = @"C:\Users\bagan\source\repos\MacoAppNEW\MacoApp\images\P_OP.png";
+                    string uriString = new Uri(path).AbsoluteUri;
+                    BitmapImage image = new BitmapImage(new Uri(uriString));
+                    ImageBrush imageBrush = new ImageBrush(image);
+                    ButtonP_O.Background = imageBrush;
+
+                    string path1 = @"C:\Users\bagan\source\repos\MacoAppNEW\MacoApp\images\PP.PNG";
+                    string uriString1 = new Uri(path1).AbsoluteUri;
+                    BitmapImage image1 = new BitmapImage(new Uri(uriString1));
+                    ImageBrush imageBrush1 = new ImageBrush(image1);
+                    ButtonP.Background = imageBrush1;
+                }
+                if (ComboBoxSide.SelectedIndex == 0)
+                {
+                    string path = @"C:\Users\bagan\source\repos\MacoAppNEW\MacoApp\images\P_OL.png";
+                    string uriString = new Uri(path).AbsoluteUri;
+                    BitmapImage image = new BitmapImage(new Uri(uriString));
+                    ImageBrush imageBrush = new ImageBrush(image);
+                    ButtonP_O.Background = imageBrush;
+
+                    string path1 = @"C:\Users\bagan\source\repos\MacoAppNEW\MacoApp\images\PL.PNG";
+                    string uriString1 = new Uri(path1).AbsoluteUri;
+                    BitmapImage image1 = new BitmapImage(new Uri(uriString1));
+                    ImageBrush imageBrush1 = new ImageBrush(image1);
+                    ButtonP.Background = imageBrush1;
+                }
+            }
+            
+        }
     }
 }

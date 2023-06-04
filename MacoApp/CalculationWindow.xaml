@@ -74,7 +74,7 @@
             <ComboBoxItem IsSelected="True">13</ComboBoxItem>
             <ComboBoxItem>Дерево</ComboBoxItem>
         </ComboBox>
-        <ComboBox Name="ComboBoxSide" Grid.Column="1" Grid.Row="5" Width="75" FontSize="12" Height="26" HorizontalAlignment="Right" Margin="123,0,0,0" Grid.ColumnSpan="1">
+        <ComboBox Name="ComboBoxSide" Grid.Column="1" Grid.Row="5" Width="75" FontSize="12" Height="26" HorizontalAlignment="Right" Margin="123,0,0,0" Grid.ColumnSpan="1" SelectionChanged="ComboBoxSide_SelectionChanged">
             <ComboBoxItem>Левая</ComboBoxItem>
             <ComboBoxItem IsSelected="True">Правая</ComboBoxItem>
         </ComboBox>
