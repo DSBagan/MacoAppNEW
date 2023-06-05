@@ -464,9 +464,20 @@ namespace MacoApp
         //Фон для GridList
         private void ComboBoxFurn_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+
+            int index = ComboBoxFurn.SelectedIndex;
+            if (index >= 0 && index < backgrounds.Count)
+            {
+                BitmapImage image = backgrounds[index];
+                ImageBrush brush = new ImageBrush(image);
+                GridList.Background = brush;
+            }
+
+
+
             if (ComboBoxFurn.SelectedIndex == 3)
             {
-                //Сначала указываю путь в файле
+                /*//Сначала указываю путь в файле
                 string path = @"C:\Users\bagan\source\repos\MacoAppNEW\MacoApp\images\RotoFon.png";
                 //Получаем абсолютный URI 
                 string uriString = new Uri(path).AbsoluteUri;
@@ -474,10 +485,13 @@ namespace MacoApp
                 ImageBrush imageBrush = new ImageBrush(image);
                 GridList.Background = imageBrush;
 
-                ComboBoxMv.Visibility = Visibility.Collapsed;
+                ComboBoxMv.Visibility = Visibility.Collapsed;*/
+
+
+
 
             }
-            if (ComboBoxFurn.SelectedIndex == 1|| ComboBoxFurn.SelectedIndex == 0)
+            /*if (ComboBoxFurn.SelectedIndex == 1|| ComboBoxFurn.SelectedIndex == 0)
             {
                 string path = @"C:\Users\bagan\source\repos\MacoAppNEW\MacoApp\images\MacoFon.png";
                 string uriString = new Uri(path).AbsoluteUri;
@@ -508,12 +522,12 @@ namespace MacoApp
 
                 ComboBoxMv.Visibility = Visibility.Visible;
 
-            }
+            }*/
         }
 
         private void ComboBoxSide_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            int index = ComboBoxSide.SelectedIndex;
+            /*int index = ComboBoxSide.SelectedIndex;
             if (index >= 0 && index < backgrounds.Count)
             {
                 BitmapImage image = backgrounds[index];
@@ -525,7 +539,7 @@ namespace MacoApp
 
             if (ButtonP_O != null && ButtonP != null)
             {
-                /*if (ComboBoxSide.SelectedIndex == 1)
+                if (ComboBoxSide.SelectedIndex == 1)
                 {
                     string path = @"C:\Users\bagan\source\repos\MacoAppNEW\MacoApp\images\P_OP.png";
                     string uriString = new Uri(path).AbsoluteUri;
@@ -552,8 +566,8 @@ namespace MacoApp
                     BitmapImage image1 = new BitmapImage(new Uri(uriString1));
                     ImageBrush imageBrush1 = new ImageBrush(image1);
                     ButtonP.Background = imageBrush1;
-                }*/
-            }
+                }
+            }*/
 
         }
     }
