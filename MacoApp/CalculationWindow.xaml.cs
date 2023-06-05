@@ -39,7 +39,8 @@ namespace MacoApp
         DataTable table1 = new DataTable("Table1"); //Таблица для сохранения расчета
         DataTable table2 = new DataTable("Table2"); // Таблица для сохранения всех расчетов
 
-        private ObservableCollection<BitmapImage> backgrounds = new ObservableCollection<BitmapImage>();
+        private ObservableCollection<BitmapImage> backgroundsFON = new ObservableCollection<BitmapImage>();
+        private ObservableCollection<BitmapImage> backgroundsButtons = new ObservableCollection<BitmapImage>();
 
 
         int Count = 1;
@@ -63,10 +64,16 @@ namespace MacoApp
 
             ButtonFram.Visibility = Visibility.Hidden;
 
-            backgrounds.Add(new BitmapImage(new Uri("pack://application:,,,/images/MacoFon.png")));
-            backgrounds.Add(new BitmapImage(new Uri("pack://application:,,,/images/RotoFon.png")));
-            backgrounds.Add(new BitmapImage(new Uri("pack://application:,,,/images/vorneFon.png")));
-            backgrounds.Add(new BitmapImage(new Uri("pack://application:,,,/images/internikaFon.png")));
+            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/MacoFon.png")));
+            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/MacoFon.png")));
+            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/vorneFon.png")));
+            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/RotoFon.png")));
+            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/internikaFon.png")));
+
+            backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/P_OL.png")));
+            backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/PL.png")));
+            backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/P_OP.png")));
+            backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/PP.png")));
         }
 
         private void CalculationWindow_Loaded(object sender, RoutedEventArgs e)
@@ -461,114 +468,45 @@ namespace MacoApp
 
 
 
-        //Фон для GridList
+        //Фон для GridList*******************************************
         private void ComboBoxFurn_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
             int index = ComboBoxFurn.SelectedIndex;
-            if (index >= 0 && index < backgrounds.Count)
+            if (index >= 0 && index < backgroundsFON.Count)
             {
-                BitmapImage image = backgrounds[index];
+                BitmapImage image = backgroundsFON[index];
                 ImageBrush brush = new ImageBrush(image);
                 GridList.Background = brush;
             }
-
-
-
-            if (ComboBoxFurn.SelectedIndex == 3)
-            {
-                /*//Сначала указываю путь в файле
-                string path = @"C:\Users\bagan\source\repos\MacoAppNEW\MacoApp\images\RotoFon.png";
-                //Получаем абсолютный URI 
-                string uriString = new Uri(path).AbsoluteUri;
-                BitmapImage image = new BitmapImage(new Uri(uriString));
-                ImageBrush imageBrush = new ImageBrush(image);
-                GridList.Background = imageBrush;
-
-                ComboBoxMv.Visibility = Visibility.Collapsed;*/
-
-
-
-
-            }
-            /*if (ComboBoxFurn.SelectedIndex == 1|| ComboBoxFurn.SelectedIndex == 0)
-            {
-                string path = @"C:\Users\bagan\source\repos\MacoAppNEW\MacoApp\images\MacoFon.png";
-                string uriString = new Uri(path).AbsoluteUri;
-                BitmapImage image = new BitmapImage(new Uri(uriString));
-                ImageBrush imageBrush = new ImageBrush(image);
-                GridList.Background = imageBrush;
-
-                ComboBoxMv.Visibility = Visibility.Visible;
-                
-            }
-            if (ComboBoxFurn.SelectedIndex == 2)
-            {
-                string path = @"C:\Users\bagan\source\repos\MacoAppNEW\MacoApp\images\vorneFon.png";
-                string uriString = new Uri(path).AbsoluteUri;
-                BitmapImage image = new BitmapImage(new Uri(uriString));
-                ImageBrush imageBrush = new ImageBrush(image);
-                GridList.Background = imageBrush;
-
-                ComboBoxMv.Visibility = Visibility.Visible;
-            }
-            if (ComboBoxFurn.SelectedIndex == 4)
-            {
-                string path = @"C:\Users\bagan\source\repos\MacoAppNEW\MacoApp\images\internikaFon.png";
-                string uriString = new Uri(path).AbsoluteUri;
-                BitmapImage image = new BitmapImage(new Uri(uriString));
-                ImageBrush imageBrush = new ImageBrush(image);
-                GridList.Background = imageBrush;
-
-                ComboBoxMv.Visibility = Visibility.Visible;
-
-            }*/
         }
 
+        //Фон для кнопок поворота************************************
         private void ComboBoxSide_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            /*int index = ComboBoxSide.SelectedIndex;
-            if (index >= 0 && index < backgrounds.Count)
-            {
-                BitmapImage image = backgrounds[index];
-                ImageBrush brush = new ImageBrush(image);
-                GridList.Background = brush;
-            }
-
-
-
             if (ButtonP_O != null && ButtonP != null)
             {
-                if (ComboBoxSide.SelectedIndex == 1)
-                {
-                    string path = @"C:\Users\bagan\source\repos\MacoAppNEW\MacoApp\images\P_OP.png";
-                    string uriString = new Uri(path).AbsoluteUri;
-                    BitmapImage image = new BitmapImage(new Uri(uriString));
-                    ImageBrush imageBrush = new ImageBrush(image);
-                    ButtonP_O.Background = imageBrush;
-
-                    string path1 = @"C:\Users\bagan\source\repos\MacoAppNEW\MacoApp\images\PP.PNG";
-                    string uriString1 = new Uri(path1).AbsoluteUri;
-                    BitmapImage image1 = new BitmapImage(new Uri(uriString1));
-                    ImageBrush imageBrush1 = new ImageBrush(image1);
-                    ButtonP.Background = imageBrush1;
-                }
                 if (ComboBoxSide.SelectedIndex == 0)
                 {
-                    string path = @"C:\Users\bagan\source\repos\MacoAppNEW\MacoApp\images\P_OL.png";
-                    string uriString = new Uri(path).AbsoluteUri;
-                    BitmapImage image = new BitmapImage(new Uri(uriString));
-                    ImageBrush imageBrush = new ImageBrush(image);
-                    ButtonP_O.Background = imageBrush;
+                    BitmapImage image = backgroundsButtons[0];
+                    ImageBrush brush = new ImageBrush(image);
+                    ButtonP_O.Background = brush;
 
-                    string path1 = @"C:\Users\bagan\source\repos\MacoAppNEW\MacoApp\images\PL.PNG";
-                    string uriString1 = new Uri(path1).AbsoluteUri;
-                    BitmapImage image1 = new BitmapImage(new Uri(uriString1));
-                    ImageBrush imageBrush1 = new ImageBrush(image1);
-                    ButtonP.Background = imageBrush1;
+                    BitmapImage image1 = backgroundsButtons[1];
+                    ImageBrush brush1 = new ImageBrush(image1);
+                    ButtonP.Background = brush1;
+                    
                 }
-            }*/
+                if (ComboBoxSide.SelectedIndex == 1)
+                {
+                    BitmapImage image = backgroundsButtons[2];
+                    ImageBrush brush = new ImageBrush(image);
+                    ButtonP_O.Background = brush;
 
+                    BitmapImage image1 = backgroundsButtons[3];
+                    ImageBrush brush1 = new ImageBrush(image1);
+                    ButtonP.Background = brush1;
+                }
+            }
         }
     }
 }

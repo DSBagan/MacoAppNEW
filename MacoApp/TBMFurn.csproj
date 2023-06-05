@@ -13,9 +13,14 @@
     <None Remove="FRAM.PNG" />
     <None Remove="images\internikaFon.png" />
     <None Remove="images\MacoFon.png" />
+    <None Remove="images\PL.PNG" />
+    <None Remove="images\PP.PNG" />
+    <None Remove="images\P_OL.PNG" />
+    <None Remove="images\P_OP.PNG" />
     <None Remove="images\RotoFon.png" />
     <None Remove="images\vorneFon.png" />
     <None Remove="maco.png" />
+    <None Remove="MacoFon.png" />
     <None Remove="PO.PNG" />
     <None Remove="PP.PNG" />
     <None Remove="P_O.png" />
@@ -56,6 +61,10 @@
     <Resource Include="images\MacoFon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="images\PL.PNG" />
+    <Resource Include="images\PP.PNG" />
+    <Resource Include="images\P_OL.PNG" />
+    <Resource Include="images\P_OP.PNG" />
     <Resource Include="images\RotoFon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -63,6 +72,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="maco.png" />
+    <Resource Include="MacoFon.png" />
     <Resource Include="PP.PNG" />
     <Resource Include="P_OP.PNG" />
     <Resource Include="roto-transformed.png" />
