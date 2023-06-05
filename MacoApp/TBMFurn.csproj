@@ -53,4 +53,13 @@
     <Resource Include="Vorne-logo.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="images\MacoFon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="images\RotoFon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
