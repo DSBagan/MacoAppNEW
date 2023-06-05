@@ -506,7 +506,7 @@ namespace MacoApp
 
         private void ComboBoxSide_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (ButtonP_O != null && ButtonP != null)
+            /*if (ButtonP_O != null && ButtonP != null)
             {
                 if (ComboBoxSide.SelectedIndex == 1)
                 {
@@ -536,7 +536,7 @@ namespace MacoApp
                     ImageBrush imageBrush1 = new ImageBrush(image1);
                     ButtonP.Background = imageBrush1;
                 }
-            }
+            }*/
             
         }
     }
