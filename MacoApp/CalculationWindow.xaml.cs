@@ -457,7 +457,7 @@ namespace MacoApp
         //Фон для GridList
         private void ComboBoxFurn_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (ComboBoxFurn.SelectedIndex == 3)
+            /*if (ComboBoxFurn.SelectedIndex == 3)
             {
                 //Сначала указываю путь в файле
                 string path = @"C:\Users\bagan\source\repos\MacoAppNEW\MacoApp\images\RotoFon.png";
@@ -501,7 +501,7 @@ namespace MacoApp
 
                 ComboBoxMv.Visibility = Visibility.Visible;
 
-            }
+            }*/
         }
 
         private void ComboBoxSide_SelectionChanged(object sender, SelectionChangedEventArgs e)
