@@ -11,6 +11,10 @@
   <ItemGroup>
     <None Remove="28.png" />
     <None Remove="FRAM.PNG" />
+    <None Remove="images\internikaFon.png" />
+    <None Remove="images\MacoFon.png" />
+    <None Remove="images\RotoFon.png" />
+    <None Remove="images\vorneFon.png" />
     <None Remove="maco.png" />
     <None Remove="PO.PNG" />
     <None Remove="PP.PNG" />
@@ -46,20 +50,23 @@
   <ItemGroup>
     <Resource Include="28.png" />
     <Resource Include="FRAM.PNG" />
+    <Resource Include="images\internikaFon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\MacoFon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\RotoFon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\vorneFon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="maco.png" />
     <Resource Include="PP.PNG" />
     <Resource Include="P_OP.PNG" />
     <Resource Include="roto-transformed.png" />
     <Resource Include="Vorne-logo.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="images\MacoFon.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="images\RotoFon.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>
