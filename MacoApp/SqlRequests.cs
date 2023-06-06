@@ -21,7 +21,7 @@ namespace MacoApp
                 //(высота до 900, ширина до 431)
                 if (FFH >= 601 && FFH <= 900 && FFB <= 430 && Rotation == "Нет")
                 {
-                    return quantityBar = 2;
+                    return quantityBar = 3;
                 }
                 else if (Rotation == "Да"&& FFH >= 601 && FFH <= 900)
                 {
@@ -100,7 +100,7 @@ namespace MacoApp
 
                 else if (FFH <= 900 && FFB >= 601 && FFB <= 800 && Rotation == "Нет")
                 {
-                    return quantityBar = 2;
+                    return quantityBar = 4;
                 }
 
                 //*********************
@@ -108,7 +108,7 @@ namespace MacoApp
                 //Высота до 1300, ширина 601-800
                 else if (FFH >= 901 && FFH <= 1300 && FFB >= 601 && FFB <= 800 && Rotation == "Нет")
                 {
-                    return quantityBar = 3;
+                    return quantityBar = 4;
                 }
 
                 //*********************
@@ -116,7 +116,7 @@ namespace MacoApp
                 //Высота от1301 до 1800, ширина 601-800
                 else if (FFH >= 1301 && FFH <= 1800 && FFB >= 601 && FFB <= 800 && Rotation == "Нет")
                 {
-                    return quantityBar = 5;
+                    return quantityBar = 6;
                 }
 
                 //*********************
@@ -133,7 +133,7 @@ namespace MacoApp
                 //Высота до 900, ширина 801-1300
                 else if (FFH <= 900 && FFB >= 801 && FFB <= 1300 && Rotation == "Нет")
                 {
-                    return quantityBar = 4;
+                    return quantityBar = 5;
                 }
 
                 //*********************

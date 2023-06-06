@@ -466,8 +466,6 @@ namespace MacoApp
             ButtonFram.BorderBrush = Brushes.Red;
         }
 
-
-
         //Фон для GridList*******************************************
         private void ComboBoxFurn_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -477,6 +475,26 @@ namespace MacoApp
                 BitmapImage image = backgroundsFON[index];
                 ImageBrush brush = new ImageBrush(image);
                 GridList.Background = brush;
+            }
+            if (index == 0)
+            {
+                ComboBoxMv.Visibility = Visibility.Visible;
+            }
+            if (index == 1)
+            {
+                ComboBoxMv.Visibility = Visibility.Visible;
+            }
+            if (index == 2)
+            {
+                ComboBoxMv.Visibility = Visibility.Visible;
+            }
+            if (index == 3)
+            {
+                ComboBoxMv.Visibility = Visibility.Hidden;
+            }
+            if (index == 4)
+            {
+                ComboBoxMv.Visibility = Visibility.Visible;
             }
         }
 
