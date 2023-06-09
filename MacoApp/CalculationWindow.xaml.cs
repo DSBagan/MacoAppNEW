@@ -87,6 +87,7 @@ namespace MacoApp
             ButtonP_O.BorderBrush = Brushes.Red;
             rotation = "Нет";
             rotationTwoArg = "Да/Нет";
+            
         }
 
         private void ButtonCalc_Click(object sender, RoutedEventArgs e)
@@ -98,7 +99,7 @@ namespace MacoApp
                 string Furn = ComboBoxFurn.Text;
                 int quantity = Int32.Parse(TextBoxColvo.Text);
                 int quantitySrPr = Int32.Parse(TextBoxColvo.Text);
-                int System = Int32.Parse(ComboBoxSystem.Text);
+                string System = ComboBoxSystem.Text;
                 string side = ComboBoxSide.Text;
                 int FFH = Int32.Parse(TextBoxFFH.Text);
                 int FFB = Int32.Parse(TextBoxFFB.Text);
@@ -109,8 +110,8 @@ namespace MacoApp
                 {
                     return;
                 }
-               
-                //фоновый рисунок для списка артикулов
+
+                
 
                 queryString = $"Select * from Elements where (Name_Furn like '" + Furn + "') and(System  = 'Не имеет значения' or System  = " + System + ") and(Side like 'Не имеет значения' or Side like '" + side + "') " +
                     "and(Lower_loop like '" + Lower_loop + "' or Lower_loop like 'Нет') and(Micro_ventilation like '" + Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +
@@ -135,6 +136,7 @@ namespace MacoApp
                                 count++;
                                 string response_bars1 = "";
                                 string response_bars2 = "";
+                                string response_bars3 = "";
                                 string SrPr = "";
                                 string SrPrN1 = "";
                                 string SrPrN2 = "";
@@ -143,6 +145,7 @@ namespace MacoApp
                                 {
                                     response_bars1 = "34623";
                                     response_bars2 = "34850";
+                                    response_bars3 = "34780";
                                     SrPr = "54783";
                                     SrPrN1 = "41342";
                                     SrPrN2 = "41339";
@@ -151,6 +154,7 @@ namespace MacoApp
                                 {
                                     response_bars1 = "V25070102";
                                     response_bars2 = "V26010102";
+                                    response_bars3 = "V25010102";
                                     SrPr = "V17010102";
                                     SrPrN1 = "V44020107";
                                     SrPrN2 = "V44030107";
@@ -164,8 +168,18 @@ namespace MacoApp
                                     SrPrN1 = "208598";
                                     SrPrN2 = "208600";
                                 }
+                                else if (Furn == "Internika")
+                                {
+                                    response_bars1 = "1077591";
+                                    response_bars2 = "1077246";
+                                    response_bars3 = "1099378";
+                                    SrPr = "1080572";
+                                    SrPrN1 = "1080573";
+                                    SrPrN2 = "1080574";
+                                }
+
                                 //Записываем данные в объект класса и ,тем самым, передаём в таблицу
-                                if (reader.GetValue(3).ToString() == response_bars1 || reader.GetValue(3).ToString() == response_bars2)
+                                if (reader.GetValue(3).ToString() == response_bars1 || reader.GetValue(3).ToString() == response_bars2 || reader.GetValue(3).ToString() == response_bars3)
                                 {
                                     collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantityBar });
                                 }
@@ -202,7 +216,7 @@ namespace MacoApp
                 string Furn = ComboBoxFurn.Text;
                 int quantity = Int32.Parse(TextBoxColvo.Text);
                 int quantitySrPr = Int32.Parse(TextBoxColvo.Text);
-                int System = Int32.Parse(ComboBoxSystem.Text);
+                string System = ComboBoxSystem.Text;
                 string side = ComboBoxSide.Text;
                 int FFH = Int32.Parse(TextBoxFFH.Text);
                 int FFB = Int32.Parse(TextBoxFFB.Text);
@@ -234,13 +248,16 @@ namespace MacoApp
                                 count++;
                                 string response_bars1 = "";
                                 string response_bars2 = "";
+                                string response_bars3 = "";
                                 string SrPr = "";
                                 string SrPrN1 = "";
                                 string SrPrN2 = "";
+                                string SrPrRama = "";
                                 if (Furn == "Maco_Eco" || Furn == "Maco_MM")
                                 {
                                     response_bars1 = "34623";
                                     response_bars2 = "34850";
+                                    response_bars3 = "34780";
                                     SrPr = "54783";
                                     SrPrN1 = "41342";
                                     SrPrN2 = "41339";
@@ -249,6 +266,7 @@ namespace MacoApp
                                 {
                                     response_bars1 = "V25070102";
                                     response_bars2 = "V26010102";
+                                    response_bars3 = "V25010102";
                                     SrPr = "V17010102";
                                     SrPrN1 = "V44020107";
                                     SrPrN2 = "V44030107";
@@ -257,12 +275,22 @@ namespace MacoApp
                                 {
                                     response_bars1 = "338070";
                                     response_bars2 = "260367";
-                                    /*SrPr = "V17010102";
-                                    SrPrN1 = "V44020107";
-                                    SrPrN2 = "V44030107";*/
+                                    SrPr = "281639";
+                                    SrPrRama = "281638";
+                                    SrPrN1 = "208598";
+                                    SrPrN2 = "208600";
+                                }
+                                else if (Furn == "Internika")
+                                {
+                                    response_bars1 = "1077591";
+                                    response_bars2 = "1077246";
+                                    response_bars3 = "1099378";
+                                    SrPr = "1080572";
+                                    SrPrN1 = "1080573";
+                                    SrPrN2 = "1080574";
                                 }
                                 //Записываем данные в объект класса и ,тем самым, передаём в таблицу
-                                if (reader.GetValue(3).ToString() == response_bars1 || reader.GetValue(3).ToString() == response_bars2)
+                                if (reader.GetValue(3).ToString() == response_bars1 || reader.GetValue(3).ToString() == response_bars2 || reader.GetValue(3).ToString() == response_bars3)
                                 {
                                     table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantityBar);
                                 }
@@ -525,6 +553,19 @@ namespace MacoApp
                     ButtonP.Background = brush1;
                 }
             }
+        }
+
+        private void ComboBoxSystem_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ComboBoxFurn != null)
+            {
+                if (ComboBoxFurn.SelectedIndex == 3)
+                {
+                    MaterialMessageBox.ShowDialog("Roto можно посчитать только на 9 или 13 системе");
+                    return;
+                }
+            }
+                
         }
     }
 }

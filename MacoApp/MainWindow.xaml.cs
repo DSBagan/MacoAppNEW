@@ -20,6 +20,9 @@ namespace MacoApp
         static string path = new FileInfo(Assembly.GetEntryAssembly().Location).Directory.ToString() + "\\Furnapp.db";
         static string pathSaveFolder = new FileInfo(Assembly.GetEntryAssembly().Location).Directory.ToString() + "\\SaveDB";
         static string path2 = pathSaveFolder+ "\\Furnapp.db";
+        /*static string path = ""+new Uri("pack://application:,,,/Furnapp.db");
+        static string pathSaveFolder = "" + new Uri("pack://application:,,,/SaveDB");
+        static string path2 = "" + new Uri("pack://application:,,,/SaveDB/Furnapp.db");*/
 
         public MainWindow()
         {
@@ -152,7 +155,7 @@ namespace MacoApp
             EntryiWindow entryiWindow = new EntryiWindow();
             entryiWindow.Show();
             this.Close();
-            backup(pathSaveFolder);
+            //backup(pathSaveFolder);
         }
 
         public void backup(string strDestination)
