@@ -13,6 +13,7 @@
     <None Remove="FRAM.PNG" />
     <None Remove="images\internikaFon.png" />
     <None Remove="images\MacoFon.png" />
+    <None Remove="images\MacoFonMM.png" />
     <None Remove="images\PL.PNG" />
     <None Remove="images\PP.PNG" />
     <None Remove="images\P_OL.PNG" />
@@ -59,6 +60,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\MacoFon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\MacoFonMM.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\PL.PNG" />
