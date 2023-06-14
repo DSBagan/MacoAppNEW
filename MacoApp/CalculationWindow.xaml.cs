@@ -46,6 +46,8 @@ namespace MacoApp
         int Count = 1;
         string rotation;
         string rotationTwoArg;
+        string framuga;
+        string framugaTwoArg;
         public int quantityBar = 0;
 
 
@@ -62,7 +64,7 @@ namespace MacoApp
             table2.Columns.Add(new DataColumn("Название", typeof(string)));
             table2.Columns.Add(new DataColumn("Количество", typeof(int)));
 
-            ButtonFram.Visibility = Visibility.Hidden;
+            //ButtonFram.Visibility = Visibility.Hidden;
 
             backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/MacoFon.png")));
             backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/MacoFon.png")));
@@ -87,7 +89,8 @@ namespace MacoApp
             ButtonP_O.BorderBrush = Brushes.Red;
             rotation = "Нет";
             rotationTwoArg = "Да/Нет";
-            
+            framuga = "Нет";
+            framugaTwoArg = "Да/Нет";
         }
 
         private void ButtonCalc_Click(object sender, RoutedEventArgs e)
@@ -111,12 +114,12 @@ namespace MacoApp
                     return;
                 }
 
-                
+
 
                 queryString = $"Select * from Elements where (Name_Furn like '" + Furn + "') and(System  = 'Не имеет значения' or System  = " + System + ") and(Side like 'Не имеет значения' or Side like '" + side + "') " +
                     "and(Lower_loop like '" + Lower_loop + "' or Lower_loop like 'Нет') and(Micro_ventilation like '" + Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +
                     "and(Rotation like '" + rotation + "' or Rotation like '" + rotationTwoArg + "') and(FFH_before = 0 or '" + FFH + "'>=FFH_before) and(FFH_after = 0 or '" + FFH + "' <= FFH_after)" +
-                    " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after)";
+                    " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after) and(Framuga like '" + framuga + "' or Framuga like '" + framugaTwoArg + "')";
                 quantityBar = sqlRequests.Que(rotation, Furn, FFH, FFB); //Вытаскиваем из класса количество ответных планок
                 quantitySrPr = sqlRequests.QueSrPr(rotation, Furn, FFH); //Количество средних прижимов на поворотной створке
 
@@ -183,7 +186,7 @@ namespace MacoApp
                                 {
                                     collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantityBar });
                                 }
-                                else if (reader.GetValue(3).ToString() == SrPr || reader.GetValue(3).ToString() == SrPrN1 || reader.GetValue(3).ToString() == SrPrN2|| reader.GetValue(3).ToString() == SrPrRama)
+                                else if (reader.GetValue(3).ToString() == SrPr || reader.GetValue(3).ToString() == SrPrN1 || reader.GetValue(3).ToString() == SrPrN2 || reader.GetValue(3).ToString() == SrPrRama)
                                 {
                                     collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantitySrPr });
                                 }
@@ -226,7 +229,7 @@ namespace MacoApp
                 queryString = $"Select * from Elements where (Name_Furn like '" + Furn + "') and(System  = 'Не имеет значения' or System  = " + System + ") and(Side like 'Не имеет значения' or Side like '" + side + "') " +
                     "and(Lower_loop like '" + Lower_loop + "' or Lower_loop like 'Нет') and(Micro_ventilation like '" + Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +
                     "and(Rotation like '" + rotation + "' or Rotation like '" + rotationTwoArg + "') and(FFH_before = 0 or '" + FFH + "'>=FFH_before) and(FFH_after = 0 or '" + FFH + "' <= FFH_after)" +
-                    " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after)";
+                    " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after) and(Framuga like '" + framuga + "' or Framuga like '" + framugaTwoArg + "')";
                 quantityBar = sqlRequests.Que(rotation, Furn, FFH, FFB); //Вытаскиваем из класса количество ответных планок               
                 quantitySrPr = sqlRequests.QueSrPr(rotation, Furn, FFH); //Количество средних прижимов на поворотной створке
 
@@ -296,7 +299,7 @@ namespace MacoApp
                                 }
                                 else if (reader.GetValue(3).ToString() == SrPr || reader.GetValue(3).ToString() == SrPrN1 || reader.GetValue(3).ToString() == SrPrN2)
                                 {
-                                    table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantitySrPr );
+                                    table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantitySrPr);
                                 }
                                 else
                                 {
@@ -377,7 +380,7 @@ namespace MacoApp
             EntryiWindow entryiWindow = new EntryiWindow();
             entryiWindow.Show();
             this.Close();
-        }        
+        }
 
         //Сохранение расчета в файл
         //***************************************************************************************************************
@@ -460,7 +463,7 @@ namespace MacoApp
                         MaterialMessageBox.ShowDialog("Ошибка при сохранении файла!");
                     }
                 }
-              
+
                 LBListCalc.Items.Clear();
                 LBList.Items.Clear();
                 Count = 1;
@@ -470,12 +473,21 @@ namespace MacoApp
 
         private void ButtonP_O_Click(object sender, RoutedEventArgs e)
         {
+            ComboBoxMv.Visibility = Visibility.Visible;
+            TextBlockMv.Visibility = Visibility.Visible;
             ButtonP_O.BorderBrush = Brushes.Red;
             ButtonP.BorderBrush = Brushes.White;
             ButtonFram.BorderBrush = Brushes.White;
 
             rotation = "Нет";
             rotationTwoArg = "Да/Нет";
+            framuga = "Нет";
+            framugaTwoArg = "Да/Нет";
+            if (ComboBoxFurn.Text == "Roto_NT")
+            {
+                ComboBoxMv.Visibility = Visibility.Hidden;
+                TextBlockMv.Visibility = Visibility.Hidden;
+            }
         }
 
         private void ButtonP_Click(object sender, RoutedEventArgs e)
@@ -485,6 +497,10 @@ namespace MacoApp
             ButtonFram.BorderBrush = Brushes.White;
             rotation = "Да";
             rotationTwoArg = "Да/Нет";
+            framuga = "Нет";
+            framugaTwoArg = "Да/Нет";
+            ComboBoxMv.Visibility = Visibility.Hidden;
+            TextBlockMv.Visibility = Visibility.Hidden;
         }
 
         private void ButtonFram_Click(object sender, RoutedEventArgs e)
@@ -492,6 +508,12 @@ namespace MacoApp
             ButtonP_O.BorderBrush = Brushes.White;
             ButtonP.BorderBrush = Brushes.White;
             ButtonFram.BorderBrush = Brushes.Red;
+            rotation = "Нет";
+            rotationTwoArg = "Да/Нет";
+            framuga = "Да";
+            framugaTwoArg = "Да/Нет";
+            ComboBoxMv.Visibility = Visibility.Hidden;
+            TextBlockMv.Visibility = Visibility.Hidden;
         }
 
         //Фон для GridList*******************************************
@@ -504,26 +526,42 @@ namespace MacoApp
                 ImageBrush brush = new ImageBrush(image);
                 GridList.Background = brush;
             }
-            if (index == 0)
-            {
-                ComboBoxMv.Visibility = Visibility.Visible;
-            }
-            if (index == 1)
-            {
-                ComboBoxMv.Visibility = Visibility.Visible;
-            }
-            if (index == 2)
-            {
-                ComboBoxMv.Visibility = Visibility.Visible;
-            }
-            if (index == 3)
+            //Скрываем микровентиляцию на поворотных створках и фрамугах
+            if (rotation == "Да" || framuga == "Да")
             {
                 ComboBoxMv.Visibility = Visibility.Hidden;
+                TextBlockMv.Visibility = Visibility.Hidden;
             }
-            if (index == 4)
+            else
             {
-                ComboBoxMv.Visibility = Visibility.Visible;
+
+                if (index == 0)
+                {
+                    ComboBoxMv.Visibility = Visibility.Visible;
+                    TextBlockMv.Visibility = Visibility.Visible;
+                }
+                if (index == 1)
+                {
+                    ComboBoxMv.Visibility = Visibility.Visible;
+                    TextBlockMv.Visibility = Visibility.Visible;
+                }
+                if (index == 2)
+                {
+                    ComboBoxMv.Visibility = Visibility.Visible;
+                    TextBlockMv.Visibility = Visibility.Visible;
+                }
+                if (index == 3)
+                {
+                    ComboBoxMv.Visibility = Visibility.Hidden;
+                    TextBlockMv.Visibility = Visibility.Hidden;
+                }
+                if (index == 4)
+                {
+                    ComboBoxMv.Visibility = Visibility.Visible;
+                    TextBlockMv.Visibility = Visibility.Visible;
+                }
             }
+
         }
 
         //Фон для кнопок поворота************************************
@@ -540,7 +578,7 @@ namespace MacoApp
                     BitmapImage image1 = backgroundsButtons[1];
                     ImageBrush brush1 = new ImageBrush(image1);
                     ButtonP.Background = brush1;
-                    
+
                 }
                 if (ComboBoxSide.SelectedIndex == 1)
                 {
@@ -565,7 +603,7 @@ namespace MacoApp
                     return;
                 }
             }
-                
+
         }
     }
 }

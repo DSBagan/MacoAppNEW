@@ -183,10 +183,59 @@ namespace MacoApp
                     return 0;
                 }
             }
-            else if (Furn == "Internika")
+            else if (Furn == "Internika" && rotation == "Нет")
             {
-                //MaterialMessageBox.ShowDialog("InternikУ пока не умею считать");
-                return 1;
+                if (FFH < 420)
+                {
+                    MaterialMessageBox.ShowDialog("Высота п/о Internika не может быть менее 420 мм");
+                    return 1;
+                }
+                else if (FFB < 325)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина п/о Internika не может быть менее 325 мм");
+                    return 1;
+                }
+                else if (FFH > 2400)
+                {
+                    MaterialMessageBox.ShowDialog("Высота п/о Internika не может быть более 2400 мм");
+                    return 1;
+                }
+                else if (FFB > 1010)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина п/о Internika не может быть ,более 1010 мм");
+                    return 1;
+                }
+                else if (quantity == 0)
+                {
+                    MaterialMessageBox.ShowDialog("Укажите корректное количество комплектов");
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else if (Furn == "Internika" && rotation == "Да")
+            {
+                if (FFH < 501)
+                {
+                    MaterialMessageBox.ShowDialog("Высота не может быть менее 501 мм");
+                    return 1;
+                }
+                else if (FFH > 2400)
+                {
+                    MaterialMessageBox.ShowDialog("Высота не может быть более 2400 мм");
+                    return 1;
+                }
+                else if (quantity == 0)
+                {
+                    MaterialMessageBox.ShowDialog("Укажите корректное количество комплектов");
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
             }
             else
             {

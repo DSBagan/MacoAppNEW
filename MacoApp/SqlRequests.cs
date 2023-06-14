@@ -462,6 +462,70 @@ namespace MacoApp
                 }
             }
 
+            else if (Furn == "Internika")
+            {
+                if (FFH >= 420 && FFH <= 600 && FFB <= 610 && Rotation == "Нет")
+                {
+                    return quantityBar = 3;
+                }
+                else if (FFH >= 420 && FFH <= 600 && FFB >= 610 && FFB <= 810 && Rotation == "Нет")
+                {
+                    return quantityBar = 4;
+                }
+                else if (FFH >= 420 && FFH <= 600 && FFB >= 810 && Rotation == "Нет")
+                {
+                    return quantityBar = 5;
+                }
+                //**********************
+
+                else if (FFH >= 601 && FFH <= 1600 && FFB <= 610 && Rotation == "Нет")
+                {
+                    return quantityBar = 4;
+                }
+                else if (FFH >= 601 && FFH <= 1600 && FFB >= 610 && FFB <= 810 && Rotation == "Нет")
+                {
+                    return quantityBar = 5;
+                }
+                else if (FFH >= 601 && FFH <= 1600 && FFB >= 810 && Rotation == "Нет")
+                {
+                    return quantityBar = 6;
+                }
+
+                //*********************
+
+                else if (FFH >= 1601 && FFH <= 2400 && FFB <= 610 && Rotation == "Нет")
+                {
+                    return quantityBar = 6;
+                }
+                else if (FFH >= 1601 && FFH <= 2400 && FFB >= 610 && FFB <= 810 && Rotation == "Нет")
+                {
+                    return quantityBar = 7;
+                }
+                else if (FFH >= 1601 && FFH <= 2400 && FFB >= 810 && Rotation == "Нет")
+                {
+                    return quantityBar = 8;
+                }
+
+
+                //Поворотная 
+                else if (Rotation == "Да" && FFH >= 501 && FFH <= 900)
+                {
+                    return quantityBar = 2;
+                }
+                else if (Rotation == "Да" && FFH >= 901 && FFH <= 1400)
+                {
+                    return quantityBar = 3;
+                }
+                else if (Rotation == "Да" && FFH >= 1401 && FFH <= 2400)
+                {
+                    return quantityBar = 4;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+
             else { return 0; }
         }
 
@@ -512,6 +576,21 @@ namespace MacoApp
             else if (Rotation == "Да" && Furn == "Roto_NT")
             {
                 if (FFH >= 251 && FFH <= 1400)
+                {
+                    return quantitySrPr = 1;
+                }
+                else if (FFH >= 1401 && FFH <= 2400)
+                {
+                    return quantitySrPr = 2;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else if (Rotation == "Да" && Furn == "Internika")
+            {
+                if (FFH >= 501 && FFH <= 1400)
                 {
                     return quantitySrPr = 1;
                 }
