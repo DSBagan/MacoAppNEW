@@ -13,7 +13,7 @@ namespace MacoApp
         public int quantityBar = 0;
         public int quantitySrPr = 0;
 
-        public int Que(string Rotation, string Furn, int FFH, int FFB)
+        public int Que(string Rotation, string framuga, string Furn, int FFH, int FFB)
         {
             //Варианты запросов в БД с разными параметрами, выбранными в форме
             if (Furn == "Maco_Eco")
@@ -284,6 +284,22 @@ namespace MacoApp
                 {
                     return quantityBar = 4;
                 }
+
+                //Поворотная 
+                else if (framuga == "Да" && FFB >= 300 && FFB <= 1000)
+                {
+                    return quantityBar = 2;
+                }
+                else if (framuga == "Да" && FFB >= 1001 && FFB <= 1800)
+                {
+                    return quantityBar = 3;
+                }
+                else if (framuga == "Да" && FFB >= 1801 && FFB <= 2400)
+                {
+                    return quantityBar = 4;
+                }
+
+
                 else
                 {
                     return 0;

@@ -120,7 +120,7 @@ namespace MacoApp
                     "and(Lower_loop like '" + Lower_loop + "' or Lower_loop like 'Нет') and(Micro_ventilation like '" + Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +
                     "and(Rotation like '" + rotation + "' or Rotation like '" + rotationTwoArg + "') and(FFH_before = 0 or '" + FFH + "'>=FFH_before) and(FFH_after = 0 or '" + FFH + "' <= FFH_after)" +
                     " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after) and(Framuga like '" + framuga + "' or Framuga like '" + framugaTwoArg + "')";
-                quantityBar = sqlRequests.Que(rotation, Furn, FFH, FFB); //Вытаскиваем из класса количество ответных планок
+                quantityBar = sqlRequests.Que(rotation, framuga, Furn, FFH, FFB); //Вытаскиваем из класса количество ответных планок
                 quantitySrPr = sqlRequests.QueSrPr(rotation, Furn, FFH); //Количество средних прижимов на поворотной створке
 
                 using (var connection = new SqliteConnection("Data Source=Furnapp.db"))
@@ -144,6 +144,9 @@ namespace MacoApp
                                 string SrPrN1 = "";
                                 string SrPrN2 = "";
                                 string SrPrRama = "";
+                                string FramPetl = "";
+                                //string 
+
                                 if (Furn == "Maco_Eco" || Furn == "Maco_MM")
                                 {
                                     response_bars1 = "34623";
@@ -230,7 +233,7 @@ namespace MacoApp
                     "and(Lower_loop like '" + Lower_loop + "' or Lower_loop like 'Нет') and(Micro_ventilation like '" + Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +
                     "and(Rotation like '" + rotation + "' or Rotation like '" + rotationTwoArg + "') and(FFH_before = 0 or '" + FFH + "'>=FFH_before) and(FFH_after = 0 or '" + FFH + "' <= FFH_after)" +
                     " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after) and(Framuga like '" + framuga + "' or Framuga like '" + framugaTwoArg + "')";
-                quantityBar = sqlRequests.Que(rotation, Furn, FFH, FFB); //Вытаскиваем из класса количество ответных планок               
+                quantityBar = sqlRequests.Que(rotation, framuga, Furn, FFH, FFB); //Вытаскиваем из класса количество ответных планок               
                 quantitySrPr = sqlRequests.QueSrPr(rotation, Furn, FFH); //Количество средних прижимов на поворотной створке
 
                 using (var connection = new SqliteConnection("Data Source=Furnapp.db"))
@@ -488,6 +491,13 @@ namespace MacoApp
                 ComboBoxMv.Visibility = Visibility.Hidden;
                 TextBlockMv.Visibility = Visibility.Hidden;
             }
+
+            // Получаем доступ к объекту TextBox
+            TextBox myTextBox = this.MainGrid.Children.OfType<TextBox>().ElementAt(2);
+            // Устанавливаем значение свойства Grid.Column
+            Grid.SetRow(myTextBox, 3);
+            TextBox myTextBox1 = this.MainGrid.Children.OfType<TextBox>().ElementAt(1);
+            Grid.SetRow(myTextBox1, 2);
         }
 
         private void ButtonP_Click(object sender, RoutedEventArgs e)
@@ -501,6 +511,13 @@ namespace MacoApp
             framugaTwoArg = "Да/Нет";
             ComboBoxMv.Visibility = Visibility.Hidden;
             TextBlockMv.Visibility = Visibility.Hidden;
+
+            // Получаем доступ к объекту TextBox
+            TextBox myTextBox = this.MainGrid.Children.OfType<TextBox>().ElementAt(2);
+            // Устанавливаем значение свойства Grid.Column
+            Grid.SetRow(myTextBox, 3);
+            TextBox myTextBox1 = this.MainGrid.Children.OfType<TextBox>().ElementAt(1);
+            Grid.SetRow(myTextBox1, 2);
         }
 
         private void ButtonFram_Click(object sender, RoutedEventArgs e)
@@ -514,6 +531,13 @@ namespace MacoApp
             framugaTwoArg = "Да/Нет";
             ComboBoxMv.Visibility = Visibility.Hidden;
             TextBlockMv.Visibility = Visibility.Hidden;
+
+            // Получаем доступ к объекту TextBox
+            TextBox myTextBox = this.MainGrid.Children.OfType<TextBox>().ElementAt(2);
+            // Устанавливаем значение свойства Grid.Column
+            Grid.SetRow(myTextBox, 2);
+            TextBox myTextBox1 = this.MainGrid.Children.OfType<TextBox>().ElementAt(1);
+            Grid.SetRow(myTextBox1, 3);
         }
 
         //Фон для GridList*******************************************
