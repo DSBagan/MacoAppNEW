@@ -77,7 +77,7 @@
         <ComboBox Name="ComboBoxSystem" Grid.Column="1" Grid.Row="4" Width="60" Height="24" FontSize="12" HorizontalAlignment="Right" SelectionChanged="ComboBoxSystem_SelectionChanged">
             <ComboBoxItem>9</ComboBoxItem>
             <ComboBoxItem IsSelected="True">13</ComboBoxItem>
-            <ComboBoxItem>Thyssen/Deceuninck</ComboBoxItem>
+            <ComboBoxItem>Thyssen_Deceuninck</ComboBoxItem>
         </ComboBox>
         <ComboBox Name="ComboBoxSide" Grid.Column="1" Grid.Row="5" Width="75" FontSize="12" Height="26" HorizontalAlignment="Right" Margin="123,0,0,0" Grid.ColumnSpan="1" SelectionChanged="ComboBoxSide_SelectionChanged">
             <ComboBoxItem>Левая</ComboBoxItem>
@@ -107,8 +107,8 @@
         <TextBlock Text="Высота"  Grid.Column="1" Grid.Row="3" Width="70" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
         <TextBlock Text="Ширина"  Grid.Column="1" Width="70" FontSize="12" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
         <TextBlock Text="Система"  Grid.Column="1" Grid.Row="4" Width="70" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
-        <TextBlock Text="Сторона"  Grid.Column="1" Grid.Row="5" Width="70" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
-        <TextBlock Text="Нижняя петля"  Grid.Column="1" Grid.Row="6" Width="110" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
+        <TextBlock x:Name="TextBlockSide" Text="Сторона"  Grid.Column="1" Grid.Row="5" Width="70" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
+        <TextBlock x:Name="TextBlockLL" Text="Нижняя петля"  Grid.Column="1" Grid.Row="6" Width="110" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
         <TextBlock x:Name="TextBlockMv" Text="Микровентиляция"  Grid.Column="1" Grid.Row="7" Width="110" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
         <TextBlock Text="Колич. комплектов"  Grid.Column="1" Grid.Row="11" Width="110" HorizontalAlignment="Left" FontSize="12" VerticalAlignment="Center" Margin="10,0,0,0"/>
 

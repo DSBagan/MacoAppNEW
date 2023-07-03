@@ -24,6 +24,7 @@ using static System.Net.Mime.MediaTypeNames;
 using static System.Net.WebRequestMethods;
 using System.Runtime.Serialization;
 using System.Reflection;
+using System.Security.Policy;
 
 namespace MacoApp
 {
@@ -41,7 +42,9 @@ namespace MacoApp
 
         private ObservableCollection<BitmapImage> backgroundsFON = new ObservableCollection<BitmapImage>();
         private ObservableCollection<BitmapImage> backgroundsButtons = new ObservableCollection<BitmapImage>();
-
+        List<string> strings = new List<string> { "52480","52486","52487","94491","42083","42084","V12010102",
+            "V12020102","V13030102","V45010107","230177","227354","230252","230205","INT1003.07","1077266","1077266","52486","52486","52321",
+            "52321","264015","230651","264007","1090505","1090506","V16030102"};
 
         int Count = 1;
         string rotation;
@@ -114,9 +117,7 @@ namespace MacoApp
                     return;
                 }
 
-
-
-                queryString = $"Select * from Elements where (Name_Furn like '" + Furn + "') and(System  = 'Не имеет значения' or System  = " + System + ") and(Side like 'Не имеет значения' or Side like '" + side + "') " +
+                queryString = $"Select * from Elements where (Name_Furn like '" + Furn + "') and(System  = 'Не имеет значения' or System  = '" + System + "') and(Side like 'Не имеет значения' or Side like '" + side + "') " +
                     "and(Lower_loop like '" + Lower_loop + "' or Lower_loop like 'Нет') and(Micro_ventilation like '" + Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +
                     "and(Rotation like '" + rotation + "' or Rotation like '" + rotationTwoArg + "') and(FFH_before = 0 or '" + FFH + "'>=FFH_before) and(FFH_after = 0 or '" + FFH + "' <= FFH_after)" +
                     " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after) and(Framuga like '" + framuga + "' or Framuga like '" + framugaTwoArg + "')";
@@ -144,8 +145,6 @@ namespace MacoApp
                                 string SrPrN1 = "";
                                 string SrPrN2 = "";
                                 string SrPrRama = "";
-                                string FramPetl = "";
-                                //string 
 
                                 if (Furn == "Maco_Eco" || Furn == "Maco_MM")
                                 {
@@ -193,6 +192,14 @@ namespace MacoApp
                                 {
                                     collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantitySrPr });
                                 }
+                                else if (framuga == "Да" && strings.Contains(reader.GetValue(3).ToString()) && FFH <= 1600)
+                                {
+                                    collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * 2 });
+                                }
+                                else if (framuga == "Да" && strings.Contains(reader.GetValue(3).ToString()) && FFH >= 1601 && FFH <= 2400)
+                                {
+                                    collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * 3 });
+                                }
                                 else
                                 {
                                     collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) });
@@ -229,7 +236,7 @@ namespace MacoApp
                 string Lower_loop = ComboBoxLL.Text;
                 string Micro_ventilation = ComboBoxMv.Text;
 
-                queryString = $"Select * from Elements where (Name_Furn like '" + Furn + "') and(System  = 'Не имеет значения' or System  = " + System + ") and(Side like 'Не имеет значения' or Side like '" + side + "') " +
+                queryString = $"Select * from Elements where (Name_Furn like '" + Furn + "') and(System  = 'Не имеет значения' or System  = '" + System + "') and(Side like 'Не имеет значения' or Side like '" + side + "') " +
                     "and(Lower_loop like '" + Lower_loop + "' or Lower_loop like 'Нет') and(Micro_ventilation like '" + Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +
                     "and(Rotation like '" + rotation + "' or Rotation like '" + rotationTwoArg + "') and(FFH_before = 0 or '" + FFH + "'>=FFH_before) and(FFH_after = 0 or '" + FFH + "' <= FFH_after)" +
                     " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after) and(Framuga like '" + framuga + "' or Framuga like '" + framugaTwoArg + "')";
@@ -298,15 +305,23 @@ namespace MacoApp
                                 //Записываем данные в объект класса и ,тем самым, передаём в таблицу
                                 if (reader.GetValue(3).ToString() == response_bars1 || reader.GetValue(3).ToString() == response_bars2 || reader.GetValue(3).ToString() == response_bars3)
                                 {
-                                    table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantityBar);
+                                    collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantityBar });
                                 }
-                                else if (reader.GetValue(3).ToString() == SrPr || reader.GetValue(3).ToString() == SrPrN1 || reader.GetValue(3).ToString() == SrPrN2)
+                                else if (reader.GetValue(3).ToString() == SrPr || reader.GetValue(3).ToString() == SrPrN1 || reader.GetValue(3).ToString() == SrPrN2 || reader.GetValue(3).ToString() == SrPrRama)
                                 {
-                                    table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantitySrPr);
+                                    collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantitySrPr });
+                                }
+                                else if (framuga == "Да" && strings.Contains(reader.GetValue(3).ToString()) && FFH <= 1600)
+                                {
+                                    collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * 2 });
+                                }
+                                else if (framuga == "Да" && strings.Contains(reader.GetValue(3).ToString()) && FFH >= 1601 && FFH <= 2400)
+                                {
+                                    collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * 3 });
                                 }
                                 else
                                 {
-                                    table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), (int.Parse(reader.GetValue(4).ToString()) * quantity));
+                                    collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) });
                                 }
                             }
                             // Получаем таблицы
@@ -491,6 +506,10 @@ namespace MacoApp
                 ComboBoxMv.Visibility = Visibility.Hidden;
                 TextBlockMv.Visibility = Visibility.Hidden;
             }
+            ComboBoxLL.Visibility = Visibility.Visible;
+            TextBlockLL.Visibility = Visibility.Visible;
+            ComboBoxSide.Visibility = Visibility.Visible;
+            TextBlockLL.Visibility = Visibility.Visible;
 
             // Получаем доступ к объекту TextBox
             TextBox myTextBox = this.MainGrid.Children.OfType<TextBox>().ElementAt(2);
@@ -511,6 +530,10 @@ namespace MacoApp
             framugaTwoArg = "Да/Нет";
             ComboBoxMv.Visibility = Visibility.Hidden;
             TextBlockMv.Visibility = Visibility.Hidden;
+            ComboBoxLL.Visibility = Visibility.Visible;
+            TextBlockLL.Visibility = Visibility.Visible;
+            ComboBoxSide.Visibility = Visibility.Visible;
+            TextBlockLL.Visibility = Visibility.Visible;
 
             // Получаем доступ к объекту TextBox
             TextBox myTextBox = this.MainGrid.Children.OfType<TextBox>().ElementAt(2);
@@ -531,6 +554,10 @@ namespace MacoApp
             framugaTwoArg = "Да/Нет";
             ComboBoxMv.Visibility = Visibility.Hidden;
             TextBlockMv.Visibility = Visibility.Hidden;
+            ComboBoxLL.Visibility= Visibility.Hidden;
+            TextBlockLL.Visibility = Visibility.Hidden;
+            ComboBoxSide.Visibility = Visibility.Hidden;
+            TextBlockLL.Visibility = Visibility.Hidden;
 
             // Получаем доступ к объекту TextBox
             TextBox myTextBox = this.MainGrid.Children.OfType<TextBox>().ElementAt(2);
