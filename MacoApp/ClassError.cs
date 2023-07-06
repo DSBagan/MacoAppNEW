@@ -9,9 +9,9 @@ namespace MacoApp
 {
     class ClassError
     {
-        public int Err(string Furn, int FFH, int FFB, int quantity, string rotation)
+        public int Err(string Furn, int FFH, int FFB, int quantity, string rotation, string framuga)
         {
-            if (Furn == "Maco_Eco")
+            if (Furn == "Maco_Eco" && framuga == "Нет")
             {
                 if (FFH < 601)
                 {
@@ -43,7 +43,29 @@ namespace MacoApp
                     return 0;
                 }
             }
-            else if (Furn == "Maco_MM" && rotation == "Нет")
+            else if (Furn == "Maco_Eco" && framuga=="Да")
+            {
+                if (FFH < 601)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина не может быть менее 601 мм");
+                    return 1;
+                }
+                else if (FFH > 2350)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина не может быть более 2350 мм");
+                    return 1;
+                }
+                else if (quantity == 0)
+                {
+                    MaterialMessageBox.ShowDialog("Укажите корректное количество комплектов");
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else if (Furn == "Maco_MM" && rotation == "Нет" && framuga == "Нет")
             {
                 if (FFH < 470)
                 {
@@ -97,7 +119,30 @@ namespace MacoApp
                     return 0;
                 }
             }
-            else if (Furn == "Vorne" && rotation == "Нет")
+            else if (Furn == "Maco_MM" && framuga == "Да")
+            {
+                if (FFH < 300)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина не может быть менее 300 мм");
+                    return 1;
+                }
+                else if (FFH > 2400)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина не может быть более 2400 мм");
+                    return 1;
+                }
+                else if (quantity == 0)
+                {
+                    MaterialMessageBox.ShowDialog("Укажите корректное количество комплектов");
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+
+            else if (Furn == "Vorne" && rotation == "Нет" && framuga == "Нет")
             {
                 if (FFH < 450)
                 {
@@ -151,7 +196,29 @@ namespace MacoApp
                     return 0;
                 }
             }
-            else if (Furn == "Roto_NT" && rotation == "Нет")
+            else if (Furn == "Vorne" && framuga == "Да")
+            {
+                if (FFH < 300)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина не может быть менее 300 мм");
+                    return 1;
+                }
+                else if (FFH > 2400)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина не может быть более 2400 мм");
+                    return 1;
+                }
+                else if (quantity == 0)
+                {
+                    MaterialMessageBox.ShowDialog("Укажите корректное количество комплектов");
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else if (Furn == "Roto_NT" && rotation == "Нет" && framuga == "Нет")
             {
                 if (FFH < 310)
                 {
@@ -183,7 +250,51 @@ namespace MacoApp
                     return 0;
                 }
             }
-            else if (Furn == "Internika" && rotation == "Нет")
+            else if (Furn == "Roto_NT" && rotation == "Да")
+            {
+                if (FFH < 251)
+                {
+                    MaterialMessageBox.ShowDialog("Высота не может быть менее 251 мм");
+                    return 1;
+                }
+                else if (FFH > 2400)
+                {
+                    MaterialMessageBox.ShowDialog("Высота не может быть более 2400 мм");
+                    return 1;
+                }
+                else if (quantity == 0)
+                {
+                    MaterialMessageBox.ShowDialog("Укажите корректное количество комплектов");
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else if (Furn == "Roto_NT" && framuga == "Да")
+            {
+                if (FFH < 251)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина не может быть менее 251 мм");
+                    return 1;
+                }
+                else if (FFH > 2400)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина не может быть более 2400 мм");
+                    return 1;
+                }
+                else if (quantity == 0)
+                {
+                    MaterialMessageBox.ShowDialog("Укажите корректное количество комплектов");
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else if (Furn == "Internika" && rotation == "Нет" && framuga == "Нет")
             {
                 if (FFH < 420)
                 {
@@ -225,6 +336,28 @@ namespace MacoApp
                 else if (FFH > 2400)
                 {
                     MaterialMessageBox.ShowDialog("Высота не может быть более 2400 мм");
+                    return 1;
+                }
+                else if (quantity == 0)
+                {
+                    MaterialMessageBox.ShowDialog("Укажите корректное количество комплектов");
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else if (Furn == "Internika" && framuga == "Да")
+            {
+                if (FFH < 501)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина не может быть менее 501 мм");
+                    return 1;
+                }
+                else if (FFH > 2400)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина не может быть более 2400 мм");
                     return 1;
                 }
                 else if (quantity == 0)

@@ -77,7 +77,7 @@
         <ComboBox Name="ComboBoxSystem" Grid.Column="1" Grid.Row="4" Width="60" Height="24" FontSize="12" HorizontalAlignment="Right" SelectionChanged="ComboBoxSystem_SelectionChanged">
             <ComboBoxItem>9</ComboBoxItem>
             <ComboBoxItem IsSelected="True">13</ComboBoxItem>
-            <ComboBoxItem>Thyssen_Deceuninck</ComboBoxItem>
+            <ComboBoxItem>Thyssen/Deceuninck</ComboBoxItem>
         </ComboBox>
         <ComboBox Name="ComboBoxSide" Grid.Column="1" Grid.Row="5" Width="75" FontSize="12" Height="26" HorizontalAlignment="Right" Margin="123,0,0,0" Grid.ColumnSpan="1" SelectionChanged="ComboBoxSide_SelectionChanged">
             <ComboBoxItem>Левая</ComboBoxItem>
@@ -126,7 +126,7 @@
                 Click="Button_Click" FontSize="10" ToolTip="Нажми, чтобы сохранить расчеты в файл. Найти его можно в папке C:\TBMFurn\"
                 IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
                 Style="{StaticResource MaterialDesignPaperLightButton}"
-                HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="252,0,0,15"/>
+                HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="150,0,0,15"/>
         <Button x:Name="ButtonExit" Content="Назад" Click="ButtonExit_Click" 
                 HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="12"
                 IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
@@ -166,6 +166,7 @@
                 <ImageBrush ImageSource="/FRAM.PNG"/>
             </Button.Background>
         </Button>
+        
 
     </Grid>
 </Window>

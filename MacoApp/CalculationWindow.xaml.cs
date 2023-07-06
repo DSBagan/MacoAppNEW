@@ -42,9 +42,11 @@ namespace MacoApp
 
         private ObservableCollection<BitmapImage> backgroundsFON = new ObservableCollection<BitmapImage>();
         private ObservableCollection<BitmapImage> backgroundsButtons = new ObservableCollection<BitmapImage>();
-        List<string> strings = new List<string> { "52480","52486","52487","94491","42083","42084","V12010102",
+        //Список фрамужных артикулов
+        List<string> ArticleFram1 = new List<string> { "52480","52486","52487","94491","42083","42084","V12010102",
             "V12020102","V13030102","V45010107","230177","227354","230252","230205","INT1003.07","1077266","1077266","52486","52486","52321",
             "52321","264015","230651","264007","1090505","1090506","V16030102"};
+        List<string> ArticleFram2 = new List<string> { "101548", "V05010102", "482823", "1099150" };
 
         int Count = 1;
         string rotation;
@@ -67,8 +69,6 @@ namespace MacoApp
             table2.Columns.Add(new DataColumn("Название", typeof(string)));
             table2.Columns.Add(new DataColumn("Количество", typeof(int)));
 
-            //ButtonFram.Visibility = Visibility.Hidden;
-
             backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/MacoFon.png")));
             backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/MacoFonMM.png")));
             backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/vorneFon.png")));
@@ -87,7 +87,7 @@ namespace MacoApp
             var timer = new System.Windows.Threading.DispatcherTimer();
             timer.Interval = new TimeSpan(0, 0, 1);
             timer.IsEnabled = true;
-            timer.Tick += (o, t) => { TBDate.Text = DateTime.Now.ToString(); };
+            //timer.Tick += (o, t) => { TBDate.Text = DateTime.Now.ToString(); };
             timer.Start();
             ButtonP_O.BorderBrush = Brushes.Red;
             rotation = "Нет";
@@ -112,7 +112,7 @@ namespace MacoApp
                 string Lower_loop = ComboBoxLL.Text;
                 string Micro_ventilation = ComboBoxMv.Text;
 
-                if (classError.Err(Furn, FFH, FFB, quantity, rotation) == 1)
+                if (classError.Err(Furn, FFH, FFB, quantity, rotation, framuga) == 1)
                 {
                     return;
                 }
@@ -192,13 +192,17 @@ namespace MacoApp
                                 {
                                     collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantitySrPr });
                                 }
-                                else if (framuga == "Да" && strings.Contains(reader.GetValue(3).ToString()) && FFH <= 1600)
+                                else if (framuga == "Да" && ArticleFram1.Contains(reader.GetValue(3).ToString()) && FFH <= 1600)
                                 {
                                     collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * 2 });
                                 }
-                                else if (framuga == "Да" && strings.Contains(reader.GetValue(3).ToString()) && FFH >= 1601 && FFH <= 2400)
+                                else if (framuga == "Да" && ArticleFram1.Contains(reader.GetValue(3).ToString()) && FFH >= 1601 && FFH <= 2400)
                                 {
                                     collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * 3 });
+                                }
+                                else if (framuga == "Да" && ArticleFram2.Contains(reader.GetValue(3).ToString()) && FFH >= 1101)
+                                {
+                                    collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * 2 });
                                 }
                                 else
                                 {
@@ -305,23 +309,27 @@ namespace MacoApp
                                 //Записываем данные в объект класса и ,тем самым, передаём в таблицу
                                 if (reader.GetValue(3).ToString() == response_bars1 || reader.GetValue(3).ToString() == response_bars2 || reader.GetValue(3).ToString() == response_bars3)
                                 {
-                                    collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantityBar });
+                                    table1.Rows.Add(reader.GetValue(3).ToString(),reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * quantityBar);
                                 }
                                 else if (reader.GetValue(3).ToString() == SrPr || reader.GetValue(3).ToString() == SrPrN1 || reader.GetValue(3).ToString() == SrPrN2 || reader.GetValue(3).ToString() == SrPrRama)
                                 {
-                                    collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantitySrPr });
+                                    table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * quantitySrPr );
                                 }
-                                else if (framuga == "Да" && strings.Contains(reader.GetValue(3).ToString()) && FFH <= 1600)
+                                else if (framuga == "Да" && ArticleFram1.Contains(reader.GetValue(3).ToString()) && FFH <= 1600)
                                 {
-                                    collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * 2 });
+                                    table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * 2 );
                                 }
-                                else if (framuga == "Да" && strings.Contains(reader.GetValue(3).ToString()) && FFH >= 1601 && FFH <= 2400)
+                                else if (framuga == "Да" && ArticleFram1.Contains(reader.GetValue(3).ToString()) && FFH >= 1601 && FFH <= 2400)
                                 {
-                                    collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * 3 });
+                                    table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * 3 );
+                                }
+                                else if (framuga == "Да" && ArticleFram2.Contains(reader.GetValue(3).ToString()) && FFH >= 1101)
+                                {
+                                    table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * 2 );
                                 }
                                 else
                                 {
-                                    collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) });
+                                    table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity );
                                 }
                             }
                             // Получаем таблицы
