@@ -46,6 +46,18 @@ namespace MacoApp
 
         private void EntryiWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            if (Directory.Exists(@"C:\aTBMFURN\"))
+            {
+                string[] files = Directory.GetFiles(@"C:\aTBMFURN\");
+                foreach (string file in files)
+                {
+                    File.Delete(file);
+                }
+                // Удаление папки и всех ее подпапок и файлов
+            }
+
+            
+
             if (CheckNet() == true)  // Проверяем подключение к сети
             {
                 try
@@ -58,7 +70,7 @@ namespace MacoApp
                     }
                     WebClient webClient = new WebClient();
                     //Качаем БД с Google Drive
-                    webClient.DownloadFile("https://drive.google.com/uc?export=download&id=10-tB1E0wbCRfdfcXlpxbz5s2-jTnDpHa", path);
+                    webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1g-qgBc68o1EAmpEHSu5_typ1XMM14cyc", path);
                     webClient.Dispose();
                 }
                 catch (System.Exception)
