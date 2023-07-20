@@ -462,14 +462,6 @@ namespace MacoApp
                                     art += " ";
                                 }
                             }
-                            /*if (nam.Length < 55)
-                            {
-                                int a = 55 - nam.Length;
-                                for (int i = 0; i < a; i++)
-                                {
-                                    nam += " ";
-                                }
-                            }*/
                             string n = "                                                ";
                             streamWriter.WriteLine(art + /*nam + "   " */n + qua);
                         }
