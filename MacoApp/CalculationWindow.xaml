@@ -85,8 +85,8 @@
         </ComboBox>
         <ComboBox Name="ComboBoxLL" Grid.Column="1" Grid.Row="6" Width="60" Height="24" FontSize="12" HorizontalAlignment="Right">
             <ComboBoxItem>Да</ComboBoxItem>
-            <ComboBoxItem>Да/Усиленная</ComboBoxItem>
             <ComboBoxItem IsSelected="True">Нет</ComboBoxItem>
+            <ComboBoxItem>Да/Усиленная</ComboBoxItem>
         </ComboBox>
         <ComboBox Name="ComboBoxMv" Grid.Column="1" Grid.Row="7" Width="60" FontSize="12" Height="25" HorizontalAlignment="Right" >
             <ComboBoxItem>Да</ComboBoxItem>

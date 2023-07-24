@@ -70,7 +70,7 @@ namespace MacoApp
                     }
                     WebClient webClient = new WebClient();
                     //Качаем БД с Google Drive
-                    webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1g-qgBc68o1EAmpEHSu5_typ1XMM14cyc", path);
+                    webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1YuRa3mONi05MHyYtxMSqwEkqpCDe9tQF", path);
                     webClient.Dispose();
                 }
                 catch (System.Exception)
