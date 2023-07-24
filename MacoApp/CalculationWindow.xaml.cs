@@ -73,6 +73,7 @@ namespace MacoApp
             backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/MacoFonMM.png")));
             backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/vorneFon.png")));
             backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/RotoFon.png")));
+            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/RotoFonNX.png")));
             backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/internikaFon.png")));
 
             backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/P_OL.png")));
@@ -164,7 +165,7 @@ namespace MacoApp
                                     SrPrN1 = "V44020107";
                                     SrPrN2 = "V44030107";
                                 }
-                                else if (Furn == "Roto_NT")
+                                else if (Furn == "Roto_NT" || Furn == "Roto_NX")
                                 {
                                     response_bars1 = "338070";
                                     response_bars2 = "260367";
@@ -288,7 +289,7 @@ namespace MacoApp
                                     SrPrN1 = "V44020107";
                                     SrPrN2 = "V44030107";
                                 }
-                                else if (Furn == "Roto_NT")
+                                else if (Furn == "Roto_NT" || Furn == "Roto_NX")
                                 {
                                     response_bars1 = "338070";
                                     response_bars2 = "260367";

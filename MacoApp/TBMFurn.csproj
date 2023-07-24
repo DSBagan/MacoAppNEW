@@ -19,6 +19,7 @@
     <None Remove="images\P_OL.PNG" />
     <None Remove="images\P_OP.PNG" />
     <None Remove="images\RotoFon.png" />
+    <None Remove="images\RotoFonNX.png" />
     <None Remove="images\vorneFon.png" />
     <None Remove="maco.png" />
     <None Remove="MacoFon.png" />
@@ -70,6 +71,9 @@
     <Resource Include="images\P_OL.PNG" />
     <Resource Include="images\P_OP.PNG" />
     <Resource Include="images\RotoFon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\RotoFonNX.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\vorneFon.png">

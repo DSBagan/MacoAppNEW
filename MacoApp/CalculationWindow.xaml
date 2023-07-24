@@ -26,9 +26,6 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        <Style x:Key="GVHeaderRightAlignedStyle" TargetType="{x:Type GridViewColumnHeader}">
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
-        </Style>
     </Window.Resources>
 
     <Grid x:Name="MainGrid">
@@ -141,6 +138,7 @@
             <ComboBoxItem Content="Maco_MM"/>
             <ComboBoxItem Content="Vorne"/>
             <ComboBoxItem Content="Roto_NT"/>
+            <ComboBoxItem Content="Roto_NX"/>
             <ComboBoxItem Content="Internika"/>
         </ComboBox>
         <Button x:Name="ButtonP_O" Grid.ColumnSpan="1" Margin="8,0,8,0" Grid.RowSpan="3" Height="60"

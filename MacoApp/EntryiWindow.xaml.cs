@@ -70,7 +70,7 @@ namespace MacoApp
                     }
                     WebClient webClient = new WebClient();
                     //Качаем БД с Google Drive
-                    webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1YuRa3mONi05MHyYtxMSqwEkqpCDe9tQF", path);
+                    webClient.DownloadFile("https://drive.google.com/uc?export=download&id=18-taF3NYGreQkA_MT4sglx4bJ5g2ION6", path);
                     webClient.Dispose();
                 }
                 catch (System.Exception)
@@ -83,6 +83,8 @@ namespace MacoApp
                 return;
             }
         }
+
+        
 
         private void ButtonEditor_Click(object sender, RoutedEventArgs e)
         {

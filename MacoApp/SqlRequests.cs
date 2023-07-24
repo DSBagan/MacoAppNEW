@@ -410,7 +410,7 @@ namespace MacoApp
 
             //Roto_NT************************************************************************************
 
-            else if (Furn == "Roto_NT")
+            else if (Furn == "Roto_NT" || Furn == "Roto_NX")
             {
                 if (FFH >= 310 && FFH <= 620 && FFB <= 800 && Rotation == "Нет" && framuga == "Нет")
                 {
@@ -634,7 +634,7 @@ namespace MacoApp
                     return 0;
                 }
             }
-            else if (Rotation == "Да" && Furn == "Roto_NT")
+            else if (Rotation == "Да" && (Furn == "Roto_NT" || Furn == "Roto_NX"))
             {
                 if (FFH >= 251 && FFH <= 1400)
                 {

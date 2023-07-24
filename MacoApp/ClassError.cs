@@ -218,26 +218,26 @@ namespace MacoApp
                     return 0;
                 }
             }
-            else if (Furn == "Roto_NT" && rotation == "Нет" && framuga == "Нет")
+            else if ((Furn == "Roto_NT" || Furn == "Roto_NX") && rotation == "Нет" && framuga == "Нет")
             {
                 if (FFH < 310)
                 {
-                    MaterialMessageBox.ShowDialog("Высота п/о Roto_NT не может быть менее 310 мм");
+                    MaterialMessageBox.ShowDialog("Высота п/о Roto не может быть менее 310 мм");
                     return 1;
                 }
                 else if (FFB < 290)
                 {
-                    MaterialMessageBox.ShowDialog("Ширина п/о Roto_NT не может быть менее 290 мм");
+                    MaterialMessageBox.ShowDialog("Ширина п/о Roto не может быть менее 290 мм");
                     return 1;
                 }
                 else if (FFH > 2400)
                 {
-                    MaterialMessageBox.ShowDialog("Высота п/о Roto_NT не может быть более 2400 мм");
+                    MaterialMessageBox.ShowDialog("Высота п/о Roto не может быть более 2400 мм");
                     return 1;
                 }
                 else if (FFB > 1400)
                 {
-                    MaterialMessageBox.ShowDialog("Ширина п/о Roto_NT не может быть ,более 1400 мм");
+                    MaterialMessageBox.ShowDialog("Ширина п/о Roto не может быть ,более 1400 мм");
                     return 1;
                 }
                 else if (quantity == 0)
@@ -250,7 +250,7 @@ namespace MacoApp
                     return 0;
                 }
             }
-            else if (Furn == "Roto_NT" && rotation == "Да")
+            else if ((Furn == "Roto_NT" || Furn == "Roto_NX")  && rotation == "Да")
             {
                 if (FFH < 251)
                 {
@@ -272,7 +272,7 @@ namespace MacoApp
                     return 0;
                 }
             }
-            else if (Furn == "Roto_NT" && framuga == "Да")
+            else if ((Furn == "Roto_NT" || Furn == "Roto_NX") && framuga == "Да")
             {
                 if (FFH < 251)
                 {
