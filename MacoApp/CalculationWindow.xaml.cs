@@ -45,9 +45,16 @@ namespace MacoApp
         //Список фрамужных артикулов
         List<string> ArticleFram1 = new List<string> { "52480","52486","52487","94491","42083","42084","V12010102",
             "V12020102","V13030102","V45010107","230177","227354","230252","230205","INT1003.07","1077266","1077266","52486","52486","52321",
-            "52321","264015","230651","264007","1090505","1090506","V16030102"};
+            "52321","264015","230651","264007","1090505","1090506","V16030102", "1084761", "1107269", "1086935", "1107281"};
         List<string> ArticleFram2 = new List<string> { "101548", "V05010102", "482823", "1099150" };
+        //Список ответных планок
+        List<string> response_bars = new List<string> { "34623", "34850", "34780", "V25070102", "V26010102", "V25010102", "338070", "260367", "1077591",
+            "1077246", "1099378", "1082704"};
+        //Список средних прижимов
+        List<string> SrPr = new List<string> { "54783", "41342", "41339", "V17010102", "V44020107", "V44030107", "281639", "281638", "208598", "208600",
+        "1080572", "1080573", "1080574"};
 
+        
         int Count = 1;
         string rotation;
         string rotationTwoArg;
@@ -112,6 +119,16 @@ namespace MacoApp
                 int FFB = Int32.Parse(TextBoxFFB.Text);
                 string Lower_loop = ComboBoxLL.Text;
                 string Micro_ventilation = ComboBoxMv.Text;
+                string wood;
+
+                if (ComboBoxSystem.Text == "Дерево")
+                {
+                    wood = "Да";
+                }
+                else
+                {
+                    wood = "Нет";
+                }
 
                 if (classError.Err(Furn, FFH, FFB, quantity, rotation, framuga) == 1)
                 {
@@ -121,7 +138,7 @@ namespace MacoApp
                 queryString = $"Select * from Elements where (Name_Furn like '" + Furn + "') and(System  = 'Не имеет значения' or System  = '" + System + "') and(Side like 'Не имеет значения' or Side like '" + side + "') " +
                     "and(Lower_loop like '" + Lower_loop + "' or Lower_loop like 'Нет') and(Micro_ventilation like '" + Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +
                     "and(Rotation like '" + rotation + "' or Rotation like '" + rotationTwoArg + "') and(FFH_before = 0 or '" + FFH + "'>=FFH_before) and(FFH_after = 0 or '" + FFH + "' <= FFH_after)" +
-                    " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after) and(Framuga like '" + framuga + "' or Framuga like '" + framugaTwoArg + "')";
+                    " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after) and(Framuga like '" + framuga + "' or Framuga like '" + framugaTwoArg + "') and(Wood  = 'Да/Нет' or Wood  = '" + wood + "')";
                 quantityBar = sqlRequests.Que(rotation, framuga, Furn, FFH, FFB); //Вытаскиваем из класса количество ответных планок
                 quantitySrPr = sqlRequests.QueSrPr(rotation, Furn, FFH); //Количество средних прижимов на поворотной створке
 
@@ -139,57 +156,12 @@ namespace MacoApp
                             while (reader.Read())   // построчно считываем данные
                             {
                                 count++;
-                                string response_bars1 = "";
-                                string response_bars2 = "";
-                                string response_bars3 = "";
-                                string SrPr = "";
-                                string SrPrN1 = "";
-                                string SrPrN2 = "";
-                                string SrPrRama = "";
-
-                                if (Furn == "Maco_Eco" || Furn == "Maco_MM")
-                                {
-                                    response_bars1 = "34623";
-                                    response_bars2 = "34850";
-                                    response_bars3 = "34780";
-                                    SrPr = "54783";
-                                    SrPrN1 = "41342";
-                                    SrPrN2 = "41339";
-                                }
-                                else if (Furn == "Vorne")
-                                {
-                                    response_bars1 = "V25070102";
-                                    response_bars2 = "V26010102";
-                                    response_bars3 = "V25010102";
-                                    SrPr = "V17010102";
-                                    SrPrN1 = "V44020107";
-                                    SrPrN2 = "V44030107";
-                                }
-                                else if (Furn == "Roto_NT" || Furn == "Roto_NX")
-                                {
-                                    response_bars1 = "338070";
-                                    response_bars2 = "260367";
-                                    SrPr = "281639";
-                                    SrPrRama = "281638";
-                                    SrPrN1 = "208598";
-                                    SrPrN2 = "208600";
-                                }
-                                else if (Furn == "Internika")
-                                {
-                                    response_bars1 = "1077591";
-                                    response_bars2 = "1077246";
-                                    response_bars3 = "1099378";
-                                    SrPr = "1080572";
-                                    SrPrN1 = "1080573";
-                                    SrPrN2 = "1080574";
-                                }
-
                                 //Записываем данные в объект класса и ,тем самым, передаём в таблицу
-                                if (reader.GetValue(3).ToString() == response_bars1 || reader.GetValue(3).ToString() == response_bars2 || reader.GetValue(3).ToString() == response_bars3)
+                                if (response_bars.Contains(reader.GetValue(3).ToString()))
                                 {
                                     collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantityBar });
                                 }
-                                else if (reader.GetValue(3).ToString() == SrPr || reader.GetValue(3).ToString() == SrPrN1 || reader.GetValue(3).ToString() == SrPrN2 || reader.GetValue(3).ToString() == SrPrRama)
+                                else if (SrPr.Contains(reader.GetValue(3).ToString()))
                                 {
                                     collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantitySrPr });
                                 }
@@ -240,11 +212,21 @@ namespace MacoApp
                 int FFB = Int32.Parse(TextBoxFFB.Text);
                 string Lower_loop = ComboBoxLL.Text;
                 string Micro_ventilation = ComboBoxMv.Text;
+                string wood;
+
+                if (ComboBoxSystem.Text == "Дерево")
+                {
+                    wood = "Да";
+                }
+                else
+                {
+                    wood = "Нет";
+                }
 
                 queryString = $"Select * from Elements where (Name_Furn like '" + Furn + "') and(System  = 'Не имеет значения' or System  = '" + System + "') and(Side like 'Не имеет значения' or Side like '" + side + "') " +
                     "and(Lower_loop like '" + Lower_loop + "' or Lower_loop like 'Нет') and(Micro_ventilation like '" + Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +
                     "and(Rotation like '" + rotation + "' or Rotation like '" + rotationTwoArg + "') and(FFH_before = 0 or '" + FFH + "'>=FFH_before) and(FFH_after = 0 or '" + FFH + "' <= FFH_after)" +
-                    " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after) and(Framuga like '" + framuga + "' or Framuga like '" + framugaTwoArg + "')";
+                    " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after) and(Framuga like '" + framuga + "' or Framuga like '" + framugaTwoArg + "') and(Wood  = 'Да/Нет' or Wood  = '" + wood + "')";
                 quantityBar = sqlRequests.Que(rotation, framuga, Furn, FFH, FFB); //Вытаскиваем из класса количество ответных планок               
                 quantitySrPr = sqlRequests.QueSrPr(rotation, Furn, FFH); //Количество средних прижимов на поворотной створке
 
@@ -264,55 +246,12 @@ namespace MacoApp
                             while (reader.Read())   // построчно считываем данные
                             {
                                 count++;
-                                string response_bars1 = "";
-                                string response_bars2 = "";
-                                string response_bars3 = "";
-                                string SrPr = "";
-                                string SrPrN1 = "";
-                                string SrPrN2 = "";
-                                string SrPrRama = "";
-                                if (Furn == "Maco_Eco" || Furn == "Maco_MM")
-                                {
-                                    response_bars1 = "34623";
-                                    response_bars2 = "34850";
-                                    response_bars3 = "34780";
-                                    SrPr = "54783";
-                                    SrPrN1 = "41342";
-                                    SrPrN2 = "41339";
-                                }
-                                else if (Furn == "Vorne")
-                                {
-                                    response_bars1 = "V25070102";
-                                    response_bars2 = "V26010102";
-                                    response_bars3 = "V25010102";
-                                    SrPr = "V17010102";
-                                    SrPrN1 = "V44020107";
-                                    SrPrN2 = "V44030107";
-                                }
-                                else if (Furn == "Roto_NT" || Furn == "Roto_NX")
-                                {
-                                    response_bars1 = "338070";
-                                    response_bars2 = "260367";
-                                    SrPr = "281639";
-                                    SrPrRama = "281638";
-                                    SrPrN1 = "208598";
-                                    SrPrN2 = "208600";
-                                }
-                                else if (Furn == "Internika")
-                                {
-                                    response_bars1 = "1077591";
-                                    response_bars2 = "1077246";
-                                    response_bars3 = "1099378";
-                                    SrPr = "1080572";
-                                    SrPrN1 = "1080573";
-                                    SrPrN2 = "1080574";
-                                }
                                 //Записываем данные в объект класса и ,тем самым, передаём в таблицу
-                                if (reader.GetValue(3).ToString() == response_bars1 || reader.GetValue(3).ToString() == response_bars2 || reader.GetValue(3).ToString() == response_bars3)
+                                if (response_bars.Contains(reader.GetValue(3).ToString()))
                                 {
                                     table1.Rows.Add(reader.GetValue(3).ToString(),reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * quantityBar);
                                 }
-                                else if (reader.GetValue(3).ToString() == SrPr || reader.GetValue(3).ToString() == SrPrN1 || reader.GetValue(3).ToString() == SrPrN2 || reader.GetValue(3).ToString() == SrPrRama)
+                                else if (SrPr.Contains(reader.GetValue(3).ToString()))
                                 {
                                     table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * quantitySrPr );
                                 }
@@ -502,15 +441,11 @@ namespace MacoApp
             rotationTwoArg = "Да/Нет";
             framuga = "Нет";
             framugaTwoArg = "Да/Нет";
-            if (ComboBoxFurn.Text == "Roto_NT")
-            {
-                ComboBoxMv.Visibility = Visibility.Hidden;
-                TextBlockMv.Visibility = Visibility.Hidden;
-            }
+
             ComboBoxLL.Visibility = Visibility.Visible;
             TextBlockLL.Visibility = Visibility.Visible;
             ComboBoxSide.Visibility = Visibility.Visible;
-            TextBlockLL.Visibility = Visibility.Visible;
+            TextBlockSide.Visibility = Visibility.Visible;
 
             // Получаем доступ к объекту TextBox
             TextBox myTextBox = this.MainGrid.Children.OfType<TextBox>().ElementAt(2);
@@ -534,7 +469,7 @@ namespace MacoApp
             ComboBoxLL.Visibility = Visibility.Visible;
             TextBlockLL.Visibility = Visibility.Visible;
             ComboBoxSide.Visibility = Visibility.Visible;
-            TextBlockLL.Visibility = Visibility.Visible;
+            TextBlockSide.Visibility = Visibility.Visible;
 
             // Получаем доступ к объекту TextBox
             TextBox myTextBox = this.MainGrid.Children.OfType<TextBox>().ElementAt(2);
@@ -558,7 +493,7 @@ namespace MacoApp
             ComboBoxLL.Visibility= Visibility.Hidden;
             TextBlockLL.Visibility = Visibility.Hidden;
             ComboBoxSide.Visibility = Visibility.Hidden;
-            TextBlockLL.Visibility = Visibility.Hidden;
+            TextBlockSide.Visibility = Visibility.Hidden;
 
             // Получаем доступ к объекту TextBox
             TextBox myTextBox = this.MainGrid.Children.OfType<TextBox>().ElementAt(2);
@@ -586,8 +521,9 @@ namespace MacoApp
             }
             else
             {
-
-                if (index == 0)
+                ComboBoxMv.Visibility = Visibility.Visible;
+                TextBlockMv.Visibility = Visibility.Visible;
+                /*if (index == 0)
                 {
                     ComboBoxMv.Visibility = Visibility.Visible;
                     TextBlockMv.Visibility = Visibility.Visible;
@@ -611,7 +547,7 @@ namespace MacoApp
                 {
                     ComboBoxMv.Visibility = Visibility.Visible;
                     TextBlockMv.Visibility = Visibility.Visible;
-                }
+                }*/
             }
 
         }
