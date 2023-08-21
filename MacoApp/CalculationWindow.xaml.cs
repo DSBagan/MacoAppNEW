@@ -445,7 +445,7 @@ namespace MacoApp
             rotationTwoArg = "Да/Нет";
             framuga = "Нет";
             framugaTwoArg = "Да/Нет";
-
+            
             ComboBoxLL.IsEnabled = true;
             TextBlockLL.IsEnabled = true;
             ComboBoxSide.IsEnabled = true;
@@ -469,6 +469,8 @@ namespace MacoApp
             rotationTwoArg = "Да/Нет";
             framuga = "Нет";
             framugaTwoArg = "Да/Нет";
+            konst = "Нет";
+            //konstTwoArg = "Да/Нет";
             ComboBoxMv.IsEnabled = false;
             TextBlockMv.IsEnabled = false;
             ComboBoxKonst.IsEnabled = false;
@@ -494,6 +496,8 @@ namespace MacoApp
             rotationTwoArg = "Да/Нет";
             framuga = "Да";
             framugaTwoArg = "Да/Нет";
+            konst = "Нет";
+            //konstTwoArg = "Да/Нет";
             ComboBoxMv.IsEnabled = false;
             TextBlockMv.IsEnabled = false;
             ComboBoxLL.IsEnabled = false;
