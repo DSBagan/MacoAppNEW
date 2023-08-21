@@ -9,7 +9,7 @@ namespace MacoApp
 {
     class ClassError
     {
-        public int Err(string Furn, int FFH, int FFB, int quantity, string rotation, string framuga)
+        public int Err(string Furn, int FFH, int FFB, int quantity, string rotation, string framuga, string konst)
         {
             if (Furn == "Maco_Eco" && framuga == "Нет")
             {
@@ -59,7 +59,7 @@ namespace MacoApp
                 {
                     MaterialMessageBox.ShowDialog("Укажите корректное количество комплектов");
                     return 1;
-                }
+                }          
                 else
                 {
                     return 0;

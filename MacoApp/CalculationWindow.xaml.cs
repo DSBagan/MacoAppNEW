@@ -60,6 +60,8 @@ namespace MacoApp
         string rotationTwoArg;
         string framuga;
         string framugaTwoArg;
+        string konst;
+        string konstTwoArg;
         public int quantityBar = 0;
 
 
@@ -102,6 +104,8 @@ namespace MacoApp
             rotationTwoArg = "Да/Нет";
             framuga = "Нет";
             framugaTwoArg = "Да/Нет";
+            konst = "Нет";
+            konstTwoArg = "Да/Нет";
         }
 
         private void ButtonCalc_Click(object sender, RoutedEventArgs e)
@@ -120,7 +124,6 @@ namespace MacoApp
                 string Lower_loop = ComboBoxLL.Text;
                 string Micro_ventilation = ComboBoxMv.Text;
                 string wood;
-                string konst;
 
                 if (ComboBoxSystem.Text == "Дерево")
                 {
@@ -129,17 +132,9 @@ namespace MacoApp
                 else
                 {
                     wood = "Нет";
-                }
-                if (ComboBoxKonst.Text == "Константная")
-                {
-                    konst = "Да";
-                }
-                else
-                {
-                    konst = "Нет";
-                }
+                }     
 
-                if (classError.Err(Furn, FFH, FFB, quantity, rotation, framuga) == 1)
+                if (classError.Err(Furn, FFH, FFB, quantity, rotation, framuga, konst) == 1)
                 {
                     return;
                 }
@@ -147,7 +142,7 @@ namespace MacoApp
                 queryString = $"Select * from Elements where (Name_Furn like '" + Furn + "') and(System  = 'Не имеет значения' or System  = '" + System + "') and(Side like 'Не имеет значения' or Side like '" + side + "') " +
                     "and(Lower_loop like '" + Lower_loop + "' or Lower_loop like 'Нет') and(Micro_ventilation like '" + Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +
                     "and(Rotation like '" + rotation + "' or Rotation like '" + rotationTwoArg + "') and(FFH_before = 0 or '" + FFH + "'>=FFH_before) and(FFH_after = 0 or '" + FFH + "' <= FFH_after)" +
-                    " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after) and(Framuga like '" + framuga + "' or Framuga like '" + framugaTwoArg + "') and(Wood  = 'Да/Нет' or Wood  = '" + wood + "') and(Konst  = 'Да/Нет' or Konst  = '" + konst + "')";
+                    " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after) and(Framuga like '" + framuga + "' or Framuga like '" + framugaTwoArg + "') and(Wood  = 'Да/Нет' or Wood  = '" + wood + "') and(Konst like '" + konst + "' or Konst like '" + konstTwoArg + "')";
                 quantityBar = sqlRequests.Que(rotation, framuga, Furn, FFH, FFB); //Вытаскиваем из класса количество ответных планок
                 quantitySrPr = sqlRequests.QueSrPr(rotation, Furn, FFH); //Количество средних прижимов на поворотной створке
 
@@ -235,7 +230,7 @@ namespace MacoApp
                 queryString = $"Select * from Elements where (Name_Furn like '" + Furn + "') and(System  = 'Не имеет значения' or System  = '" + System + "') and(Side like 'Не имеет значения' or Side like '" + side + "') " +
                     "and(Lower_loop like '" + Lower_loop + "' or Lower_loop like 'Нет') and(Micro_ventilation like '" + Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +
                     "and(Rotation like '" + rotation + "' or Rotation like '" + rotationTwoArg + "') and(FFH_before = 0 or '" + FFH + "'>=FFH_before) and(FFH_after = 0 or '" + FFH + "' <= FFH_after)" +
-                    " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after) and(Framuga like '" + framuga + "' or Framuga like '" + framugaTwoArg + "') and(Wood  = 'Да/Нет' or Wood  = '" + wood + "')";
+                    " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after) and(Framuga like '" + framuga + "' or Framuga like '" + framugaTwoArg + "') and(Wood  = 'Да/Нет' or Wood  = '" + wood + "') and(Konst like '" + konst + "' or Konst like '" + konstTwoArg + "')";
                 quantityBar = sqlRequests.Que(rotation, framuga, Furn, FFH, FFB); //Вытаскиваем из класса количество ответных планок               
                 quantitySrPr = sqlRequests.QueSrPr(rotation, Furn, FFH); //Количество средних прижимов на поворотной створке
 
@@ -440,8 +435,8 @@ namespace MacoApp
 
         private void ButtonP_O_Click(object sender, RoutedEventArgs e)
         {
-            ComboBoxMv.Visibility = Visibility.Visible;
-            TextBlockMv.Visibility = Visibility.Visible;
+            ComboBoxMv.IsEnabled = true;
+            TextBlockMv.IsEnabled = true;
             ButtonP_O.BorderBrush = Brushes.Red;
             ButtonP.BorderBrush = Brushes.White;
             ButtonFram.BorderBrush = Brushes.White;
@@ -451,10 +446,11 @@ namespace MacoApp
             framuga = "Нет";
             framugaTwoArg = "Да/Нет";
 
-            ComboBoxLL.Visibility = Visibility.Visible;
-            TextBlockLL.Visibility = Visibility.Visible;
-            ComboBoxSide.Visibility = Visibility.Visible;
-            TextBlockSide.Visibility = Visibility.Visible;
+            ComboBoxLL.IsEnabled = true;
+            TextBlockLL.IsEnabled = true;
+            ComboBoxSide.IsEnabled = true;
+            TextBlockSide.IsEnabled = true;
+            ComboBoxKonst.IsEnabled = true;
 
             // Получаем доступ к объекту TextBox
             TextBox myTextBox = this.MainGrid.Children.OfType<TextBox>().ElementAt(2);
@@ -473,12 +469,13 @@ namespace MacoApp
             rotationTwoArg = "Да/Нет";
             framuga = "Нет";
             framugaTwoArg = "Да/Нет";
-            ComboBoxMv.Visibility = Visibility.Hidden;
-            TextBlockMv.Visibility = Visibility.Hidden;
-            ComboBoxLL.Visibility = Visibility.Visible;
-            TextBlockLL.Visibility = Visibility.Visible;
-            ComboBoxSide.Visibility = Visibility.Visible;
-            TextBlockSide.Visibility = Visibility.Visible;
+            ComboBoxMv.IsEnabled = false;
+            TextBlockMv.IsEnabled = false;
+            ComboBoxKonst.IsEnabled = false;
+            ComboBoxLL.IsEnabled = true;
+            TextBlockLL.IsEnabled = true;
+            ComboBoxSide.IsEnabled = true;
+            TextBlockSide.IsEnabled = true;
 
             // Получаем доступ к объекту TextBox
             TextBox myTextBox = this.MainGrid.Children.OfType<TextBox>().ElementAt(2);
@@ -497,12 +494,13 @@ namespace MacoApp
             rotationTwoArg = "Да/Нет";
             framuga = "Да";
             framugaTwoArg = "Да/Нет";
-            ComboBoxMv.Visibility = Visibility.Hidden;
-            TextBlockMv.Visibility = Visibility.Hidden;
-            ComboBoxLL.Visibility= Visibility.Hidden;
-            TextBlockLL.Visibility = Visibility.Hidden;
-            ComboBoxSide.Visibility = Visibility.Hidden;
-            TextBlockSide.Visibility = Visibility.Hidden;
+            ComboBoxMv.IsEnabled = false;
+            TextBlockMv.IsEnabled = false;
+            ComboBoxLL.IsEnabled = false;
+            TextBlockLL.IsEnabled = false;
+            ComboBoxSide.IsEnabled = false;
+            TextBlockSide.IsEnabled = false;
+            ComboBoxKonst.IsEnabled = false;
 
             // Получаем доступ к объекту TextBox
             TextBox myTextBox = this.MainGrid.Children.OfType<TextBox>().ElementAt(2);
@@ -525,38 +523,15 @@ namespace MacoApp
             //Скрываем микровентиляцию на поворотных створках и фрамугах
             if (rotation == "Да" || framuga == "Да")
             {
-                ComboBoxMv.Visibility = Visibility.Hidden;
-                TextBlockMv.Visibility = Visibility.Hidden;
+                ComboBoxMv.IsEnabled = false;
+                TextBlockMv.IsEnabled = false;
+                ComboBoxKonst.IsEnabled = false;
             }
             else
             {
-                ComboBoxMv.Visibility = Visibility.Visible;
-                TextBlockMv.Visibility = Visibility.Visible;
-                /*if (index == 0)
-                {
-                    ComboBoxMv.Visibility = Visibility.Visible;
-                    TextBlockMv.Visibility = Visibility.Visible;
-                }
-                if (index == 1)
-                {
-                    ComboBoxMv.Visibility = Visibility.Visible;
-                    TextBlockMv.Visibility = Visibility.Visible;
-                }
-                if (index == 2)
-                {
-                    ComboBoxMv.Visibility = Visibility.Visible;
-                    TextBlockMv.Visibility = Visibility.Visible;
-                }
-                if (index == 3)
-                {
-                    ComboBoxMv.Visibility = Visibility.Hidden;
-                    TextBlockMv.Visibility = Visibility.Hidden;
-                }
-                if (index == 4)
-                {
-                    ComboBoxMv.Visibility = Visibility.Visible;
-                    TextBlockMv.Visibility = Visibility.Visible;
-                }*/
+                ComboBoxMv.IsEnabled = true;
+                TextBlockMv.IsEnabled = true;
+                ComboBoxKonst.IsEnabled = true;
             }
 
         }
@@ -601,6 +576,18 @@ namespace MacoApp
                 }
             }
 
+        }
+
+        private void ComboBoxKonst_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ComboBoxKonst.SelectedIndex == 0)
+            {
+                konst = "Да";
+            }
+            else
+            {
+                konst = "Нет";
+            }
         }
     }
 }

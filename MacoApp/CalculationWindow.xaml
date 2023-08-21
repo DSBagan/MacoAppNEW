@@ -90,7 +90,7 @@
             <ComboBoxItem>Да</ComboBoxItem>
             <ComboBoxItem IsSelected="True">Нет</ComboBoxItem>
         </ComboBox>
-        <ComboBox Name="ComboBoxKonst" Grid.Column="1" Grid.Row="8" Width="100" FontSize="12" Height="25" HorizontalAlignment="Right" >
+        <ComboBox Name="ComboBoxKonst" Grid.Column="1" Grid.Row="8" Width="100" FontSize="12" Height="25" HorizontalAlignment="Right" SelectionChanged="ComboBoxKonst_SelectionChanged" >
             <ComboBoxItem>Константная</ComboBoxItem>
             <ComboBoxItem IsSelected="True">Переменная</ComboBoxItem>
         </ComboBox>
