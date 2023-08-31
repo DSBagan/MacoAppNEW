@@ -218,6 +218,84 @@ namespace MacoApp
                     return 0;
                 }
             }
+            else if (Furn == "Akpen" && rotation == "Нет" && framuga == "Нет")
+            {
+                if (FFH < 500)
+                {
+                    MaterialMessageBox.ShowDialog("Высота п/о Akpen не может быть менее 500 мм");
+                    return 1;
+                }
+                else if (FFB < 350)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина п/о Akpen не может быть менее 350 мм");
+                    return 1;
+                }
+                else if (FFH > 2400)
+                {
+                    MaterialMessageBox.ShowDialog("Высота п/о Akpen не может быть более 2400 мм");
+                    return 1;
+                }
+                else if (FFB > 1100)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина п/о Akpen не может быть ,более 1150 мм");
+                    return 1;
+                }
+                else if (quantity == 0)
+                {
+                    MaterialMessageBox.ShowDialog("Укажите корректное количество комплектов");
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else if (Furn == "Akpen" && rotation == "Да")
+            {
+                if (FFH < 300)
+                {
+                    MaterialMessageBox.ShowDialog("Высота не может быть менее 300 мм");
+                    return 1;
+                }
+                else if (FFH > 2400)
+                {
+                    MaterialMessageBox.ShowDialog("Высота не может быть более 2400 мм");
+                    return 1;
+                }
+                else if (quantity == 0)
+                {
+                    MaterialMessageBox.ShowDialog("Укажите корректное количество комплектов");
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else if (Furn == "Akpen" && framuga == "Да")
+            {
+                if (FFH < 300)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина не может быть менее 300 мм");
+                    return 1;
+                }
+                else if (FFH > 2400)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина не может быть более 2400 мм");
+                    return 1;
+                }
+                else if (quantity == 0)
+                {
+                    MaterialMessageBox.ShowDialog("Укажите корректное количество комплектов");
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+
+
             else if ((Furn == "Roto_NT" || Furn == "Roto_NX") && rotation == "Нет" && framuga == "Нет")
             {
                 if (FFH < 310)

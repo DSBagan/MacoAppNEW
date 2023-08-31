@@ -7,7 +7,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         WindowStyle="SingleBorderWindow"
-        Title="Расчет фурнитуры" Height="515" Width="870" FontSize="10">
+        Title="Расчет фурнитуры" Height="515" Width="950" FontSize="10">
 
     <Window.Resources>
         <Style x:Key="alternatingStyle" TargetType="ListViewItem">
@@ -64,7 +64,6 @@
                 <ImageBrush ImageSource="/MacoFon.png"/>
             </DataGrid.Background>
         </DataGrid>
-
 
         <TextBlock Text="Шифр"  Grid.Column="1" Width="70" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
         <TextBox Name="Code" Grid.Column="1" Width="80" PreviewTextInput="TextBox_PreviewTextInput" PreviewKeyDown="TextBox_PreviewKeyDown" FontSize="12" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="118,0,0,0" Grid.ColumnSpan="1" Background="#FFFDDCDC"/>
@@ -125,6 +124,9 @@
             </ListBox.ItemContainerStyle>
         </ListBox>
 
+
+
+
         <ListBox Name="LBList"   Grid.Column="4" Margin="143,7,72,20" Grid.Row="5" Visibility="Hidden"/>
         <Button Name="ButtonSaveTxt" Content="Сохранить в .txt" Grid.Column="2" Grid.Row="16" 
                 Click="Button_Click" FontSize="10" ToolTip="Нажми, чтобы сохранить расчеты в файл. Найти его можно в папке C:\TBMFurn\"
@@ -146,6 +148,7 @@
             <ComboBoxItem Content="Roto_NT"/>
             <ComboBoxItem Content="Roto_NX"/>
             <ComboBoxItem Content="Internika"/>
+            <ComboBoxItem Content="Akpen"/>
         </ComboBox>
         <Button x:Name="ButtonP_O" Grid.ColumnSpan="1" Margin="8,0,8,0" Grid.RowSpan="3" Height="60"
                 IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"

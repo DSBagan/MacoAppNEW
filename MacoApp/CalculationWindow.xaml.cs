@@ -45,14 +45,14 @@ namespace MacoApp
         //Список фрамужных артикулов
         List<string> ArticleFram1 = new List<string> { "52480","52486","52487","94491","42083","42084","V12010102",
             "V12020102","V13030102","V45010107","230177","227354","230252","230205","INT1003.07","1077266","1077266","52486","52486","52321",
-            "52321","264015","230651","264007","1090505","1090506","V16030102", "1084761", "1107269", "1086935", "1107281"};
-        List<string> ArticleFram2 = new List<string> { "101548", "V05010102", "482823", "1099150" };
+            "52321","264015","230651","264007","1090505","1090506","V16030102", "1084761", "1107269", "1086935", "1107281", "ELM6000100", "ELM4080101"};
+        List<string> ArticleFram2 = new List<string> { "101548", "V05010102", "482823", "1099150",};
         //Список ответных планок
         List<string> response_bars = new List<string> { "34623", "34850", "34780", "V25070102", "V26010102", "V25010102", "338070", "260367", "1077591",
-            "1077246", "1099378", "1082704"};
+            "1077246", "1099378", "1082704", "ELM0020E00", "ELM0050E00"};
         //Список средних прижимов
         List<string> SrPr = new List<string> { "54783", "41342", "41339", "V17010102", "V44020107", "V44030107", "281639", "281638", "208598", "208600",
-        "1080572", "1080573", "1080574"};
+        "1080572", "1080573", "1080574", "ELM6000400", "ELM6000500"};
 
         
         int Count = 1;
@@ -84,6 +84,7 @@ namespace MacoApp
             backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/RotoFon.png")));
             backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/RotoFonNX.png")));
             backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/internikaFon.png")));
+            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/AkpenFon.png")));
 
             backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/P_OL.png")));
             backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/PL.png")));

@@ -509,6 +509,7 @@ namespace MacoApp
                 }
             }
 
+            //Internika***************************************************************************************
             else if (Furn == "Internika")
             {
                 if (FFH >= 420 && FFH <= 600 && FFB <= 610 && Rotation == "Нет" && framuga == "Нет")
@@ -587,10 +588,96 @@ namespace MacoApp
                 }
             }
 
+            //Akpen*******************************************************************************************************
+            else if (Furn == "Akpen")
+            {
+                if (FFH >= 500 && FFH <= 700 && FFB <= 650 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 1;
+                }
+                else if (FFH >= 500 && FFH <= 700 && FFB >= 651 && FFB <= 900 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 3;
+                }
+                else if (FFH >= 500 && FFH <= 700 && FFB >= 951 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 4;
+                }
+                //**********************
+                if (FFH >= 701 && FFH <= 1400 && FFB <= 650 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 4;
+                }
+                else if (FFH >= 701 && FFH <= 1400 && FFB >= 651 && FFB <= 850 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 6;
+                }
+                else if (FFH >= 701 && FFH <= 1400 && FFB >= 851 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 7;
+                }
+                //**********************
+                if (FFH >= 1401 && FFH <= 1900 && FFB <= 650 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 6;
+                }
+                else if (FFH >= 1401 && FFH <= 1900 && FFB >= 651 && FFB <= 850 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 7;
+                }
+                else if (FFH >= 1401 && FFH <= 1900 && FFB >= 851 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 9;
+                }
+                //**********************
+                if (FFH >= 1901 && FFH <= 2400 && FFB <= 650 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 8;
+                }
+                else if (FFH >= 1901 && FFH <= 2400 && FFB >= 651 && FFB <= 850 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 9;
+                }
+                else if (FFH >= 1901 && FFH <= 2400 && FFB >= 851 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 11;
+                }
+                //**********************
+                //Поворотная 
+                else if (Rotation == "Да" && FFH >= 300 && FFH <= 1000)
+                {
+                    return quantityBar = 2;
+                }
+                else if (Rotation == "Да" && FFH >= 1001 && FFH <= 1600)
+                {
+                    return quantityBar = 3;
+                }
+                else if (Rotation == "Да" && FFH >= 1601 && FFH <= 2200)
+                {
+                    return quantityBar = 4;
+                }
+                //Фрамуга
+                else if (framuga == "Да" && FFH >= 300 && FFH <= 1000)
+                {
+                    return quantityBar = 2;
+                }
+                else if (framuga == "Да" && FFH >= 1001 && FFH <= 1600)
+                {
+                    return quantityBar = 3;
+                }
+                else if (framuga == "Да" && FFH >= 1601 && FFH <= 2200)
+                {
+                    return quantityBar = 4;
+                }
+
+                else
+                {
+                    return 0;
+                }
+            }
+
             else { return 0; }
         }
-
-
 
         //СРЕДНИЕ ПРИЖИМЫ++++++++++++++++++++++++++++
 
@@ -615,7 +702,7 @@ namespace MacoApp
                     return 0;
                 }            
             }
-            else if (Rotation == "Да" && Furn == "Vorne")
+            else if (Rotation == "Да" && (Furn == "Vorne"|| Furn == "Akpen"))
             {
                 if (FFH >= 300 && FFH <= 1400)
                 {
