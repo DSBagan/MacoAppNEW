@@ -25,6 +25,10 @@ using static System.Net.WebRequestMethods;
 using System.Runtime.Serialization;
 using System.Reflection;
 using System.Security.Policy;
+using System.Windows.Media.Animation;
+using System.Drawing;
+using Color = System.Windows.Media.Color;
+using ColorConverter = System.Windows.Media.ColorConverter;
 
 namespace MacoApp
 {
@@ -34,11 +38,13 @@ namespace MacoApp
         ClassError classError = new ClassError();
         public ObservableCollection<ClassList> ClassLists { get; set; }
         public SerializationInfo BaseUri { get; private set; }
+        private bool isExpanded = false;
 
         static string path = new FileInfo(Assembly.GetEntryAssembly().Location).Directory.ToString();
 
         DataTable table1 = new DataTable("Table1"); //Таблица для сохранения расчета
         DataTable table2 = new DataTable("Table2"); // Таблица для сохранения всех расчетов
+        DataTable table3 = new DataTable("Table3");
 
         private ObservableCollection<BitmapImage> backgroundsFON = new ObservableCollection<BitmapImage>();
         private ObservableCollection<BitmapImage> backgroundsButtons = new ObservableCollection<BitmapImage>();
@@ -46,7 +52,7 @@ namespace MacoApp
         List<string> ArticleFram1 = new List<string> { "52480","52486","52487","94491","42083","42084","V12010102",
             "V12020102","V13030102","V45010107","230177","227354","230252","230205","INT1003.07","1077266","1077266","52486","52486","52321",
             "52321","264015","230651","264007","1090505","1090506","V16030102", "1084761", "1107269", "1086935", "1107281", "ELM6000100", "ELM4080101"};
-        List<string> ArticleFram2 = new List<string> { "101548", "V05010102", "482823", "1099150",};
+        List<string> ArticleFram2 = new List<string> { "101548", "V05010102", "482823", "1099150", };
         //Список ответных планок
         List<string> response_bars = new List<string> { "34623", "34850", "34780", "V25070102", "V26010102", "V25010102", "338070", "260367", "1077591",
             "1077246", "1099378", "1082704", "ELM0020E00", "ELM0050E00"};
@@ -54,7 +60,7 @@ namespace MacoApp
         List<string> SrPr = new List<string> { "54783", "41342", "41339", "V17010102", "V44020107", "V44030107", "281639", "281638", "208598", "208600",
         "1080572", "1080573", "1080574", "ELM6000400", "ELM6000500"};
 
-        
+
         int Count = 1;
         string rotation;
         string rotationTwoArg;
@@ -63,6 +69,24 @@ namespace MacoApp
         string konst;
         string konstTwoArg;
         public int quantityBar = 0;
+        private bool isPanelExpanded = false;
+        string wood;
+
+        string textBox1Value;
+        string textBox2Value;
+        string textBox3Value;
+        string textBox4Value;
+        string textBox5Value;
+        string textBox6Value;
+        string textBox7Value;
+        string textBox8Value;
+        string textBox9Value;
+        string textBox10Value;
+        string textBox11Value;
+        string textBox12Value;
+        string textBox13Value;
+        string textBox14Value;
+        string textBox15Value;
 
 
         public CalculationWindow()
@@ -78,6 +102,10 @@ namespace MacoApp
             table2.Columns.Add(new DataColumn("Название", typeof(string)));
             table2.Columns.Add(new DataColumn("Количество", typeof(int)));
 
+            table3.Columns.Add(new DataColumn("Артикул", typeof(string)));
+            table3.Columns.Add(new DataColumn("Название", typeof(string)));
+            table3.Columns.Add(new DataColumn("Количество", typeof(int)));
+
             backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/MacoFon.png")));
             backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/MacoFonMM.png")));
             backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/vorneFon.png")));
@@ -90,6 +118,8 @@ namespace MacoApp
             backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/PL.png")));
             backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/P_OP.png")));
             backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/PP.png")));
+
+
         }
 
         private void CalculationWindow_Loaded(object sender, RoutedEventArgs e)
@@ -107,6 +137,7 @@ namespace MacoApp
             framugaTwoArg = "Да/Нет";
             konst = "Нет";
             konstTwoArg = "Да/Нет";
+
         }
 
         private void ButtonCalc_Click(object sender, RoutedEventArgs e)
@@ -133,7 +164,7 @@ namespace MacoApp
                 else
                 {
                     wood = "Нет";
-                }     
+                }
 
                 if (classError.Err(Furn, FFH, FFB, quantity, rotation, framuga, konst) == 1)
                 {
@@ -217,7 +248,7 @@ namespace MacoApp
                 int FFB = Int32.Parse(TextBoxFFB.Text);
                 string Lower_loop = ComboBoxLL.Text;
                 string Micro_ventilation = ComboBoxMv.Text;
-                string wood;
+
 
                 if (ComboBoxSystem.Text == "Дерево")
                 {
@@ -254,36 +285,170 @@ namespace MacoApp
                                 //Записываем данные в объект класса и ,тем самым, передаём в таблицу
                                 if (response_bars.Contains(reader.GetValue(3).ToString()))
                                 {
-                                    table1.Rows.Add(reader.GetValue(3).ToString(),reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * quantityBar);
+                                    table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * quantityBar);
                                 }
                                 else if (SrPr.Contains(reader.GetValue(3).ToString()))
                                 {
-                                    table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * quantitySrPr );
+                                    table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * quantitySrPr);
                                 }
                                 else if (framuga == "Да" && ArticleFram1.Contains(reader.GetValue(3).ToString()) && FFH <= 1600)
                                 {
-                                    table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * 2 );
+                                    table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * 2);
                                 }
                                 else if (framuga == "Да" && ArticleFram1.Contains(reader.GetValue(3).ToString()) && FFH >= 1601 && FFH <= 2400)
                                 {
-                                    table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * 3 );
+                                    table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * 3);
                                 }
                                 else if (framuga == "Да" && ArticleFram2.Contains(reader.GetValue(3).ToString()) && FFH >= 1101)
                                 {
-                                    table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * 2 );
+                                    table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * 2);
                                 }
                                 else
                                 {
-                                    table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity );
+                                    table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity);
                                 }
                             }
+
+
+
                             // Получаем таблицы
                             SaveTable2();
                             LBListCalc.Items.Add("" + Count + ". " + Furn + ": " + TextBoxFFB.Text + "/" +
                                 TextBoxFFH.Text + ", " + ComboBoxSystem.Text + "я, Откр. " + ComboBoxSide.Text + ", Ниж. петл.- " + ComboBoxLL.Text +
                                 ", Микр.- " + ComboBoxMv.Text + " " + TextBoxColvo.Text + " шт.");
+
+                            // Создаем элементы управления для новой строки стекпанели
+                            TextBlock textBlockFurn = new TextBlock();
+                            TextBlock textBlockFFBN = new TextBlock();
+                            textBlockFFBN.Text = " ";
+                            TextBlock textBlockFFB = new TextBlock();
+                            TextBlock textBlockFFHN = new TextBlock();
+                            textBlockFFHN.Text = "/";
+                            TextBlock textBlockFFH = new TextBlock();
+                            TextBlock textBlockSystemN = new TextBlock();
+                            textBlockSystemN.Text = " Сист.: ";
+                            TextBlock textBlockSystem = new TextBlock();
+                            TextBlock textBlockSideN = new TextBlock();
+                            textBlockSideN.Text = " Сторона: ";
+                            TextBlock textBlockSide = new TextBlock();
+                            TextBlock textBlockLLN = new TextBlock();
+                            textBlockLLN.Text = " Н. петл.: ";
+                            TextBlock textBlockLL = new TextBlock();
+                            TextBlock textBlockMicrVN = new TextBlock();
+                            textBlockMicrVN.Text = " Микр.: ";
+                            TextBlock textBlockMicrV = new TextBlock();
+
+                            TextBlock textBlockKonstN = new TextBlock();
+                            textBlockKonstN.Text = " Ручка: ";
+                            TextBlock textBlockKonst = new TextBlock();
+
+                            TextBlock textBlockKonstN1 = new TextBlock();
+                            textBlockKonstN1.Text = "      ";
+                            TextBlock textBlockKolVoN = new TextBlock();
+                            textBlockKolVoN.Text = " шт.  ";
+                            TextBlock textBlockKolVo = new TextBlock();
+
+                            TextBlock textBlockwood = new TextBlock();
+                            textBlockwood.Text = wood;
+                            textBlockwood.Width = 0;
+                            textBlockwood.Height = 0;
+                            TextBlock textBlockrotationTwoArg = new TextBlock();
+                            textBlockrotationTwoArg.Text = rotationTwoArg;
+                            textBlockrotationTwoArg.Width = 0;
+                            textBlockrotationTwoArg.Height = 0;
+                            TextBlock textBlockframugaTwoArg = new TextBlock();
+                            textBlockframugaTwoArg.Text = framugaTwoArg;
+                            textBlockframugaTwoArg.Width = 0;
+                            textBlockframugaTwoArg.Height = 0;
+                            TextBlock textBlockkonstTwoArg = new TextBlock();
+                            textBlockkonstTwoArg.Text = konstTwoArg;
+                            textBlockkonstTwoArg.Width = 0;
+                            textBlockkonstTwoArg.Height = 0;
+                            TextBlock Rotat = new TextBlock();
+                            textBlockkonstTwoArg.Text = rotation;
+                            textBlockkonstTwoArg.Width = 0;
+                            textBlockkonstTwoArg.Height = 0;
+                            TextBlock Framuga = new TextBlock();
+                            textBlockkonstTwoArg.Text = framuga;
+                            textBlockkonstTwoArg.Width = 0;
+                            textBlockkonstTwoArg.Height = 0;
+
+                            Button deleteButton = new Button();
+                            //deleteButton.Width = 10;
+                            deleteButton.Height = 15;
+                            deleteButton.Click += DeleteButton_Click;
+                            deleteButton.Content = " Удалить  ";
+                            Color paleRedColor = (Color)ColorConverter.ConvertFromString("#FFFFD0D0");
+                            SolidColorBrush brush = new SolidColorBrush(paleRedColor);
+                            deleteButton.Background = brush;
+                            deleteButton.HorizontalContentAlignment = HorizontalAlignment.Left;
+                            deleteButton.VerticalContentAlignment = VerticalAlignment.Top;
+                            deleteButton.FontSize = 10;
+                            deleteButton.Padding = new Thickness(0);
+                            deleteButton.Foreground = Brushes.Black;
+
+                            // Задаем значения для TextBlock элементов
+                            textBlockFurn.Text = Furn;
+                            textBlockFFB.Text = "" + FFB;
+                            textBlockFFH.Text = "" + FFH;
+                            textBlockSystem.Text = System;
+                            textBlockSide.Text = side;
+                            textBlockLL.Text = Lower_loop;
+                            textBlockMicrV.Text = Micro_ventilation;
+                            textBlockKonst.Text = konst;
+                            textBlockKolVo.Text = "" + quantity;
+                            textBlockwood.Text = wood;
+                            textBlockrotationTwoArg.Text = rotationTwoArg;
+                            textBlockframugaTwoArg.Text = framugaTwoArg;
+                            textBlockkonstTwoArg.Text = konstTwoArg;
+                            Rotat.Text = rotation;
+                            Rotat.Width = 0;
+                            Rotat.Height = 0;
+                            Framuga.Text = framuga;
+                            Framuga.Width = 0;
+                            Framuga.Height = 0;
+
+                            // Создаем новую строку с использованием созданных элементов
+                            StackPanel newStackPanel = new StackPanel();
+                            newStackPanel.Orientation = Orientation.Horizontal;
+                            newStackPanel.HorizontalAlignment = HorizontalAlignment.Right;
+
+                            newStackPanel.Children.Add(textBlockFurn);
+                            newStackPanel.Children.Add(textBlockFFBN);
+                            newStackPanel.Children.Add(textBlockFFB);
+                            newStackPanel.Children.Add(textBlockFFHN);
+                            newStackPanel.Children.Add(textBlockFFH);
+                            newStackPanel.Children.Add(textBlockSystemN);
+                            newStackPanel.Children.Add(textBlockSystem);
+                            newStackPanel.Children.Add(textBlockSideN);
+                            newStackPanel.Children.Add(textBlockSide);
+                            newStackPanel.Children.Add(textBlockLLN);
+                            newStackPanel.Children.Add(textBlockLL);
+                            newStackPanel.Children.Add(textBlockMicrVN);
+                            newStackPanel.Children.Add(textBlockMicrV);
+                            newStackPanel.Children.Add(textBlockKonstN);
+                            newStackPanel.Children.Add(textBlockKonst);
+                            newStackPanel.Children.Add(textBlockKonstN1);
+                            newStackPanel.Children.Add(textBlockKolVo);
+                            newStackPanel.Children.Add(textBlockKolVoN);
+                            newStackPanel.Children.Add(textBlockwood);
+                            newStackPanel.Children.Add(textBlockrotationTwoArg);
+                            newStackPanel.Children.Add(textBlockframugaTwoArg);
+                            newStackPanel.Children.Add(textBlockkonstTwoArg);
+                            newStackPanel.Children.Add(Rotat);
+                            newStackPanel.Children.Add(Framuga);
+                            newStackPanel.Children.Add(deleteButton);
+                            // Добавляем новую строку в StackPanel
+                            SPSF.Children.Add(newStackPanel);
+                            //массив текстблоков для окрашивания
+                            TextBlock[] textblockArray = new TextBlock[] { textBlockFurn, textBlockFFB, textBlockFFH, textBlockSystem, textBlockSide, textBlockLL, textBlockMicrV, textBlockKonst,
+                                textBlockKolVo, textBlockwood};
+                            ColorTextblock(textblockArray);
                         }
                     }
+
+
+
                     connection.Close();
                 }
                 SaveCalc.IsEnabled = true;
@@ -298,7 +463,29 @@ namespace MacoApp
             TextBoxColvo.Text = "1";
         }
 
+        //Окрашиваем Текстбокс
+        public void ColorTextblock(TextBlock[] textblockArray)
+        {
+            foreach (var TextBlock in textblockArray)
+            {
+                // Получаем текст из текстблока
+                string text = TextBlock.Text;
 
+                // Устанавливаем цвет в зависимости от текста
+                if (text == "Да")
+                {
+                    TextBlock.Foreground = Brushes.Green;
+                }
+                else if (text == "Нет")
+                {
+                    TextBlock.Foreground = Brushes.Red;
+                }
+                else
+                {
+                    TextBlock.Foreground = Brushes.Blue;
+                }
+            }
+        }
         public void SaveTable2() // Сохранение каждого нового расчета в таблицу 2 для дальнейшего сохранения
         {
             // Итерируем по строкам таблицы 1
@@ -326,6 +513,9 @@ namespace MacoApp
                 }
             }
         }
+
+
+
 
         //ввод только цифр в текстбоксы
         private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -429,6 +619,7 @@ namespace MacoApp
 
                 LBListCalc.Items.Clear();
                 LBList.Items.Clear();
+                SPSF.Children.Clear();
                 Count = 1;
             }
             ButtonSaveTxt.IsEnabled = false;
@@ -446,7 +637,7 @@ namespace MacoApp
             rotationTwoArg = "Да/Нет";
             framuga = "Нет";
             framugaTwoArg = "Да/Нет";
-            
+
             ComboBoxLL.IsEnabled = true;
             TextBlockLL.IsEnabled = true;
             ComboBoxSide.IsEnabled = true;
@@ -594,5 +785,183 @@ namespace MacoApp
                 konst = "Нет";
             }
         }
+
+
+        //Изменение размера списка расчетов
+        private void ButtonSpisokName_Click(object sender, RoutedEventArgs e)
+        {
+            if (isPanelExpanded)
+            {
+                // если StackPanel уже раскрыт, то уменьшаем его размеры до исходных
+                SPSF.Width = 0; // возвращает ширину элемента к исходному значению
+                isPanelExpanded = false;
+                ButtonSpisokName.Content = "Нажми, чтобы развернуть список";
+            }
+            else
+            {
+                // если StackPanel свернут, то увеличиваем его размеры на определенную величину
+                //SPSF.Width = 600; // увеличиваем ширину
+                isPanelExpanded = true;
+
+                double maxWidth = 0;
+                foreach (UIElement child in SPSF.Children)
+                {
+                    double width = child.RenderSize.Width;
+                    if (width > maxWidth)
+                    {
+                        maxWidth = width;
+                    }
+                }
+                ButtonSpisokName.Content = "Нажми, чтобы свернуть список";
+                SPSF.Width = maxWidth;
+            }
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Получаем кнопку, на которую было нажато
+            Button deleteButton = (Button)sender;
+            // Получаем родительский StackPanel
+            StackPanel parentStackPanel = (StackPanel)deleteButton.Parent;
+
+            textBox1Value = ((TextBlock)parentStackPanel.Children[0]).Text;
+            textBox2Value = ((TextBlock)parentStackPanel.Children[2]).Text;
+            textBox3Value = ((TextBlock)parentStackPanel.Children[4]).Text;
+            textBox4Value = ((TextBlock)parentStackPanel.Children[6]).Text;
+            textBox5Value = ((TextBlock)parentStackPanel.Children[8]).Text;
+            textBox6Value = ((TextBlock)parentStackPanel.Children[10]).Text;
+            textBox7Value = ((TextBlock)parentStackPanel.Children[12]).Text;
+            textBox8Value = ((TextBlock)parentStackPanel.Children[14]).Text;
+            textBox9Value = ((TextBlock)parentStackPanel.Children[16]).Text;
+            textBox10Value = ((TextBlock)parentStackPanel.Children[18]).Text;
+            textBox11Value = ((TextBlock)parentStackPanel.Children[19]).Text;
+            textBox12Value = ((TextBlock)parentStackPanel.Children[20]).Text;
+            textBox13Value = ((TextBlock)parentStackPanel.Children[21]).Text;
+            textBox14Value = ((TextBlock)parentStackPanel.Children[22]).Text;
+            textBox15Value = ((TextBlock)parentStackPanel.Children[23]).Text;
+
+            // Получаем значения TextBlock элементов в строке
+
+            try
+            {
+                string queryString;
+                string queryStringCreateTable;
+                string Furn = textBox1Value;
+                int quantity = int.Parse(textBox9Value);
+                int quantitySrPr = int.Parse(textBox9Value);
+                string System = textBox4Value;
+                string side = textBox5Value;
+                int FFH = int.Parse(textBox3Value);
+                int FFB = int.Parse(textBox2Value);
+                string Lower_loop = textBox6Value;
+                string Micro_ventilation = textBox7Value;
+                string FramugaTwoArg = textBox12Value;
+                string KonstTwoArg = textBox13Value;
+                string RotationTwoArg = textBox11Value;
+                string Wood = textBox10Value;
+                string Rot = textBox14Value;
+                string Fr = textBox15Value;
+                string Konst = textBox8Value;
+
+
+                queryString = $"Select * from Elements where (Name_Furn like '" + Furn + "') and(System  = 'Не имеет значения' or System  = '" + System + "') and(Side like 'Не имеет значения' or Side like '" + side + "') " +
+                    "and(Lower_loop like '" + Lower_loop + "' or Lower_loop like 'Нет') and(Micro_ventilation like '" + Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +
+                    "and(Rotation like '" + Rot + "' or Rotation like '" + RotationTwoArg + "') and(FFH_before = 0 or '" + FFH + "'>=FFH_before) and(FFH_after = 0 or '" + FFH + "' <= FFH_after)" +
+                    " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after) and(Framuga like '" + Fr + "' or Framuga like '" + FramugaTwoArg + "') and(Wood  = 'Да/Нет' or Wood  = '" + Wood + "') and(Konst like '" + Konst + "' or Konst like '" + KonstTwoArg + "')";
+                quantityBar = sqlRequests.Que(Rot, Fr, Furn, FFH, FFB); //Вытаскиваем из класса количество ответных планок               
+                quantitySrPr = sqlRequests.QueSrPr(Rot, Furn, FFH); //Количество средних прижимов на поворотной створке
+
+                using (var connection = new SqliteConnection("Data Source=Furnapp.db"))
+                {
+                    ObservableCollection<ClassList> collection = null; //Обнуляем коллекцию для нового расчета
+                    table1.Rows.Clear();
+                    collection = new ObservableCollection<ClassList>();
+                    GridList.ItemsSource = collection;
+                    connection.Open();
+                    SqliteCommand command = new SqliteCommand(queryString, connection);
+
+                    using (SqliteDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows) // если есть данные
+                        {
+                            while (reader.Read())   // построчно считываем данные
+                            {
+                                //Записываем данные в объект класса и ,тем самым, передаём в таблицу
+                                if (response_bars.Contains(reader.GetValue(3).ToString()))
+                                {
+                                    table3.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * quantityBar);
+                                }
+                                else if (SrPr.Contains(reader.GetValue(3).ToString()))
+                                {
+                                    table3.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * quantitySrPr);
+                                }
+                                else if (framuga == "Да" && ArticleFram1.Contains(reader.GetValue(3).ToString()) && FFH <= 1600)
+                                {
+                                    table3.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * 2);
+                                }
+                                else if (framuga == "Да" && ArticleFram1.Contains(reader.GetValue(3).ToString()) && FFH >= 1601 && FFH <= 2400)
+                                {
+                                    table3.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * 3);
+                                }
+                                else if (framuga == "Да" && ArticleFram2.Contains(reader.GetValue(3).ToString()) && FFH >= 1101)
+                                {
+                                    table3.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * 2);
+                                }
+                                else
+                                {
+                                    table3.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity);
+                                }
+                            }
+                            //Удаляем из таблицы
+                            DeletedTable2();
+                            table3.Clear();
+                        }
+                    }
+                    connection.Close();
+                }
+                SaveCalc.IsEnabled = true;
+            }
+            catch
+            {
+                //MaterialMessageBox.ShowDialog("Одно или несколько полей пустое");
+                return;
+            }
+
+            // Удаляем строку из StackPanel
+            SPSF.Children.Remove(parentStackPanel);
+        }
+
+        public void DeletedTable2() //Удаление расчета из таблицы 2 при удалении его из списка расчетов
+        {
+            foreach (DataRow row3 in table3.Rows)
+            {
+                // Получаем значение первой колонки текущей строки
+                string value1 = row3[0].ToString();
+
+                // Итерируем по строкам таблицы 2
+                DataRow row2 = table2.Rows.Cast<DataRow>().FirstOrDefault(r => r[0].ToString() == value1);
+
+                // Если есть строка в таблице 2 с таким же значением первой колонки
+                if (row2 != null)
+                {
+                    // Отнимаем от второй таблицы значения количества третьей
+                    int sum = Convert.ToInt32(row2[2]) - Convert.ToInt32(row3[2]);
+
+                    // Если значение sum равно нулю, то удаляем строку из таблицы 2
+                    if (sum == 0)
+                    {
+                        table2.Rows.Remove(row2);
+                    }
+                    else
+                    {
+                        // Присваиваем второй таблице значение суммы 
+                        row2[2] = sum;
+                    }
+                }
+            }
+
+        }
+
+
     }
 }

@@ -21,7 +21,7 @@ namespace MacoApp
             InitializeComponent();       
             Loaded += EntryiWindow_Loaded;
         }
-        private bool CheckNet() // Проверка подключения к сети
+        /*private bool CheckNet() // Проверка подключения к сети
         {
             bool stats;
             try
@@ -42,10 +42,13 @@ namespace MacoApp
                 IntOff.Visibility = Visibility.Visible;
             }
             return stats;
-        }
+        }*/
 
         private void EntryiWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            IntOn.Visibility = Visibility.Collapsed;
+            IntOff.Visibility = Visibility.Collapsed;
+            ButtonEditor.Visibility = Visibility.Collapsed;
             if (Directory.Exists(@"C:\aTBMFURN\"))
             {
                 string[] files = Directory.GetFiles(@"C:\aTBMFURN\");
@@ -56,9 +59,19 @@ namespace MacoApp
                 // Удаление папки и всех ее подпапок и файлов
             }
 
-            
+            FileInfo fileInf = new FileInfo(path);
+            if (fileInf.Exists)
+            {
+                fileInf.Delete();
+            }
+            WebClient webClient = new WebClient();
+            //Качаем БД с Google Drive
+            webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1s7urxFnWFxXDV9hlAM0T2K7cK5YxBX2t", path);
+            webClient.Dispose();
 
-            if (CheckNet() == true)  // Проверяем подключение к сети
+
+
+            /*if (CheckNet() == true)  // Проверяем подключение к сети
             {
                 try
                 {
@@ -81,7 +94,7 @@ namespace MacoApp
             else 
             {
                 return;
-            }
+            }*/
         }
 
         
