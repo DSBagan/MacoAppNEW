@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Interop;
 using System.Windows.Media;
+using TBMFurn;
 
 namespace MacoApp
 {
@@ -49,9 +50,10 @@ namespace MacoApp
             IntOn.Visibility = Visibility.Collapsed;
             IntOff.Visibility = Visibility.Collapsed;
             ButtonEditor.Visibility = Visibility.Collapsed;
-            if (Directory.Exists(@"C:\aTBMFURN\"))
+            ButtonExcel.Visibility = Visibility.Collapsed;
+            if (Directory.Exists(@"X:\aTBMFURN\"))
             {
-                string[] files = Directory.GetFiles(@"C:\aTBMFURN\");
+                string[] files = Directory.GetFiles(@"X:\aTBMFURN\");
                 foreach (string file in files)
                 {
                     File.Delete(file);
@@ -66,7 +68,7 @@ namespace MacoApp
             }
             WebClient webClient = new WebClient();
             //Качаем БД с Google Drive
-            webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1s7urxFnWFxXDV9hlAM0T2K7cK5YxBX2t", path);
+            webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1dgl3CqcKQvBH_J_2lwnEv5Di1qk1xBcV", path);
             webClient.Dispose();
 
 
@@ -97,7 +99,7 @@ namespace MacoApp
             }*/
         }
 
-        
+
 
         private void ButtonEditor_Click(object sender, RoutedEventArgs e)
         {
@@ -124,5 +126,11 @@ namespace MacoApp
             //workGoogleDrive.DeleteFile("123");
         }
 
+        private void ButtonExcel_Click(object sender, RoutedEventArgs e)
+        {
+            LoadInExcelWindow loadExcelWindow = new LoadInExcelWindow();
+            loadExcelWindow.Show();
+            this.Close();
+        }
     }
 }

@@ -9,16 +9,6 @@
         WindowStyle="SingleBorderWindow"
         Title="Расчет фурнитуры" Height="540" Width="1000" FontSize="10">
 
-    <Window.Resources>
-        <Style TargetType="StackPanel">
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#FFFFDBDB"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </Window.Resources>
-
     <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
@@ -40,7 +30,7 @@
             <RowDefinition Height="3*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="30"/>
+            <ColumnDefinition Width="1"/>
             <ColumnDefinition Width="65"/>
             <ColumnDefinition Width="3*"/>
             <ColumnDefinition Width="7*"/>
@@ -84,14 +74,14 @@
             <ComboBoxItem>Константная</ComboBoxItem>
             <ComboBoxItem IsSelected="True">Переменная</ComboBoxItem>
         </ComboBox>
-        <TextBox Name="TextBoxColvo" Text="1" PreviewTextInput="TextBox_PreviewTextInput" MaxLength="3" PreviewKeyDown="TextBox_PreviewKeyDown" Grid.Row="14" Width="60" HorizontalAlignment="Right" FontSize="12" VerticalAlignment="Center" Grid.Column="2" Margin="0,0,10,0"/>
+        <TextBox Name="TextBoxColvo" Text="1" PreviewTextInput="TextBox_PreviewTextInput" MaxLength="3" PreviewKeyDown="TextBox_PreviewKeyDown" Grid.Row="11" Width="60" HorizontalAlignment="Right" FontSize="12" VerticalAlignment="Center" Grid.Column="2" Margin="0,0,10,0"/>
 
-        <Button Name="ButtonCalc" Content="Рассчитать" Grid.Row="17" Height="30" HorizontalContentAlignment="Center" 
+        <Button Name="ButtonCalc" Content="Рассчитать" Grid.Row="13" Height="30" HorizontalContentAlignment="Center" 
                     VerticalAlignment="Top" Margin="9,0,15,0" Click="ButtonCalc_Click" FontSize="14" Cursor="Hand" 
                     ToolTip="Нажми, чтобы рассчитать комплект" 
                     IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
                     Style="{StaticResource MaterialDesignPaperLightButton}" FontWeight="Normal" FontStretch="Normal" Grid.RowSpan="3" Grid.ColumnSpan="2" Grid.Column="1"/>
-        <Button Name="SaveCalc" Content="Сохранить расчет" Grid.Row="17" Margin="9,0,15,10" HorizontalContentAlignment="Center" VerticalContentAlignment="Stretch"
+        <Button Name="SaveCalc" Content="Сохранить расчет" Grid.Row="14" Margin="9,0,15,10" HorizontalContentAlignment="Center" VerticalContentAlignment="Stretch"
                     VerticalAlignment="Bottom" Click="SaveCalc_Click" Height="30" FontSize="14" 
                     ToolTip="Нажми, чтобы добавить расчет к списку на сохранение"
                     IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
@@ -104,12 +94,12 @@
         <TextBlock x:Name="TextBlockLL" Text="Нижняя петля"  Grid.Column="2" Grid.Row="6" Width="110" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
         <TextBlock x:Name="TextBlockMv" Text="Микровентиляция"  Grid.Column="2" Grid.Row="7" Width="110" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
         <TextBlock x:Name="TextBlockKonst" Text="Высота ручки"  Grid.Column="2" Grid.Row="8" Width="75" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
-        <TextBlock Text="Колич. комплектов"  Grid.Column="2" Grid.Row="14" Width="110" HorizontalAlignment="Left" FontSize="12" VerticalAlignment="Center" Margin="10,0,0,0"/>
+        <TextBlock Text="Колич. комплектов"  Grid.Column="2" Grid.Row="11" Width="110" HorizontalAlignment="Left" FontSize="12" VerticalAlignment="Center" Margin="10,0,0,0"/>
 
         <ListBox Name="LBList"   Grid.Column="4" Margin="144,7,4,20" Grid.Row="5" Visibility="Hidden"/>
 
         <Button Name="ButtonSaveTxt" Content="Сохранить в .txt" Grid.Column="3" Grid.Row="16" 
-                Click="Button_Click" FontSize="12" ToolTip="Нажми, чтобы сохранить расчеты в файл. Найти его можно в папке C:\TBMFurn\"
+                Click="Button_Click" FontSize="12" ToolTip="Нажми, чтобы сохранить расчеты в файл. Найти его можно в папке X:\TBMFurn\"
                 IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
                 Style="{StaticResource MaterialDesignPaperLightButton}"
                 HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="250,0,0,10" Background="White" Padding="10,0,10,0"/>
@@ -130,7 +120,7 @@
             <ComboBoxItem Content="Internika"/>
             <ComboBoxItem Content="Akpen"/>
         </ComboBox>
-        <Button x:Name="ButtonP_O" Grid.ColumnSpan="1" Margin="2,9,8,10" Grid.RowSpan="3" Height="60"
+        <Button x:Name="ButtonP_O" Grid.ColumnSpan="1" Margin="5,9,10,10" Grid.RowSpan="3" Height="60"
                 IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
                 Style="{StaticResource MaterialDesignPaperLightButton}" Foreground="{x:Null}"
                 ToolTip="Поворотно-откидной комплект" Click="ButtonP_O_Click" BorderThickness="2,2,2,2" BorderBrush="White" Grid.Column="1">
@@ -138,7 +128,7 @@
                 <ImageBrush ImageSource="/P_OP.PNG"/>
             </Button.Background>
         </Button>
-        <Button x:Name="ButtonP" Grid.ColumnSpan="1" Margin="2,9,8,10" Grid.RowSpan="3" Height="60"
+        <Button x:Name="ButtonP" Grid.ColumnSpan="1" Margin="5,9,10,10" Grid.RowSpan="3" Height="60"
             IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
             Style="{StaticResource MaterialDesignPaperLightButton}" Foreground="{x:Null}" Grid.Row="3"
             ToolTip="Поворотный комплект" Click="ButtonP_Click" BorderBrush="White" BorderThickness="2,2,2,2" Grid.Column="1">
@@ -149,7 +139,7 @@
         <Button x:Name="ButtonFram" Grid.ColumnSpan="1" Height="36"
             IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
             Style="{StaticResource MaterialDesignPaperLightButton}" Foreground="{x:Null}" Grid.Row="6" Width="60"
-            ToolTip="Фрамуга" Click="ButtonFram_Click" BorderThickness="2,2,2,2" BorderBrush="White" Grid.RowSpan="2" Grid.Column="1">
+            ToolTip="Фрамуга" Click="ButtonFram_Click" BorderThickness="2,2,2,2" BorderBrush="White" Grid.RowSpan="2" Grid.Column="1" Margin="2,0,5,0">
             <Button.Background>
                 <ImageBrush ImageSource="/FRAM.PNG"/>
             </Button.Background>
@@ -164,22 +154,17 @@
                 </Style>
             </ListBox.ItemContainerStyle>
         </ListBox>
-
-        <StackPanel x:Name="SPSF" Grid.RowSpan="17" Grid.Column="1" Background="White" Width="0" Grid.ColumnSpan="4" 
-                    HorizontalAlignment="Left" Margin="0,10,0,10">
-            <StackPanel.Effect>
-                <DropShadowEffect Color="#FF7B898A" Direction="315" ShadowDepth="3" BlurRadius="14"/>
-            </StackPanel.Effect>
-        </StackPanel>
-
-
-
-        <Button x:Name="ButtonSpisokName" Height="{Binding ActualHeight, ElementName=BorderSpisok}" Content="Нажми, чтобы развернуть список"
-                Style="{StaticResource MaterialDesignPaperLightButton}" Grid.RowSpan="17" Margin="5,10,5,10" Click="ButtonSpisokName_Click" Padding="0,0,0,0"
-                VerticalContentAlignment="Top">
-            <Button.LayoutTransform>
-                <RotateTransform Angle="270" />
-            </Button.LayoutTransform>
-        </Button>
+        <ScrollViewer x:Name="SVSP" Grid.RowSpan="16" Grid.Column="1" Background="#FFFCFFFF" Grid.ColumnSpan="4" 
+                    HorizontalAlignment="Left" Margin="10,0,0,10" Grid.Row="1" Height="70" Width="500" VerticalAlignment="Bottom">
+            <ScrollViewer.Effect>
+                <DropShadowEffect Color="#FFB6D9DC" Direction="315" ShadowDepth="3" BlurRadius="10"/>
+            </ScrollViewer.Effect>
+            <StackPanel x:Name="SPSF">
+                <Button x:Name="ButtonSpisokName" Content="▲"
+                Style="{StaticResource MaterialDesignPaperLightButton}" Click="ButtonSpisokName_Click" Padding="0,0,0,0"
+                VerticalContentAlignment="Center" Grid.Row="16" HorizontalAlignment="Right" VerticalAlignment="Top" Width="12" Height="12" FontSize="11" FontWeight="Bold">
+                </Button>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Window>

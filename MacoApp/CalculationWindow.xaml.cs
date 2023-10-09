@@ -29,6 +29,8 @@ using System.Windows.Media.Animation;
 using System.Drawing;
 using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
+using System.Reflection.Emit;
+using TBMFurn;
 
 namespace MacoApp
 {
@@ -88,6 +90,9 @@ namespace MacoApp
         string textBox14Value;
         string textBox15Value;
 
+        string CountSP;
+
+        
 
         public CalculationWindow()
         {
@@ -119,6 +124,7 @@ namespace MacoApp
             backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/P_OP.png")));
             backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/PP.png")));
 
+            
 
         }
 
@@ -378,7 +384,7 @@ namespace MacoApp
                             deleteButton.Height = 15;
                             deleteButton.Click += DeleteButton_Click;
                             deleteButton.Content = " Удалить  ";
-                            Color paleRedColor = (Color)ColorConverter.ConvertFromString("#FFFFD0D0");
+                            Color paleRedColor = (Color)ColorConverter.ConvertFromString("#FFFFF5F5");
                             SolidColorBrush brush = new SolidColorBrush(paleRedColor);
                             deleteButton.Background = brush;
                             deleteButton.HorizontalContentAlignment = HorizontalAlignment.Left;
@@ -561,7 +567,7 @@ namespace MacoApp
             else
             {
                 // Проверяем есть ли на диске C папка, если нет- создаем
-                Directory.CreateDirectory(@"C:\aTBMFURN\");
+                Directory.CreateDirectory(@"X:\aTBMFURN\");
                 String date = DateTime.Now.ToString(" dd.MM.yyyy HH-mm-ss");
                 int CTlangth = Code.Text.Length;
                 if (CTlangth < 6)
@@ -571,7 +577,7 @@ namespace MacoApp
                         Code.Text = "0" + Code.Text;
                     }
                 }
-                using (StreamWriter streamWriter = new StreamWriter(@"C:\aTBMFURN\" + "Z" + Code.Text + " " + date + ".txt", false, Encoding.Default))
+                using (StreamWriter streamWriter = new StreamWriter(@"X:\aTBMFURN\" + "Z" + Code.Text + " " + date + ".txt", false, Encoding.Default))
                 {
                     streamWriter.WriteLine("                    Шифр фирмы " + Code.Text);
                     streamWriter.WriteLine("                    Фирма 123");
@@ -793,27 +799,20 @@ namespace MacoApp
             if (isPanelExpanded)
             {
                 // если StackPanel уже раскрыт, то уменьшаем его размеры до исходных
-                SPSF.Width = 0; // возвращает ширину элемента к исходному значению
+                //SPSF.Width = 500; // возвращает ширину элемента к исходному значению
+                SVSP.Height = 70;
                 isPanelExpanded = false;
-                ButtonSpisokName.Content = "Нажми, чтобы развернуть список";
+                ButtonSpisokName.Content = "▲";
             }
             else
             {
                 // если StackPanel свернут, то увеличиваем его размеры на определенную величину
                 //SPSF.Width = 600; // увеличиваем ширину
                 isPanelExpanded = true;
+                SVSP.Height = 400;
 
-                double maxWidth = 0;
-                foreach (UIElement child in SPSF.Children)
-                {
-                    double width = child.RenderSize.Width;
-                    if (width > maxWidth)
-                    {
-                        maxWidth = width;
-                    }
-                }
-                ButtonSpisokName.Content = "Нажми, чтобы свернуть список";
-                SPSF.Width = maxWidth;
+                ButtonSpisokName.Content = "▼";
+  
             }
         }
 
@@ -961,7 +960,5 @@ namespace MacoApp
             }
 
         }
-
-
     }
 }
