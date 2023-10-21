@@ -68,35 +68,9 @@ namespace MacoApp
             }
             WebClient webClient = new WebClient();
             //Качаем БД с Google Drive
-            webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1dgl3CqcKQvBH_J_2lwnEv5Di1qk1xBcV", path);
+            webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1RxaQ-sf04d7mW9nBfgRGD0JGfwD3YcXL", path);
             webClient.Dispose();
 
-
-
-            /*if (CheckNet() == true)  // Проверяем подключение к сети
-            {
-                try
-                {
-                    //Если доступ к сети есть, то удаляем файл с БД и далее качаем новый
-                    FileInfo fileInf = new FileInfo(path);
-                    if (fileInf.Exists)
-                    {
-                        fileInf.Delete();                   
-                    }
-                    WebClient webClient = new WebClient();
-                    //Качаем БД с Google Drive
-                    webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1txVrhJM7Ge6xDZ9-SR1jTXLC4GZY2geh", path);
-                    webClient.Dispose();
-                }
-                catch (System.Exception)
-                {                   
-                    return;
-                }
-            }
-            else 
-            {
-                return;
-            }*/
         }
 
 
