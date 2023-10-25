@@ -331,7 +331,7 @@ namespace MacoApp
                 {
                     return quantityBar = 4;
                 }
-                else if (FFH >= 450 && FFH <= 700 && FFB >= 601 && FFB <= 650 && Rotation == "Нет" && framuga == "Нет")
+                else if (FFH >= 701 && FFH <= 1200 && FFB >= 601 && FFB <= 650 && Rotation == "Нет" && framuga == "Нет")
                 {
                     return quantityBar = 5;
                 }
@@ -348,7 +348,7 @@ namespace MacoApp
                 {
                     return quantityBar = 4;
                 }
-                else if (FFH >= 450 && FFH <= 700 && FFB >= 601 && FFB <= 650 && Rotation == "Нет" && framuga == "Нет")
+                else if (FFH >= 1201 && FFH <= 1700 && FFB >= 601 && FFB <= 650 && Rotation == "Нет" && framuga == "Нет")
                 {
                     return quantityBar = 5;
                 }
@@ -365,7 +365,7 @@ namespace MacoApp
                 {
                     return quantityBar = 6;
                 }
-                else if (FFH >= 450 && FFH <= 700 && FFB >= 601 && FFB <= 650 && Rotation == "Нет" && framuga == "Нет")
+                else if (FFH >= 1700 && FFH <= 1900 && FFB >= 601 && FFB <= 650 && Rotation == "Нет" && framuga == "Нет")
                 {
                     return quantityBar = 7;
                 }
@@ -382,7 +382,7 @@ namespace MacoApp
                 {
                     return quantityBar = 7;
                 }
-                else if (FFH >= 450 && FFH <= 700 && FFB >= 601 && FFB <= 650 && Rotation == "Нет" && framuga == "Нет")
+                else if (FFH >= 1901 && FFH <= 2400 && FFB >= 601 && FFB <= 650 && Rotation == "Нет" && framuga == "Нет")
                 {
                     return quantityBar = 8;
                 }
