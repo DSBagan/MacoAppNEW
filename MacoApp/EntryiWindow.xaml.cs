@@ -22,28 +22,7 @@ namespace MacoApp
             InitializeComponent();       
             Loaded += EntryiWindow_Loaded;
         }
-        /*private bool CheckNet() // Проверка подключения к сети
-        {
-            bool stats;
-            try
-            {
-                using (var client = new System.Net.WebClient())
-                using (var stream = client.OpenRead("https://www.google.com"))
-                {
-                    stats = true;
-                    IntOff.Visibility = Visibility.Collapsed;
-                    IntOn.Visibility = Visibility.Visible;
-                    ButtonEditor.Visibility = Visibility.Hidden;
-                }
-            }
-            catch
-            {
-                stats = false;
-                IntOn.Visibility = Visibility.Collapsed;
-                IntOff.Visibility = Visibility.Visible;
-            }
-            return stats;
-        }*/
+        
 
         private void EntryiWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -68,9 +47,13 @@ namespace MacoApp
             }
             WebClient webClient = new WebClient();
             //Качаем БД с Google Drive
-            webClient.DownloadFile("https://drive.google.com/uc?export=download&id=18KBF6LMWrxoDqy8cUdEUaZYCXC_8SLPu", path);
-            webClient.Dispose();
 
+            webClient.Headers.Add("Authorization", "OAuth " + "y0_AgAAAAALr7uSAAtJCQAAAAD659GMAAD3MwTeObNHSYtT-QXgW3qQyAP7uA");
+            webClient.DownloadFile("https://disk.yandex.ru/d/YO3zPtIb0tAvww", path);
+
+            /*
+            webClient.DownloadFile("https://drive.google.com/uc?export=download&id=18KBF6LMWrxoDqy8cUdEUaZYCXC_8SLPu", path);
+            webClient.Dispose();*/
         }
 
 
