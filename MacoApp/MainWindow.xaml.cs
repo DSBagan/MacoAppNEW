@@ -9,20 +9,23 @@ using System.Windows.Documents;
 using System.Windows.Data;
 using System.Windows.Controls;
 using System.Linq;
+using MySql.Data.MySqlClient;
+using Microsoft.Data.Sqlite;
+using System.Data;
+using System.Data.SqlClient;
+using System.Data.SQLite;
+using System.Windows.Media.Imaging;
+using System.Xml.Linq;
 
 namespace MacoApp
 {
     public partial class MainWindow : Window
     {
         ApplicationContext db = new ApplicationContext();
-        WorkGoogleDrive workGoogle = new WorkGoogleDrive();
 
         static string path = new FileInfo(Assembly.GetEntryAssembly().Location).Directory.ToString() + "\\Furnapp.db";
         static string pathSaveFolder = new FileInfo(Assembly.GetEntryAssembly().Location).Directory.ToString() + "\\SaveDB";
         static string path2 = pathSaveFolder+ "\\Furnapp.db";
-        /*static string path = ""+new Uri("pack://application:,,,/Furnapp.db");
-        static string pathSaveFolder = "" + new Uri("pack://application:,,,/SaveDB");
-        static string path2 = "" + new Uri("pack://application:,,,/SaveDB/Furnapp.db");*/
 
         public MainWindow()
         {
@@ -39,7 +42,7 @@ namespace MacoApp
             db.Elements.Load();
             // и устанавливаем данные в качестве контекста
             DataContext = db.Elements.Local.ToObservableCollection();
-            
+
             //ButtonSearch.IsEnabled = false;
             //TextBoxSearch.IsEnabled = false;
         }
@@ -176,7 +179,7 @@ namespace MacoApp
                 //Передем файл в стрим для передачи в Google Drive
                 FileStream fs = new FileStream(path2, FileMode.Open);
                 //Передаем файл в Google Drive
-                workGoogle.UpdateFile(fs, "1wJMEaa45ewtQJD4S9a596s4bkTNJBtsN", "Data Base File/db");
+                //workGoogle.UpdateFile(fs, "1wJMEaa45ewtQJD4S9a596s4bkTNJBtsN", "Data Base File/db");
             }
             catch (System.Exception)
             {

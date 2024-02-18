@@ -31,6 +31,7 @@ using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 using System.Reflection.Emit;
 using TBMFurn;
+using MySql.Data.MySqlClient;
 
 namespace MacoApp
 {
