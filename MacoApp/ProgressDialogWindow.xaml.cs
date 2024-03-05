@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +8,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
@@ -17,20 +15,13 @@ using System.Windows.Shapes;
 namespace TBMFurn
 {
     /// <summary>
-    /// Логика взаимодействия для LoadInExcelWindow.xaml
+    /// Логика взаимодействия для ProgressDialogWindow.xaml
     /// </summary>
-    public partial class LoadInExcelWindow : Window
+    public partial class ProgressDialogWindow : Window
     {
-        List<ExcelEnter> excelEnter = new List<ExcelEnter>();
-        public LoadInExcelWindow()
+        public ProgressDialogWindow()
         {
             InitializeComponent();
-
-        }
-
-        private void ButtonExit_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
         }
     }
 }

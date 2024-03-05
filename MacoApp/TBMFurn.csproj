@@ -22,6 +22,27 @@
     <None Remove="images\RotoFon.png" />
     <None Remove="images\RotoFonNX.png" />
     <None Remove="images\vorneFon.png" />
+    <None Remove="images\Внутренний ящик 135 Белый.png" />
+    <None Remove="images\Внутренний ящик 135 Квадрат Цвет.png" />
+    <None Remove="images\Внутренний ящик 135 Квадрат.png" />
+    <None Remove="images\Внутренний ящик 135 Цвет.png" />
+    <None Remove="images\Внутренний ящик 199 Белый.png" />
+    <None Remove="images\Внутренний ящик 199 Квадрат Цвет.png" />
+    <None Remove="images\Внутренний ящик 199 Квадрат.png" />
+    <None Remove="images\Внутренний ящик 199 Цвет.png" />
+    <None Remove="images\Внутренний ящик Белый.png" />
+    <None Remove="images\Внутренний ящик Цвет.png" />
+    <None Remove="images\Обычный ящик 135 Белый.png" />
+    <None Remove="images\Обычный ящик 135 Квадрат Цвет.png" />
+    <None Remove="images\Обычный ящик 135 Квадрат.png" />
+    <None Remove="images\Обычный ящик 135 Цвет.png" />
+    <None Remove="images\Обычный ящик 199 Белый.png" />
+    <None Remove="images\Обычный ящик 199 Квадрат Цвет.png" />
+    <None Remove="images\Обычный ящик 199 Квадрат.png" />
+    <None Remove="images\Обычный ящик 199 Цвет.png" />
+    <None Remove="images\Обычный ящик белый.png" />
+    <None Remove="images\Обычный ящик Цвет.png" />
+    <None Remove="images\Ящик под мойку Цвет.png" />
     <None Remove="maco.png" />
     <None Remove="MacoFon.png" />
     <None Remove="PO.PNG" />
@@ -30,6 +51,7 @@
     <None Remove="P_OP.PNG" />
     <None Remove="roto-transformed.png" />
     <None Remove="Vorne-logo.png" />
+    <None Remove="Внутренний ящик 135 Цвет.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -85,12 +107,76 @@
     <Resource Include="images\vorneFon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="images\Внутренний ящик 135 Белый.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Внутренний ящик 135 Квадрат Цвет.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Внутренний ящик 135 Квадрат.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Внутренний ящик 135 Цвет.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Внутренний ящик 199 Белый.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Внутренний ящик 199 Квадрат Цвет.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Внутренний ящик 199 Квадрат.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Внутренний ящик 199 Цвет.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Внутренний ящик Белый.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Внутренний ящик Цвет.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Обычный ящик 135 Белый.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Обычный ящик 135 Квадрат Цвет.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Обычный ящик 135 Квадрат.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Обычный ящик 135 Цвет.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Обычный ящик 199 Белый.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Обычный ящик 199 Квадрат Цвет.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Обычный ящик 199 Квадрат.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Обычный ящик 199 Цвет.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Обычный ящик белый.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Обычный ящик Цвет.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Ящик под мойку Цвет.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="maco.png" />
     <Resource Include="MacoFon.png" />
     <Resource Include="PP.PNG" />
     <Resource Include="P_OP.PNG" />
     <Resource Include="roto-transformed.png" />
     <Resource Include="Vorne-logo.png" />
+    <Resource Include="Внутренний ящик 135 Цвет.png" />
   </ItemGroup>
 
 </Project>

@@ -521,9 +521,6 @@ namespace MacoApp
             }
         }
 
-
-
-
         //ввод только цифр в текстбоксы
         private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
@@ -862,7 +859,6 @@ namespace MacoApp
                 string Rot = textBox14Value;
                 string Fr = textBox15Value;
                 string Konst = textBox8Value;
-
 
                 queryString = $"Select * from Elements where (Name_Furn like '" + Furn + "') and(System  = 'Не имеет значения' or System  = '" + System + "') and(Side like 'Не имеет значения' or Side like '" + side + "') " +
                     "and(Lower_loop like '" + Lower_loop + "' or Lower_loop like 'Нет') and(Micro_ventilation like '" + Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +

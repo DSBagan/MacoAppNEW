@@ -20,13 +20,16 @@ using System.Xml.Linq;
 using System.Threading;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
+using System.Threading.Tasks;
 
 namespace MacoApp
 {
     public partial class EntryiWindow : Window
     {
         static string path = new FileInfo(Assembly.GetEntryAssembly().Location).Directory.ToString()+"\\Furnapp.db";
-        
+
+        //Создаем файл блокировки, если приложение уже запущено
+        string lockFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MyAppLock.lock");
 
         public EntryiWindow()
         {
@@ -41,17 +44,159 @@ namespace MacoApp
             IntOn.Visibility = Visibility.Collapsed;
             IntOff.Visibility = Visibility.Collapsed;
             ButtonEditor.Visibility = Visibility.Collapsed;
-            ButtonExcel.Visibility = Visibility.Collapsed;
             UpgradeBD();
+        }
+        private async void UpgradeBD()
+        {
+            if (File.Exists(lockFilePath))
+            {
+                // Приложение уже запущено
+                return;
+            }
+            else
+            {
+                // Это первый запуск приложения
+                // Создать файл блокировки
+                File.Create(lockFilePath);
 
+                if (Directory.Exists(@"X:\aTBMFURN\"))
+                {
+                    string[] files = Directory.GetFiles(@"X:\aTBMFURN\");
+                    foreach (string file in files)
+                    {
+                        File.Delete(file);
+                    }
+                    // Удаление папки c сохраненными расчетами и всех ее подпапок и файлов
+                }
+
+                FileInfo fileInf = new FileInfo(path);
+                if (fileInf.Exists)
+                {
+                    fileInf.Delete();
+                }
+                WebClient webClient = new WebClient();
+                //Качаем БД с Google Drive
+
+                //webClient.DownloadFile("https://drive.google.com/uc?export=download&id=18KBF6LMWrxoDqy8cUdEUaZYCXC_8SLPu", path);
+                webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1_so2lmgt2gagS8oeNXRnfwcY2PZPK9kh", path);
+                webClient.Dispose();
+            }
+            
+
+
+            ProgressDialogWindow progressDialog = new ProgressDialogWindow();
+            progressDialog.Show();
+
+            /*await Task.Run(() =>
+            {
+                string connectionStringMySQL = "server=cz6.h.filess.io;user=BDFurnTBM_forcearmy;database=BDFurnTBM_forcearmy;port=3307;password=e5f1b53ca8619010c3c73fd972facf6e383871ed;";
+                using MySqlConnection connectionMySQL = new MySqlConnection(connectionStringMySQL);
+                connectionMySQL.Open();
+
+                string connectionStringSQLite = "Data Source=Furnapp.db;";
+                using SQLiteConnection connectionSQLite = new SQLiteConnection(connectionStringSQLite);
+                connectionSQLite.Open();
+                
+                // Создание таблицы в базе данных SQLite
+                string createTableQuery = "CREATE TABLE IF NOT EXISTS Elements (Id INTEGER PRIMARY KEY, Name_Furn TEXT, Title TEXT, Article TEXT, Quantity INTEGER, System TEXT, Side TEXT, FFH_before TEXT, FFH_after TEXT, FFB_before TEXT, FFB_after TEXT, Lower_loop TEXT, Micro_ventilation TEXT, Rotation TEXT, Framuga TEXT, Wood TEXT, Konst TEXT)";
+                using SQLiteCommand createTableCommand = new SQLiteCommand(createTableQuery, connectionSQLite);
+                createTableCommand.ExecuteNonQuery();
+
+                // Извлечение данных из таблицы MySQL и вставка их в таблицу SQLite
+                string selectQuery = "SELECT * FROM Elements";
+                using MySqlCommand selectCommand = new MySqlCommand(selectQuery, connectionMySQL);
+                using MySqlDataReader reader = selectCommand.ExecuteReader();
+                int totalRows = 0;
+                while (reader.Read())
+                {
+                    //int Id = Convert.ToInt32(reader["Id"]);
+                    string nameFurn = reader["Name_Furn"].ToString();
+                    string title = reader["Title"].ToString();
+                    string article = reader["Article"].ToString();
+                    int quantity = Convert.ToInt32(reader["Quantity"]);
+                    string system = reader["System"].ToString();
+                    string side = reader["Side"].ToString();
+                    string ffhBefore = reader["FFH_before"].ToString();
+                    string ffhAfter = reader["FFH_after"].ToString();
+                    string ffbBefore = reader["FFB_before"].ToString();
+                    string ffbAfter = reader["FFB_after"].ToString();
+                    string lowerLoop = reader["Lower_loop"].ToString();
+                    string microVentilation = reader["Micro_ventilation"].ToString();
+                    string rotation = reader["Rotation"].ToString();
+                    string framuga = reader["Framuga"].ToString();
+                    string wood = reader["Wood"].ToString();
+                    string konst = reader["Konst"].ToString();
+
+                    string insertQuery = $"INSERT OR REPLACE INTO Elements (Name_Furn, Title, Article, Quantity, System, Side, FFH_before, FFH_after, FFB_before, FFB_after, Lower_loop, Micro_ventilation, Rotation, Framuga, Wood, Konst) VALUES ('{nameFurn}', '{title}', '{article}', {quantity}, '{system}', '{side}', '{ffhBefore}', '{ffhAfter}', '{ffbBefore}', '{ffbAfter}', '{lowerLoop}', '{microVentilation}', '{rotation}', '{framuga}', '{wood}', '{konst}')";
+                    using SQLiteCommand insertCommand = new SQLiteCommand(insertQuery, connectionSQLite);
+                    insertCommand.ExecuteNonQuery();
+                    totalRows++;
+                    System.Threading.Thread.Sleep(570); // Для имитации процесса
+                    UpdateProgress(progressDialog, totalRows);
+                }
+                connectionMySQL.Close();
+                connectionSQLite.Close();
+
+                string connectionStringMySQLBox = "server=cz6.h.filess.io;user=BDFurnTBM_forcearmy;database=BDFurnTBM_forcearmy;port=3307;password=e5f1b53ca8619010c3c73fd972facf6e383871ed;";
+                using MySqlConnection connectionMySQLBox = new MySqlConnection(connectionStringMySQL);
+                connectionMySQL.Open();
+
+                string connectionStringSQLiteBox = "Data Source=Furnapp.db;";
+                using SQLiteConnection connectionSQLiteBox = new SQLiteConnection(connectionStringSQLite);
+                connectionSQLite.Open();
+
+                // Создание таблицы в базе данных SQLite
+                string createTableQueryBox = "CREATE TABLE IF NOT EXISTS BoxeFirmaxTable (Id INTEGER PRIMARY KEY, Name TEXT, Article TEXT, System TEXT, Type_of_opening TEXT, Length TEXT, Height TEXT, Color TEXT, Railing TEXT, Inner_drawer TEXT, Washing TEXT)";
+                using SQLiteCommand createTableCommandBox = new SQLiteCommand(createTableQueryBox, connectionSQLite);
+                createTableCommandBox.ExecuteNonQuery();
+
+                // Извлечение данных из таблицы MySQL и вставка их в таблицу SQLite
+                string selectQueryBox = "SELECT * FROM BoxeFirmaxTable";
+                using MySqlCommand selectCommandBox = new MySqlCommand(selectQueryBox, connectionMySQL);
+                using MySqlDataReader readerBox = selectCommandBox.ExecuteReader();
+                int totalRowsBox = 0;
+                while (readerBox.Read())
+                {
+                    //int Id = Convert.ToInt32(reader["Id"]);
+                    string name = readerBox["Name"].ToString();
+                    string articleBox = readerBox["Article"].ToString();
+                    string systemBox = readerBox["System"].ToString();
+                    string Type_of_opening = readerBox["Type_of_opening"].ToString();
+                    string lenght = readerBox["Length"].ToString();
+                    string height = readerBox["Height"].ToString();
+                    string color = readerBox["Color"].ToString();
+                    string railing = readerBox["Railing"].ToString();
+                    string inner_drawer = readerBox["Inner_drawer"].ToString();
+                    string washing = readerBox["Washing"].ToString();
+
+                    string insertQueryBox = $"INSERT OR REPLACE INTO BoxeFirmaxTable (Name, Article, System, Type_of_opening, Length, Height, Color, Railing, Inner_drawer, Washing) VALUES ('{name}', '{articleBox}', '{systemBox}', '{Type_of_opening}', '{lenght}', '{height}', '{color}', '{railing}', '{inner_drawer}', '{washing}')";
+                    using SQLiteCommand insertCommandBox = new SQLiteCommand(insertQueryBox, connectionSQLite);
+                    insertCommandBox.ExecuteNonQuery();
+                    totalRowsBox++;
+                    System.Threading.Thread.Sleep(168); // Для имитации процесса
+                    UpdateProgress(progressDialog, totalRowsBox);
+                }
+
+                connectionMySQLBox.Close();
+                connectionSQLiteBox.Close();
+            });*/
+            progressDialog.Close();
         }
 
+        //Отображение прогрессбара во время обновления базы
+        private void UpdateProgress(ProgressDialogWindow progressDialog, int value)
+        {
+            progressDialog.Dispatcher.Invoke(() =>
+            {
+                progressDialog.progressBar.Value = value;
+                progressDialog.progressText.Text = $"Progress: {value}%";
+            });
+        }
         private void ButtonEditor_Click(object sender, RoutedEventArgs e)
         {
             WindowPassword windowPassword = new WindowPassword();
             windowPassword.Show();
             this.Close();
-
         }
 
         private void ButtonCalculation_Click(object sender, RoutedEventArgs e)
@@ -71,85 +216,11 @@ namespace MacoApp
             //workGoogleDrive.DeleteFile("123");
         }
 
-        private void ButtonExcel_Click(object sender, RoutedEventArgs e)
+        private void ButtonBoxCalculation_Click(object sender, RoutedEventArgs e)
         {
-            LoadInExcelWindow loadExcelWindow = new LoadInExcelWindow();
-            loadExcelWindow.Show();
+            BoxCalculation boxCalculation = new BoxCalculation();
+            boxCalculation.Show();
             this.Close();
-        }
-
-        private void UpgradeBD()
-        {
-            if (Directory.Exists(@"X:\aTBMFURN\"))
-            {
-                string[] files = Directory.GetFiles(@"X:\aTBMFURN\");
-                foreach (string file in files)
-                {
-                    File.Delete(file);
-                }
-                // Удаление папки и всех ее подпапок и файлов
-            }
-
-            FileInfo fileInf = new FileInfo(path);
-            if (fileInf.Exists)
-            {
-                fileInf.Delete();
-            }
-            //WebClient webClient = new WebClient();
-            //Качаем БД с Google Drive
-
-            //webClient.DownloadFile("https://drive.google.com/uc?export=download&id=18KBF6LMWrxoDqy8cUdEUaZYCXC_8SLPu", path);
-            //webClient.Dispose();
-
-
-            // Строки подключения к MySQL и SQLite
-            //string mysqlConnectionString = "server=cz6.h.filess.io;user=BDFurnTBM_forcearmy;database=BDFurnTBM_forcearmy;port=3307;password=e5f1b53ca8619010c3c73fd972facf6e383871ed";
-            //string sqliteConnectionString = "Data Source=Furnapp.db;";
-
-            string connectionStringMySQL = "server=cz6.h.filess.io;user=BDFurnTBM_forcearmy;database=BDFurnTBM_forcearmy;port=3307;password=e5f1b53ca8619010c3c73fd972facf6e383871ed;";
-            using MySqlConnection connectionMySQL = new MySqlConnection(connectionStringMySQL);
-            connectionMySQL.Open();
-
-            string connectionStringSQLite = "Data Source=Furnapp.db;";
-            using SQLiteConnection connectionSQLite = new SQLiteConnection(connectionStringSQLite);
-            connectionSQLite.Open();
-
-            // Создание таблицы в базе данных SQLite
-            string createTableQuery = "CREATE TABLE IF NOT EXISTS Elements (Id INTEGER PRIMARY KEY, Name_Furn TEXT, Title TEXT, Article TEXT, Quantity INTEGER, System TEXT, Side TEXT, FFH_before TEXT, FFH_after TEXT, FFB_before TEXT, FFB_after TEXT, Lower_loop TEXT, Micro_ventilation TEXT, Rotation TEXT, Framuga TEXT, Wood TEXT, Konst TEXT)";
-            using SQLiteCommand createTableCommand = new SQLiteCommand(createTableQuery, connectionSQLite);
-            createTableCommand.ExecuteNonQuery();
-
-            // Извлечение данных из таблицы MySQL и вставка их в таблицу SQLite
-            string selectQuery = "SELECT * FROM Elements";
-            using MySqlCommand selectCommand = new MySqlCommand(selectQuery, connectionMySQL);
-            using MySqlDataReader reader = selectCommand.ExecuteReader();
-
-            while (reader.Read())
-            {
-                //int Id = Convert.ToInt32(reader["Id"]);
-                string nameFurn = reader["Name_Furn"].ToString();
-                string title = reader["Title"].ToString();
-                string article = reader["Article"].ToString();
-                int quantity = Convert.ToInt32(reader["Quantity"]);
-                string system = reader["System"].ToString();
-                string side = reader["Side"].ToString();
-                string ffhBefore = reader["FFH_before"].ToString();
-                string ffhAfter = reader["FFH_after"].ToString();
-                string ffbBefore = reader["FFB_before"].ToString();
-                string ffbAfter = reader["FFB_after"].ToString();
-                string lowerLoop = reader["Lower_loop"].ToString();
-                string microVentilation = reader["Micro_ventilation"].ToString();
-                string rotation = reader["Rotation"].ToString();
-                string framuga = reader["Framuga"].ToString();
-                string wood = reader["Wood"].ToString();
-                string konst = reader["Konst"].ToString();
-
-                string insertQuery = $"INSERT INTO Elements (Name_Furn, Title, Article, Quantity, System, Side, FFH_before, FFH_after, FFB_before, FFB_after, Lower_loop, Micro_ventilation, Rotation, Framuga, Wood, Konst) VALUES ('{nameFurn}', '{title}', '{article}', {quantity}, '{system}', '{side}', '{ffhBefore}', '{ffhAfter}', '{ffbBefore}', '{ffbAfter}', '{lowerLoop}', '{microVentilation}', '{rotation}', '{framuga}', '{wood}', '{konst}')";
-                using SQLiteCommand insertCommand = new SQLiteCommand(insertQuery, connectionSQLite);
-                insertCommand.ExecuteNonQuery();
-            }
-            connectionMySQL.Close();
-            connectionSQLite.Close();
         }
     }
 }
