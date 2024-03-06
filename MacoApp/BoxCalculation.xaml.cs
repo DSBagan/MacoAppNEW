@@ -39,6 +39,7 @@ using Key = System.Windows.Input.Key;
 using MacoApp;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Globalization;
+using System.Reflection.Metadata;
 
 namespace TBMFurn
 {
@@ -91,18 +92,13 @@ namespace TBMFurn
             backgroundsFONBox.Add(new BitmapImage(new Uri("pack://application:,,,/images/Внутренний ящик 135 Белый.png")));
             backgroundsFONBox.Add(new BitmapImage(new Uri("pack://application:,,,/images/Внутренний ящик 199 Белый.png")));
 
-            ComboBoxLenght.SelectionChanged += ComboBoxLenght_SelectionChanged;
-
             DataGridImage.HeadersVisibility = DataGridHeadersVisibility.None;
         }
 
         private void ButtonCalc_Click(object sender, RoutedEventArgs e)
         {
-            if (ComboBoxType.Text == "")
-            {
-                MessageBox.Show("Выбери тип Ящика");
-                return;
-            }
+            ComboBoxError();
+
             try
             {
                 int count = 0;
@@ -295,13 +291,41 @@ namespace TBMFurn
             }
         }
 
+        private void ComboBoxError()
+        {
+            if (ComboBoxColor.SelectedItem == null)
+            {
+                // Показываем изображение стрелки и запускаем анимацию
+                LabelError.Visibility = Visibility.Visible;
+                DoubleAnimation animation = new DoubleAnimation
+                {
+                    From = 1,
+                    To = 0,
+                    Duration = TimeSpan.FromSeconds(0.5),
+                    AutoReverse = true,
+                    RepeatBehavior = RepeatBehavior.Forever
+                };
+                LabelError.BeginAnimation(UIElement.OpacityProperty, animation);
+            }
+            else
+            {
+                // Скрываем изображение стрелки
+                LabelError.Visibility = Visibility.Hidden;
+                LabelError.BeginAnimation(UIElement.OpacityProperty, null); // Остановка анимации
+            }
+        }
         private void ComboBoxHeight_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            ComboBoxItem selectedItem = (ComboBoxItem)((ComboBox)sender).SelectedItem;
+            string content = selectedItem.Content.ToString();
+            TextBlockHeight.Text = content;
+
             if (ComboBoxHeight.SelectedIndex == 0)
             {
                 ComboBoxRailing.Items.Clear();
                 ComboBoxRailing.Visibility = Visibility.Collapsed;
                 TextBlockRailing.Visibility = Visibility.Collapsed;
+
                 if (ComboBoxType.SelectedIndex == 0)
                 {
                     BitmapImage image = backgroundsFONBox[0];
@@ -380,6 +404,10 @@ namespace TBMFurn
         // Обработка Сомбобокса Цвет
         private void ComboBoxColor_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            ComboBoxItem selectedItem = (ComboBoxItem)((ComboBox)sender).SelectedItem;
+            string content = selectedItem.Content.ToString();
+            TextBlockColorLabel.Text = content;
+
             if (ComboBoxColor.SelectedIndex == 0) //Серый
             {
                 if (ComboBoxType.SelectedIndex == 0) //Обычный
@@ -543,7 +571,6 @@ namespace TBMFurn
                     }
                 }
             }
-            
         }
         //Обработка комбобокс рейлинг
         private void ComboBoxRailing_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -691,7 +718,16 @@ namespace TBMFurn
 
         private void ComboBoxLenght_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            TextBlockLenght.Text = ((sender as ComboBox).SelectedItem as ComboBoxItem).Content.ToString();
+            ComboBox comboBox = sender as ComboBox;
+
+            if (comboBox.SelectedItem != null)
+            {
+                // Получаем выбранное значение
+                string selectedValue = comboBox.SelectedItem.ToString();
+
+                // Тут можно транслировать значение или выполнять другие действия
+                TextBlockLenght.Text = selectedValue;
+            }
         }
 
 

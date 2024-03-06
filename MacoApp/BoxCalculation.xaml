@@ -37,8 +37,12 @@
         <DataGrid x:Name="GridListBox"  Grid.Column="3" Margin="0,10,15,0" 
                     Grid.RowSpan="6" Grid.ColumnSpan="2"
                     FontSize="12" FontWeight="Bold" Foreground="#FF0D042B"
-                  materialDesign:DataGridAssist.CellPadding="4 2 2 2" 
-                  materialDesign:DataGridAssist.ColumnHeaderPadding="4 2 2 2" Grid.Row="10"/>
+                  materialDesign:DataGridAssist.CellPadding="40 2 2 2" 
+                  materialDesign:DataGridAssist.ColumnHeaderPadding="40 2 2 2" Grid.Row="10">
+            <DataGrid.Background>
+                <ImageBrush ImageSource="/images/Newline.png"/>
+            </DataGrid.Background>
+        </DataGrid>
         <DataGrid x:Name="DataGridImage" Grid.Column="3" Grid.RowSpan="11" Grid.ColumnSpan="2" Margin="100,0,100,0">
             <DataGrid.Background>
                 <ImageBrush ImageSource="/images/Обычный ящик Цвет.png"/>
@@ -66,17 +70,17 @@
                   HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center">
         </ComboBox>
 
-        <TextBlock Text="Длина"  Grid.Column="2" Width="70" FontSize="12" HorizontalAlignment="Left" 
+        <TextBlock Text="Глубина"  Grid.Column="2" Width="70" FontSize="12" HorizontalAlignment="Left" 
                    VerticalAlignment="Center" Margin="10,0,0,0" Grid.Row="4"
 />
         <ComboBox Name="ComboBoxLenght" Grid.Column="2" Grid.Row="4" Width="60" Height="24" FontSize="12" 
                   HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center"
-                  SelectionChanged="ComboBoxLenght_SelectionChanged" SelectedIndex="0">
+                  SelectionChanged="ComboBoxLenght_SelectionChanged">
             <ComboBoxItem>300</ComboBoxItem>
             <ComboBoxItem>350</ComboBoxItem>
             <ComboBoxItem>400</ComboBoxItem>
             <ComboBoxItem>450</ComboBoxItem>
-            <ComboBoxItem IsSelected="True">500</ComboBoxItem>
+            <ComboBoxItem>500</ComboBoxItem>
         </ComboBox>
 
         <TextBlock Text="Высота"  Grid.Column="2" Width="70" FontSize="12" HorizontalAlignment="Left" 
@@ -167,6 +171,19 @@
                 </TransformGroup>
             </TextBlock.RenderTransform>
         </TextBlock>
+        <TextBlock Name="TextBlockHeight" TextWrapping="Wrap" Grid.Row="5" Grid.Column="4" HorizontalAlignment="Right" Margin="0,0,40,0" FontSize="20"/>
+        <TextBlock x:Name="TextBlockColorLabel" TextWrapping="Wrap" Grid.Row="9" Grid.Column="3" HorizontalAlignment="Left" Margin="5,0,0,0" FontSize="22"/>
+        <Label  Grid.Row="0" Grid.Column="3" HorizontalAlignment="Left" Margin="10,0,0,0" Width="100" Height="35" Grid.RowSpan="2">
+            <Label.Background>
+                <ImageBrush ImageSource="/images/Firmax.png"/>
+            </Label.Background>
+        </Label>
+        <Label x:Name="LabelError" Grid.ColumnSpan="4" Height="17" Width="30" Grid.Row="2" HorizontalAlignment="Left" Grid.Column="3">
+            <Label.Background>
+                <ImageBrush ImageSource="/images/Стрелка.png"/>
+            </Label.Background>
+        </Label>
+
     </Grid>
 
 </Window>

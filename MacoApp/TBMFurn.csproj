@@ -12,9 +12,11 @@
     <None Remove="28.png" />
     <None Remove="FRAM.PNG" />
     <None Remove="images\AkpenFon.png" />
+    <None Remove="images\Firmax.png" />
     <None Remove="images\internikaFon.png" />
     <None Remove="images\MacoFon.png" />
     <None Remove="images\MacoFonMM.png" />
+    <None Remove="images\Newline.png" />
     <None Remove="images\PL.PNG" />
     <None Remove="images\PP.PNG" />
     <None Remove="images\P_OL.PNG" />
@@ -42,6 +44,7 @@
     <None Remove="images\Обычный ящик 199 Цвет.png" />
     <None Remove="images\Обычный ящик белый.png" />
     <None Remove="images\Обычный ящик Цвет.png" />
+    <None Remove="images\Стрелка.png" />
     <None Remove="images\Ящик под мойку Цвет.png" />
     <None Remove="maco.png" />
     <None Remove="MacoFon.png" />
@@ -85,6 +88,9 @@
     <Resource Include="images\AkpenFon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="images\Firmax.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="images\internikaFon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -92,6 +98,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\MacoFonMM.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Newline.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\PL.PNG" />
@@ -165,6 +174,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\Обычный ящик Цвет.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Стрелка.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\Ящик под мойку Цвет.png">
