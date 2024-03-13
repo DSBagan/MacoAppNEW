@@ -40,6 +40,9 @@ using MacoApp;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Globalization;
 using System.Reflection.Metadata;
+using System.Diagnostics.Metrics;
+using System.Windows.Documents;
+using static Google.Protobuf.Reflection.FieldDescriptorProto.Types;
 
 namespace TBMFurn
 {
@@ -50,12 +53,15 @@ namespace TBMFurn
         DataTable table3 = new DataTable("Table3");
 
         string LenghtText;
-
+        string Railing;
         private ObservableCollection<BitmapImage> backgroundsFONBox = new ObservableCollection<BitmapImage>();
 
         public BoxCalculation()
         {
             InitializeComponent();
+
+            SaveCalc.IsEnabled = false;
+            ButtonSaveTxt.IsEnabled = false;
 
             table1.Columns.Add(new DataColumn("Артикул", typeof(string)));
             table1.Columns.Add(new DataColumn("Название", typeof(string)));
@@ -93,12 +99,22 @@ namespace TBMFurn
             backgroundsFONBox.Add(new BitmapImage(new Uri("pack://application:,,,/images/Внутренний ящик 199 Белый.png")));
 
             DataGridImage.HeadersVisibility = DataGridHeadersVisibility.None;
+
+            LabelErrorType.Visibility = Visibility.Hidden;
+            LabelErrorOpenClose.Visibility = Visibility.Hidden;
+            LabelErrorHeight.Visibility = Visibility.Hidden;
+            LabelErrorLenght.Visibility = Visibility.Hidden;
+            LabelErrorRailing.Visibility = Visibility.Hidden;
+            LabelErrorColor.Visibility = Visibility.Hidden;
+            LabelErrorСode.Visibility = Visibility.Hidden;
+
+            int Count = 1;
         }
 
         private void ButtonCalc_Click(object sender, RoutedEventArgs e)
         {
             ComboBoxError();
-
+            ButtonSaveTxt.IsEnabled = true;
             try
             {
                 int count = 0;
@@ -134,7 +150,7 @@ namespace TBMFurn
                 string Lenght = ComboBoxLenght.Text;
                 string Height = ComboBoxHeight.Text;
                 string Color = ComboBoxColor.Text;
-                string Railing = ComboBoxRailing.Text;
+                Railing = ComboBoxRailing.Text;
                 int quantity = Int32.Parse(TextBoxColvo.Text);
 
                 //queryString = $"Select * from BoxeFirmaxTAble";
@@ -181,17 +197,228 @@ namespace TBMFurn
 
         private void SaveCalc_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                int count = 0;
+                string queryString;
+                string Type = ComboBoxType.Text;
+                string Washing;
+                if (Type == "Под мойку")
+                {
+                    Washing = "Да";
+                }
+                else
+                {
+                    Washing = "Нет";
+                }
+                string OpenClose = ComboBoxOpenClose.Text;
+                if (OpenClose == "Soft Close")
+                {
+                    OpenClose = "SC";
+                }
+                else if (OpenClose == "Push to Open")
+                {
+                    OpenClose = "PTO";
+                }
+                string Inner_drawer;
+                if (Type == "Внутренний")
+                {
+                    Inner_drawer = "Да";
+                }
+                else
+                {
+                    Inner_drawer = "Нет";
+                }
+                string Lenght = ComboBoxLenght.Text;
+                string Height = ComboBoxHeight.Text;
+                string Color = ComboBoxColor.Text;
+                Railing = ComboBoxRailing.Text;
+                int quantity = Int32.Parse(TextBoxColvo.Text);
 
+                //queryString = $"Select * from BoxeFirmaxTAble";
+
+                queryString = $"Select * from BoxeFirmaxTAble where (System like 'Newline') and(Type_of_opening  like 'Не имеет значения' or Type_of_opening  like '" + OpenClose + "') " +
+                    "and(Length  like 'Не имеет значения' or Length like '" + Lenght + "') and(Height  like 'Не имеет значения' or Height like '" + Height + "')" +
+                    "and(Color  like 'Не имеет значения' or Color like '" + Color + "') and(Railing  like 'Не имеет значения' or Railing like '" + Railing + "')" +
+                    "and(Inner_drawer  like 'Да/Нет' or Inner_drawer like '" + Inner_drawer + "') and(Washing  like 'Да/Нет' or Washing like '" + Washing + "')";
+
+
+                using (var connection = new SqliteConnection("Data Source=Furnapp.db"))
+                {
+                    ObservableCollection<ClassList> collection = null; //Обнуляем коллекцию для нового расчета
+                    collection = new ObservableCollection<ClassList>();
+                    GridListBox.ItemsSource = collection;
+                    connection.Open();
+                    SqliteCommand command = new SqliteCommand(queryString, connection);
+                    using (SqliteDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows) // если есть данные
+                        {
+                            while (reader.Read())   // построчно считываем данные
+                            {
+                                count++;
+
+                                table1.Rows.Add(reader.GetValue(2).ToString(), reader.GetValue(1).ToString(), quantity);
+                            }
+                            // Получаем таблицы
+                           SaveTable2();
+
+
+                            LBListCalc.Items.Add("Newline. " + Type + ", " +
+                                OpenClose + ", Глубина:" + Lenght + ", Высота:" + Height + ", " + Color+", Рейлинг: "+Railing);
+
+                            
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch
+            {
+                //MaterialMessageBox.ShowDialog("Одно или несколько полей пустое");
+                return;
+            }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        public void SaveTable2() // Сохранение каждого нового расчета в таблицу 2 для дальнейшего сохранения
         {
+            // Итерируем по строкам таблицы 1
+            foreach (DataRow row1 in table1.Rows)
+            {
+                // Получаем значение первой колонки текущей строки
+                string value1 = row1[0].ToString();
 
+                // Итерируем по строкам таблицы 2
+                DataRow row2 = table2.Rows.Cast<DataRow>().FirstOrDefault(r => r[0].ToString() == value1);
+
+                // Если есть строка в таблице 2 с таким же значением первой колонки
+                if (row2 != null)
+                {
+                    // Складываем значения третьих колонок
+                    int sum = Convert.ToInt32(row1[2]) + Convert.ToInt32(row2[2]);
+
+                    // Присваиваем второй таблице значение суммы 
+                    row2[2] = sum;
+                }
+                else // Если нет строки в таблице 2
+                {
+                    // Добавляем новую строку в таблицу 2 со всеми значениями из таблицы 1
+                    table2.Rows.Add(row1.ItemArray);
+                }
+            }
+        }
+
+        private void ButtonSaveTxt_Click(object sender, RoutedEventArgs e)
+        {
+            
+
+            if (LBList.Items == null)
+            {
+                MaterialMessageBox.ShowDialog("Сначала произведите расчет, нечего сохранять.");
+                return;
+            }
+            else
+            {
+                // Проверяем есть ли на диске C папка, если нет- создаем
+                Directory.CreateDirectory(@"C:\aTBMFURN\");
+                String date = DateTime.Now.ToString(" dd.MM.yyyy HH-mm-ss");
+                int CTlangth = Code.Text.Length;
+                if (CTlangth < 6)
+                {
+                    for (int i = 0; i < 6 - CTlangth; i++)
+                    {
+                        Code.Text = "0" + Code.Text;
+                    }
+                }
+                using (StreamWriter streamWriter = new StreamWriter(@"C:\aTBMFURN\" + "Z" + Code.Text + " " + date + ".txt", false, Encoding.Default))
+                {
+                    streamWriter.WriteLine("                    Шифр фирмы " + Code.Text);
+                    streamWriter.WriteLine("                    Фирма 123");
+                    streamWriter.WriteLine("                    Заявка №");
+                    streamWriter.WriteLine("                    Название");
+                    streamWriter.WriteLine("                    Дата заявки" + date);
+                    streamWriter.WriteLine("--------------------------------------------------------------------------------");
+                    streamWriter.WriteLine("    Артикул                       Название                      Кол.  Ед.изм.");
+                    streamWriter.WriteLine("--------------------------------------------------------------------------------");
+                    try
+                    {
+                        foreach (DataRow row in table2.Rows)
+                        {
+                            string art = Convert.ToString(row["Артикул"]);
+                            string nam = Convert.ToString(row["Название"]);
+                            int qua = Convert.ToInt32(row["Количество"]);
+
+                            if (art.Length < 16)
+                            {
+                                int b = 16 - art.Length;
+                                for (int i = 0; i < b; i++)
+                                {
+                                    art += " ";
+                                }
+                            }
+                            string n = "                                                ";
+                            streamWriter.WriteLine(art + /*nam + "   " */n + qua);
+                        }
+
+                        streamWriter.WriteLine("--------------------------------------------------------------------------------");
+                        streamWriter.WriteLine();
+                        streamWriter.WriteLine("                    Заявку составил________________________");
+
+
+                        streamWriter.Close();
+                        table2.Rows.Clear();
+
+                        MaterialMessageBox.ShowDialog("Файл успешно сохранен");
+                    }
+                    catch
+                    {
+                        MaterialMessageBox.ShowDialog("Ошибка при сохранении файла!");
+                    }
+                }
+
+                LBListCalc.Items.Clear();
+                LBList.Items.Clear();
+                SPSF.Children.Clear();
+                //Count = 1;
+            }
+            /*ButtonSaveTxt.IsEnabled = true;
+            SaveCalc.IsEnabled = false;
+            TextBoxColvo.Text = "1";*/
+        }
+
+        private void TextBoxCode_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (Code.Text.Length > 0)
+            {
+                // если в TextBox есть символы
+                // Скрываем изображение стрелки
+                LabelErrorСode.Visibility = Visibility.Hidden;
+                LabelErrorСode.BeginAnimation(UIElement.OpacityProperty, null); // Остановка анимации
+            }
+            else
+            {
+                // Показываем изображение стрелки и запускаем анимацию
+                LabelErrorСode.Visibility = Visibility.Visible;
+                DoubleAnimation animation = new DoubleAnimation
+                {
+                    From = 1,
+                    To = 0,
+                    Duration = TimeSpan.FromSeconds(0.5),
+                    AutoReverse = true,
+                    RepeatBehavior = RepeatBehavior.Forever
+                };
+                LabelErrorСode.BeginAnimation(UIElement.OpacityProperty, animation);
+            }
         }
 
         // Ниже ряд обработчиков Combobox
+        private void ComboBoxOpenClose_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBoxError();
+        }
         private void ComboBoxType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            ComboBoxError();
             //Выбираем фоном соответствующий ящик 
             int index = ComboBoxType.SelectedIndex;  
             if (index >= 0 && index < backgroundsFONBox.Count)
@@ -211,6 +438,7 @@ namespace TBMFurn
                 ComboBoxLenght.Items.Add("400");
                 ComboBoxLenght.Items.Add("450");
                 ComboBoxLenght.Items.Add("500");
+
 
                 if (ComboBoxHeight.SelectedIndex == 0)
                 {
@@ -291,40 +519,19 @@ namespace TBMFurn
             }
         }
 
-        private void ComboBoxError()
-        {
-            if (ComboBoxColor.SelectedItem == null)
-            {
-                // Показываем изображение стрелки и запускаем анимацию
-                LabelError.Visibility = Visibility.Visible;
-                DoubleAnimation animation = new DoubleAnimation
-                {
-                    From = 1,
-                    To = 0,
-                    Duration = TimeSpan.FromSeconds(0.5),
-                    AutoReverse = true,
-                    RepeatBehavior = RepeatBehavior.Forever
-                };
-                LabelError.BeginAnimation(UIElement.OpacityProperty, animation);
-            }
-            else
-            {
-                // Скрываем изображение стрелки
-                LabelError.Visibility = Visibility.Hidden;
-                LabelError.BeginAnimation(UIElement.OpacityProperty, null); // Остановка анимации
-            }
-        }
         private void ComboBoxHeight_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            ComboBoxError();
             ComboBoxItem selectedItem = (ComboBoxItem)((ComboBox)sender).SelectedItem;
             string content = selectedItem.Content.ToString();
             TextBlockHeight.Text = content;
-
             if (ComboBoxHeight.SelectedIndex == 0)
             {
                 ComboBoxRailing.Items.Clear();
                 ComboBoxRailing.Visibility = Visibility.Collapsed;
                 TextBlockRailing.Visibility = Visibility.Collapsed;
+                LabelErrorRailing.Visibility = Visibility.Collapsed;
+                Railing = "Нет";
 
                 if (ComboBoxType.SelectedIndex == 0)
                 {
@@ -404,9 +611,15 @@ namespace TBMFurn
         // Обработка Сомбобокса Цвет
         private void ComboBoxColor_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            ComboBoxError();
             ComboBoxItem selectedItem = (ComboBoxItem)((ComboBox)sender).SelectedItem;
             string content = selectedItem.Content.ToString();
-            TextBlockColorLabel.Text = content;
+            LabelColor.Content = content;
+            if (content == "Серый")
+            {
+                LabelColor.BackColor = Color.LightGray; // устанавливаем цвет фона
+                LabelColor.BorderStyle = BorderStyle.FixedSingle; // устанавливаем стиль границы
+            }    
 
             if (ComboBoxColor.SelectedIndex == 0) //Серый
             {
@@ -575,6 +788,7 @@ namespace TBMFurn
         //Обработка комбобокс рейлинг
         private void ComboBoxRailing_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            ComboBoxError();
             if (ComboBoxRailing.SelectedIndex == 0) //Круглый рейлинг
             {
                 if (ComboBoxType.SelectedIndex == 0) //Обычный
@@ -718,6 +932,7 @@ namespace TBMFurn
 
         private void ComboBoxLenght_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            ComboBoxError();
             ComboBox comboBox = sender as ComboBox;
 
             if (comboBox.SelectedItem != null)
@@ -730,8 +945,147 @@ namespace TBMFurn
             }
         }
 
+        //Обработчик пустых Комбобокс********************************
+        private void ComboBoxError()
+        {
+            if (ComboBoxColor.SelectedItem == null)
+            {
+                // Показываем изображение стрелки и запускаем анимацию
+                LabelErrorColor.Visibility = Visibility.Visible;
+                DoubleAnimation animation = new DoubleAnimation
+                {
+                    From = 1,
+                    To = 0,
+                    Duration = TimeSpan.FromSeconds(0.5),
+                    AutoReverse = true,
+                    RepeatBehavior = RepeatBehavior.Forever
+                };
+                LabelErrorColor.BeginAnimation(UIElement.OpacityProperty, animation);
+            }
+            else
+            {
+                // Скрываем изображение стрелки
+                LabelErrorColor.Visibility = Visibility.Hidden;
+                LabelErrorColor.BeginAnimation(UIElement.OpacityProperty, null); // Остановка анимации
+            }
 
-        //ввод только цифр в текстбоксы
+            if (ComboBoxType.SelectedItem == null)
+            {
+                // Показываем изображение стрелки и запускаем анимацию
+                LabelErrorType.Visibility = Visibility.Visible;
+                DoubleAnimation animation = new DoubleAnimation
+                {
+                    From = 1,
+                    To = 0,
+                    Duration = TimeSpan.FromSeconds(0.5),
+                    AutoReverse = true,
+                    RepeatBehavior = RepeatBehavior.Forever
+                };
+                LabelErrorType.BeginAnimation(UIElement.OpacityProperty, animation);
+            }
+            else
+            {
+                // Скрываем изображение стрелки
+                LabelErrorType.Visibility = Visibility.Hidden;
+                LabelErrorType.BeginAnimation(UIElement.OpacityProperty, null); // Остановка анимации
+            }
+            if (ComboBoxOpenClose.SelectedItem == null)
+            {
+                // Показываем изображение стрелки и запускаем анимацию
+                LabelErrorOpenClose.Visibility = Visibility.Visible;
+                DoubleAnimation animation = new DoubleAnimation
+                {
+                    From = 1,
+                    To = 0,
+                    Duration = TimeSpan.FromSeconds(0.5),
+                    AutoReverse = true,
+                    RepeatBehavior = RepeatBehavior.Forever
+                };
+                LabelErrorOpenClose.BeginAnimation(UIElement.OpacityProperty, animation);
+            }
+            else
+            {
+                // Скрываем изображение стрелки
+                LabelErrorOpenClose.Visibility = Visibility.Hidden;
+                LabelErrorOpenClose.BeginAnimation(UIElement.OpacityProperty, null); // Остановка анимации
+            }
+            if (ComboBoxHeight.SelectedItem == null)
+            {
+                // Показываем изображение стрелки и запускаем анимацию
+                LabelErrorHeight.Visibility = Visibility.Visible;
+                DoubleAnimation animation = new DoubleAnimation
+                {
+                    From = 1,
+                    To = 0,
+                    Duration = TimeSpan.FromSeconds(0.5),
+                    AutoReverse = true,
+                    RepeatBehavior = RepeatBehavior.Forever
+                };
+                LabelErrorHeight.BeginAnimation(UIElement.OpacityProperty, animation);
+            }
+            else
+            {
+                // Скрываем изображение стрелки
+                LabelErrorHeight.Visibility = Visibility.Hidden;
+                LabelErrorHeight.BeginAnimation(UIElement.OpacityProperty, null); // Остановка анимации
+            }
+            if (ComboBoxLenght.SelectedItem == null)
+            {
+                // Показываем изображение стрелки и запускаем анимацию
+                LabelErrorLenght.Visibility = Visibility.Visible;
+                DoubleAnimation animation = new DoubleAnimation
+                {
+                    From = 1,
+                    To = 0,
+                    Duration = TimeSpan.FromSeconds(0.5),
+                    AutoReverse = true,
+                    RepeatBehavior = RepeatBehavior.Forever
+                };
+                LabelErrorLenght.BeginAnimation(UIElement.OpacityProperty, animation);
+            }
+            else
+            {
+                // Скрываем изображение стрелки
+                LabelErrorLenght.Visibility = Visibility.Hidden;
+                LabelErrorLenght.BeginAnimation(UIElement.OpacityProperty, null); // Остановка анимации
+            }
+
+            if (ComboBoxHeight.SelectedIndex == 0)
+            {
+                ComboBoxRailing.Items.Clear();
+                ComboBoxRailing.Visibility = Visibility.Collapsed;
+                TextBlockRailing.Visibility = Visibility.Collapsed;
+                LabelErrorRailing.Visibility = Visibility.Collapsed;
+                LabelErrorRailing.BeginAnimation(UIElement.OpacityProperty, null);
+                Railing = "Нет";
+            }
+            else 
+            {
+                if (ComboBoxRailing.SelectedItem == null)
+                {
+                    // Показываем изображение стрелки и запускаем анимацию
+                    LabelErrorRailing.Visibility = Visibility.Visible;
+                    DoubleAnimation animation = new DoubleAnimation
+                    {
+                        From = 1,
+                        To = 0,
+                        Duration = TimeSpan.FromSeconds(0.5),
+                        AutoReverse = true,
+                        RepeatBehavior = RepeatBehavior.Forever
+                    };
+                    LabelErrorRailing.BeginAnimation(UIElement.OpacityProperty, animation);
+                }
+                else
+                {
+                    // Скрываем изображение стрелки
+                    LabelErrorRailing.Visibility = Visibility.Hidden;
+                    LabelErrorRailing.BeginAnimation(UIElement.OpacityProperty, null); // Остановка анимации
+                }
+            }
+            
+        }
+
+        //ввод только цифр в текстбоксы****************************************
         private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             //SaveCalc.IsEnabled = false;
@@ -741,7 +1095,7 @@ namespace TBMFurn
                 e.Handled = true; // отклоняем ввод
             }
         }
-        //ввод только цифр в текстбоксы (пробел тоже нам не нужен)
+        //ввод только цифр в текстбоксы (пробел тоже нам не нужен)**********************************
         private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Space)
@@ -756,7 +1110,5 @@ namespace TBMFurn
             entryiWindow.Show();
             this.Close();
         }
-
-        
     }
 }

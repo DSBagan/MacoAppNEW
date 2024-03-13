@@ -620,7 +620,6 @@ namespace MacoApp
                         MaterialMessageBox.ShowDialog("Ошибка при сохранении файла!");
                     }
                 }
-
                 LBListCalc.Items.Clear();
                 LBList.Items.Clear();
                 SPSF.Children.Clear();

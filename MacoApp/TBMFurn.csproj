@@ -8,6 +8,14 @@
     <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <IsPublishable>True</IsPublishable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <IsPublishable>True</IsPublishable>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="28.png" />
     <None Remove="FRAM.PNG" />
@@ -44,6 +52,7 @@
     <None Remove="images\Обычный ящик 199 Цвет.png" />
     <None Remove="images\Обычный ящик белый.png" />
     <None Remove="images\Обычный ящик Цвет.png" />
+    <None Remove="images\Стрелка вправо.png" />
     <None Remove="images\Стрелка.png" />
     <None Remove="images\Ящик под мойку Цвет.png" />
     <None Remove="maco.png" />
@@ -176,6 +185,9 @@
     <Resource Include="images\Обычный ящик Цвет.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="images\Стрелка вправо.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="images\Стрелка.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -189,6 +201,21 @@
     <Resource Include="roto-transformed.png" />
     <Resource Include="Vorne-logo.png" />
     <Resource Include="Внутренний ящик 135 Цвет.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 
 </Project>
