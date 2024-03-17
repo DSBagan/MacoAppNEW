@@ -43,6 +43,7 @@ using System.Reflection.Metadata;
 using System.Diagnostics.Metrics;
 using System.Windows.Documents;
 using static Google.Protobuf.Reflection.FieldDescriptorProto.Types;
+using System.Windows.Media.Effects;
 
 namespace TBMFurn
 {
@@ -52,9 +53,20 @@ namespace TBMFurn
         DataTable table2 = new DataTable("Table2"); // Таблица для сохранения всех расчетов
         DataTable table3 = new DataTable("Table3");
 
-        string LenghtText;
         string Railing;
         private ObservableCollection<BitmapImage> backgroundsFONBox = new ObservableCollection<BitmapImage>();
+
+        private bool isPanelExpanded = false;
+
+        int Count = 1;
+
+        string textBox1Value;
+        string textBox2Value;
+        string textBox3Value;
+        string textBox4Value;
+        string textBox5Value;
+        string textBox6Value;
+        string textBox7Value;
 
         public BoxCalculation()
         {
@@ -107,6 +119,8 @@ namespace TBMFurn
             LabelErrorRailing.Visibility = Visibility.Hidden;
             LabelErrorColor.Visibility = Visibility.Hidden;
             LabelErrorСode.Visibility = Visibility.Hidden;
+
+            ButtonColor.Background = Brushes.White; // устанавливаем Цвет Label
 
             int Count = 1;
         }
@@ -178,19 +192,16 @@ namespace TBMFurn
                                 
                                     collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(2).ToString(), Название = "" + reader.GetValue(1).ToString(), Шт = quantity });
                               
-                                /*else
-                                {
-                                    collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) });
-                                }*/
                             }
                         }
                     }
                     connection.Close();
+                    SaveCalc.IsEnabled = true;
                 }
             }
             catch
             {
-                //MaterialMessageBox.ShowDialog("Одно или несколько полей пустое");
+                MaterialMessageBox.ShowDialog("Что-то не так, я не знаю что...");
                 return;
             }
         }
@@ -201,6 +212,7 @@ namespace TBMFurn
             {
                 int count = 0;
                 string queryString;
+                string System = "Newline";
                 string Type = ComboBoxType.Text;
                 string Washing;
                 if (Type == "Под мойку")
@@ -235,7 +247,217 @@ namespace TBMFurn
                 Railing = ComboBoxRailing.Text;
                 int quantity = Int32.Parse(TextBoxColvo.Text);
 
-                //queryString = $"Select * from BoxeFirmaxTAble";
+                queryString = $"Select * from BoxeFirmaxTAble where (System like '" + System + "') and(Type_of_opening  like 'Не имеет значения' or Type_of_opening  like '" + OpenClose + "') " +
+                    "and(Length  like 'Не имеет значения' or Length like '" + Lenght + "') and(Height  like 'Не имеет значения' or Height like '" + Height + "')" +
+                    "and(Color  like 'Не имеет значения' or Color like '" + Color + "') and(Railing  like 'Не имеет значения' or Railing like '" + Railing + "')" +
+                    "and(Inner_drawer  like 'Да/Нет' or Inner_drawer like '" + Inner_drawer + "') and(Washing  like 'Да/Нет' or Washing like '" + Washing + "')";
+
+
+                using (var connection = new SqliteConnection("Data Source=Furnapp.db"))
+                {
+                    ObservableCollection<ClassList> collection = null; //Обнуляем коллекцию для нового расчета
+                    table1.Rows.Clear();
+                    collection = new ObservableCollection<ClassList>();
+                    GridListBox.ItemsSource = collection;
+                    connection.Open();
+                    SqliteCommand command = new SqliteCommand(queryString, connection);
+                    using (SqliteDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows) // если есть данные
+                        {
+                            while (reader.Read())   // построчно считываем данные
+                            {
+                                count++;
+
+                                table1.Rows.Add(reader.GetValue(2).ToString(), reader.GetValue(1).ToString(), quantity);
+                            }
+                            // Получаем таблицы
+                           SaveTable2();
+
+
+                            LBListCalc.Items.Add("Newline. " + Type + ", " +
+                                OpenClose + ", Глубина:" + Lenght + ", Высота:" + Height + ", " + Color+", Рейлинг: " + Railing);
+
+                            // Создаем элементы управления для новой строки стекпанели
+                            TextBlock textBlockSystem = new TextBlock();
+                            TextBlock textBlockSystem_ = new TextBlock();
+                            textBlockSystem_.Text = ". Тип: ";
+                            TextBlock textBlockType = new TextBlock();
+                            TextBlock textBlockType_ = new TextBlock();
+                            textBlockType_.Text = ", Откр./закр.: ";
+                            TextBlock textBlockOpenClose = new TextBlock();
+                            TextBlock textBlockOpenClose_ = new TextBlock();
+                            textBlockOpenClose_.Text = ", Размер: ";
+                            TextBlock textBlockLenght = new TextBlock();
+                            TextBlock textBlockLenght_ = new TextBlock();
+                            textBlockLenght_.Text = "/";
+                            TextBlock textBlockHeight = new TextBlock();
+                            TextBlock textBlockHeight_ = new TextBlock();
+                            textBlockHeight_.Text = ", Цвет: ";
+                            TextBlock textBlockColor = new TextBlock();
+                            TextBlock textBlockColor_ = new TextBlock();
+                            textBlockColor_.Text = ", Рейлинг: ";
+                            TextBlock textBlockRailing = new TextBlock();
+                            TextBlock textBlockRailing_ = new TextBlock();
+                            textBlockRailing_.Text = ". Шт: ";
+                            TextBlock textBlockQuantity = new TextBlock();
+                            TextBlock textBlockQuantity_ = new TextBlock();
+                            textBlockQuantity_.Text = "   ";
+
+                            Button deleteButton = new Button();
+                            //deleteButton.Width = 10;
+                            deleteButton.Height = 15;
+                            deleteButton.Click += DeleteButton_Click;
+                            deleteButton.Content = " Удалить  ";
+                            Color paleRedColor = (Color)ColorConverter.ConvertFromString("#FFFFF5F5");
+                            SolidColorBrush brush = new SolidColorBrush(paleRedColor);
+                            deleteButton.Background = brush;
+                            deleteButton.HorizontalContentAlignment = HorizontalAlignment.Left;
+                            deleteButton.VerticalContentAlignment = VerticalAlignment.Top;
+                            deleteButton.FontSize = 10;
+                            deleteButton.Padding = new Thickness(0);
+                            deleteButton.Foreground = Brushes.Black;
+
+                            // Задаем значения для TextBlock элементов
+                            textBlockSystem.Text = System;
+                            textBlockType.Text = "" + Type;
+                            textBlockOpenClose.Text = "" + OpenClose;
+                            textBlockLenght.Text = Lenght;
+                            textBlockHeight.Text = Height;
+                            textBlockColor.Text = Color;
+                            textBlockRailing.Text = Railing;
+                            textBlockQuantity.Text = "" + quantity;
+
+                            // Создаем новую строку с использованием созданных элементов
+                            StackPanel newStackPanel = new StackPanel();
+                            newStackPanel.Orientation = Orientation.Horizontal;
+                            newStackPanel.HorizontalAlignment = HorizontalAlignment.Right;
+
+                            newStackPanel.Children.Add(textBlockSystem);
+                            newStackPanel.Children.Add(textBlockSystem_);
+                            newStackPanel.Children.Add(textBlockType);
+                            newStackPanel.Children.Add(textBlockType_);
+                            newStackPanel.Children.Add(textBlockOpenClose);
+                            newStackPanel.Children.Add(textBlockOpenClose_);
+                            newStackPanel.Children.Add(textBlockLenght);
+                            newStackPanel.Children.Add(textBlockLenght_);
+                            newStackPanel.Children.Add(textBlockHeight);
+                            newStackPanel.Children.Add(textBlockHeight_);
+                            newStackPanel.Children.Add(textBlockColor);
+                            newStackPanel.Children.Add(textBlockColor_);
+                            newStackPanel.Children.Add(textBlockRailing);
+                            newStackPanel.Children.Add(textBlockRailing_);
+                            newStackPanel.Children.Add(textBlockQuantity);
+                            newStackPanel.Children.Add(textBlockQuantity_);
+                            newStackPanel.Children.Add(deleteButton);
+                            // Добавляем новую строку в StackPanel
+                            SPSF.Children.Add(newStackPanel);
+
+                            //массив текстблоков для окрашивания
+                            TextBlock[] textblockArray = new TextBlock[] { textBlockSystem, textBlockType, textBlockOpenClose, textBlockLenght, textBlockHeight, textBlockColor,
+                                textBlockRailing, textBlockQuantity};
+                            ColorTextblock(textblockArray);
+                        }
+                    }
+                    connection.Close();
+                    SaveCalc.IsEnabled = false;
+
+                }
+            }
+            catch
+            {
+                MaterialMessageBox.ShowDialog("Что-то пошло не так...");
+                return;
+            }
+        }
+
+        //Окрашиваем Текстбокс
+        public void ColorTextblock(TextBlock[] textblockArray)
+        {
+            foreach (var TextBlock in textblockArray)
+            {
+                // Получаем текст из текстблока
+                string text = TextBlock.Text;
+
+
+                /*
+                // Устанавливаем цвет в зависимости от текста
+                if (text == "Да")
+                {
+                    TextBlock.Foreground = Brushes.Green;
+                }
+                else if (text == "Нет")
+                {
+                    TextBlock.Foreground = Brushes.Red;
+                }
+                else
+                {
+                    TextBlock.Foreground = Brushes.Blue;
+                }
+                */
+
+                TextBlock.Foreground = Brushes.Green;
+            }
+        }
+
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Получаем кнопку, на которую было нажато
+            Button deleteButton = (Button)sender;
+            // Получаем родительский StackPanel
+            StackPanel parentStackPanel = (StackPanel)deleteButton.Parent;
+
+            textBox1Value = ((TextBlock)parentStackPanel.Children[0]).Text;
+            textBox2Value = ((TextBlock)parentStackPanel.Children[2]).Text;
+            textBox3Value = ((TextBlock)parentStackPanel.Children[4]).Text;
+            textBox4Value = ((TextBlock)parentStackPanel.Children[6]).Text;
+            textBox5Value = ((TextBlock)parentStackPanel.Children[8]).Text;
+            textBox6Value = ((TextBlock)parentStackPanel.Children[10]).Text;
+            textBox7Value = ((TextBlock)parentStackPanel.Children[12]).Text;
+            textBox7Value = ((TextBlock)parentStackPanel.Children[14]).Text;
+
+
+            // Получаем значения TextBlock элементов в строке
+
+            try
+            {
+                int count = 0;
+                string queryString;
+                string Type = textBox2Value;
+                string Washing;
+                if (Type == "Под мойку")
+                {
+                    Washing = "Да";
+                }
+                else
+                {
+                    Washing = "Нет";
+                }
+                string OpenClose = textBox3Value;
+                if (OpenClose == "Soft Close")
+                {
+                    OpenClose = "SC";
+                }
+                else if (OpenClose == "Push to Open")
+                {
+                    OpenClose = "PTO";
+                }
+                string Inner_drawer;
+                if (Type == "Внутренний")
+                {
+                    Inner_drawer = "Да";
+                }
+                else
+                {
+                    Inner_drawer = "Нет";
+                }
+                string Lenght = textBox4Value;
+                string Height = textBox5Value;
+                string Color = textBox6Value;
+                Railing = textBox7Value;
+                int quantity = Int32.Parse(textBox7Value);
+
 
                 queryString = $"Select * from BoxeFirmaxTAble where (System like 'Newline') and(Type_of_opening  like 'Не имеет значения' or Type_of_opening  like '" + OpenClose + "') " +
                     "and(Length  like 'Не имеет значения' or Length like '" + Lenght + "') and(Height  like 'Не имеет значения' or Height like '" + Height + "')" +
@@ -258,27 +480,28 @@ namespace TBMFurn
                             {
                                 count++;
 
-                                table1.Rows.Add(reader.GetValue(2).ToString(), reader.GetValue(1).ToString(), quantity);
+                                table3.Rows.Add(reader.GetValue(2).ToString(), reader.GetValue(1).ToString(), quantity);
+
                             }
-                            // Получаем таблицы
-                           SaveTable2();
-
-
-                            LBListCalc.Items.Add("Newline. " + Type + ", " +
-                                OpenClose + ", Глубина:" + Lenght + ", Высота:" + Height + ", " + Color+", Рейлинг: "+Railing);
-
-                            
+                            DeletedTable2();
+                            table3.Clear();
                         }
                     }
                     connection.Close();
                 }
+                SaveCalc.IsEnabled = true;
             }
             catch
             {
-                //MaterialMessageBox.ShowDialog("Одно или несколько полей пустое");
+                MaterialMessageBox.ShowDialog("При удалении возникла ошибка, не знаю какая, надо разбираться");
                 return;
             }
+
+            // Удаляем строку из StackPanel
+            SPSF.Children.Remove(parentStackPanel);
         }
+
+
 
         public void SaveTable2() // Сохранение каждого нового расчета в таблицу 2 для дальнейшего сохранения
         {
@@ -308,10 +531,38 @@ namespace TBMFurn
             }
         }
 
+        public void DeletedTable2() //Удаление расчета из таблицы 2 при удалении его из списка расчетов
+        {
+            foreach (DataRow row3 in table3.Rows)
+            {
+                // Получаем значение первой колонки текущей строки
+                string value1 = row3[0].ToString();
+
+                // Итерируем по строкам таблицы 2
+                DataRow row2 = table2.Rows.Cast<DataRow>().FirstOrDefault(r => r[0].ToString() == value1);
+
+                // Если есть строка в таблице 2 с таким же значением первой колонки
+                if (row2 != null)
+                {
+                    // Отнимаем от второй таблицы значения количества третьей
+                    int sum = Convert.ToInt32(row2[2]) - Convert.ToInt32(row3[2]);
+
+                    // Если значение sum равно нулю, то удаляем строку из таблицы 2
+                    if (sum == 0)
+                    {
+                        table2.Rows.Remove(row2);
+                    }
+                    else
+                    {
+                        // Присваиваем второй таблице значение суммы 
+                        row2[2] = sum;
+                    }
+                }
+            }
+        }
+
         private void ButtonSaveTxt_Click(object sender, RoutedEventArgs e)
         {
-            
-
             if (LBList.Items == null)
             {
                 MaterialMessageBox.ShowDialog("Сначала произведите расчет, нечего сохранять.");
@@ -323,7 +574,22 @@ namespace TBMFurn
                 Directory.CreateDirectory(@"C:\aTBMFURN\");
                 String date = DateTime.Now.ToString(" dd.MM.yyyy HH-mm-ss");
                 int CTlangth = Code.Text.Length;
-                if (CTlangth < 6)
+                if (CTlangth == 0)
+                {
+                    // Показываем изображение стрелки и запускаем анимацию
+                    LabelErrorСode.Visibility = Visibility.Visible;
+                    DoubleAnimation animation = new DoubleAnimation
+                    {
+                        From = 1,
+                        To = 0,
+                        Duration = TimeSpan.FromSeconds(0.5),
+                        AutoReverse = true,
+                        RepeatBehavior = RepeatBehavior.Forever
+                    };
+                    LabelErrorСode.BeginAnimation(UIElement.OpacityProperty, animation);
+                    return;
+                }
+                else if (CTlangth < 6)
                 {
                     for (int i = 0; i < 6 - CTlangth; i++)
                     {
@@ -369,45 +635,44 @@ namespace TBMFurn
                         table2.Rows.Clear();
 
                         MaterialMessageBox.ShowDialog("Файл успешно сохранен");
+                        // если в TextBox есть символы
+                        // Скрываем изображение стрелки
+                        LabelErrorСode.Visibility = Visibility.Hidden;
+                        LabelErrorСode.BeginAnimation(UIElement.OpacityProperty, null); // Остановка анимации
                     }
                     catch
                     {
                         MaterialMessageBox.ShowDialog("Ошибка при сохранении файла!");
                     }
                 }
-
                 LBListCalc.Items.Clear();
                 LBList.Items.Clear();
                 SPSF.Children.Clear();
-                //Count = 1;
+                Count = 1;
             }
-            /*ButtonSaveTxt.IsEnabled = true;
-            SaveCalc.IsEnabled = false;
-            TextBoxColvo.Text = "1";*/
+            ButtonSaveTxt.IsEnabled = false;
         }
 
-        private void TextBoxCode_TextChanged(object sender, TextChangedEventArgs e)
+        //Изменение размера списка расчетов
+        private void ButtonSpisokName_Click(object sender, RoutedEventArgs e)
         {
-            if (Code.Text.Length > 0)
+            if (isPanelExpanded)
             {
-                // если в TextBox есть символы
-                // Скрываем изображение стрелки
-                LabelErrorСode.Visibility = Visibility.Hidden;
-                LabelErrorСode.BeginAnimation(UIElement.OpacityProperty, null); // Остановка анимации
+                // если StackPanel уже раскрыт, то уменьшаем его размеры до исходных
+                //SPSF.Width = 500; // возвращает ширину элемента к исходному значению
+                SVSP.Height = 70;
+                isPanelExpanded = false;
+                ButtonSpisokName.Content = "▲";
             }
             else
             {
-                // Показываем изображение стрелки и запускаем анимацию
-                LabelErrorСode.Visibility = Visibility.Visible;
-                DoubleAnimation animation = new DoubleAnimation
-                {
-                    From = 1,
-                    To = 0,
-                    Duration = TimeSpan.FromSeconds(0.5),
-                    AutoReverse = true,
-                    RepeatBehavior = RepeatBehavior.Forever
-                };
-                LabelErrorСode.BeginAnimation(UIElement.OpacityProperty, animation);
+                // если StackPanel свернут, то увеличиваем его размеры на определенную величину
+                //SPSF.Width = 600; // увеличиваем ширину
+                isPanelExpanded = true;
+                SVSP.Height = 400;
+
+                ButtonSpisokName.Content = "▼";
+
             }
         }
 
@@ -614,11 +879,14 @@ namespace TBMFurn
             ComboBoxError();
             ComboBoxItem selectedItem = (ComboBoxItem)((ComboBox)sender).SelectedItem;
             string content = selectedItem.Content.ToString();
-            LabelColor.Content = content;
+            ButtonColor.Content = content;
             if (content == "Серый")
             {
-                LabelColor.BackColor = Color.LightGray; // устанавливаем цвет фона
-                LabelColor.BorderStyle = BorderStyle.FixedSingle; // устанавливаем стиль границы
+                ButtonColor.Background = Brushes.Gray; // устанавливаем цвет фона          
+            }
+            else if (content == "Белый")
+            {
+                ButtonColor.Background = Brushes.White;
             }    
 
             if (ComboBoxColor.SelectedIndex == 0) //Серый
@@ -712,6 +980,7 @@ namespace TBMFurn
                         BitmapImage image = backgroundsFONBox[7];
                         ImageBrush brush = new ImageBrush(image);
                         DataGridImage.Background = brush;
+                        Railing = "Нет";
                     }
                     else if (ComboBoxHeight.SelectedIndex == 1) //135мм
                     {
@@ -751,6 +1020,7 @@ namespace TBMFurn
                         BitmapImage image = backgroundsFONBox[14];
                         ImageBrush brush = new ImageBrush(image);
                         DataGridImage.Background = brush;
+                        Railing = "Нет";
                     }
                     else if (ComboBoxHeight.SelectedIndex == 1) //135мм
                     {
@@ -948,6 +1218,15 @@ namespace TBMFurn
         //Обработчик пустых Комбобокс********************************
         private void ComboBoxError()
         {
+            try
+            {
+
+            }
+            catch (System.Exception)
+            {
+
+            }
+
             if (ComboBoxColor.SelectedItem == null)
             {
                 // Показываем изображение стрелки и запускаем анимацию
@@ -1083,6 +1362,15 @@ namespace TBMFurn
                 }
             }
             
+        }
+
+        //Тень для фото ящиков
+        private void ShadowBox()
+        {
+            DropShadowEffect dropShadowEffect = new DropShadowEffect(); // Создание эффекта тени
+            dropShadowEffect.Color = Colors.Black; // Цвет тени
+            dropShadowEffect.ShadowDepth = 5; // Размер тени
+            dropShadowEffect.BlurRadius = 5; // Радиус размытия тени
         }
 
         //ввод только цифр в текстбоксы****************************************

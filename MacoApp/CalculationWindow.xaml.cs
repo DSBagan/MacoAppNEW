@@ -453,9 +453,6 @@ namespace MacoApp
                             ColorTextblock(textblockArray);
                         }
                     }
-
-
-
                     connection.Close();
                 }
                 SaveCalc.IsEnabled = true;

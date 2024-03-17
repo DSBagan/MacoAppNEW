@@ -7,6 +7,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d" ResizeMode="CanMinimize"
         Title="Расчет ящиков" Height="540" Width="1000" FontSize="10">
+    
     <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
@@ -52,7 +53,7 @@
                    HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
         <TextBox Name="Code" Grid.Column="2" Width="80" PreviewTextInput="TextBox_PreviewTextInput" 
                  PreviewKeyDown="TextBox_PreviewKeyDown" FontSize="12" HorizontalAlignment="Right" 
-                 VerticalAlignment="Center" Grid.ColumnSpan="1" Background="#FFFDF0F0" Margin="0,5,10,0"
+                 VerticalAlignment="Center" Grid.ColumnSpan="1" Background="#FFFDF0F0" Margin="0,5,10,0" Height="25"
                  />
 
         <TextBlock Text="Тип ящика"  Grid.Column="2" Width="70" FontSize="12" 
@@ -144,15 +145,15 @@
             IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
             Style="{StaticResource MaterialDesignPaperLightButton}" FontWeight="Normal" Grid.RowSpan="2" Grid.ColumnSpan="2" Grid.Column="1" Padding="16,0,16,0" Click="SaveCalc_Click"/>
         <ScrollViewer x:Name="SVSP" Grid.RowSpan="16" Grid.Column="1" Background="#FFFCFFFF" Grid.ColumnSpan="4" 
-            HorizontalAlignment="Left" Margin="10,0,0,10" Grid.Row="1" Height="70" Width="500" VerticalAlignment="Bottom">
+            HorizontalAlignment="Left" Margin="10,0,0,10" Grid.Row="1" Height="70" Width="600" VerticalAlignment="Bottom">
             <ScrollViewer.Effect>
                 <DropShadowEffect Color="#FFB6D9DC" Direction="315" ShadowDepth="3" BlurRadius="10"/>
             </ScrollViewer.Effect>
-            <StackPanel x:Name="SPSF">
+            <StackPanel x:Name="SPSF" HorizontalAlignment="Left">
                 <Button x:Name="ButtonSpisokName" Content="▲" Style="{StaticResource MaterialDesignPaperLightButton}" 
                           Padding="0,0,0,0" VerticalContentAlignment="Center" Grid.Row="16" 
-                        HorizontalAlignment="Right" VerticalAlignment="Top" Width="12" Height="12" FontSize="11" FontWeight="Bold">
-                    <!--Click="ButtonSpisokName_Click"-->
+                        HorizontalAlignment="Right" VerticalAlignment="Top" Width="12" Height="12" FontSize="11" FontWeight="Bold"
+                        Click="ButtonSpisokName_Click">
                 </Button>
             </StackPanel>
         </ScrollViewer>
@@ -160,7 +161,7 @@
         Click="ButtonSaveTxt_Click" FontSize="12" ToolTip="Нажми, чтобы сохранить расчеты в файл. Найти его можно в папке X:\TBMFurn\"
         IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
         Style="{StaticResource MaterialDesignPaperLightButton}"
-        HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="250,0,0,10" Background="White" Padding="10,0,10,0"/>
+        HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,10" Background="White" Padding="10,0,10,0"/>
         <TextBlock x:Name="TextBlockLenght" Grid.Column="3" HorizontalAlignment="Left" Margin="504,18,0,0" Grid.Row="8" 
                    TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Grid.RowSpan="2"
                    Text="{Binding ElementName=ComboBoxLenght, Path=SelectedItem.Content}" Width="35" Height="15">
@@ -228,7 +229,9 @@
                 <ImageBrush ImageSource="/images/Стрелка вправо.png"/>
             </Label.Background>
         </Label>
-        <Label x:Name="LabelColor" Content="Label" Grid.Row="8" Grid.Column="3" HorizontalAlignment="Left" Width="80" Height="80" Grid.RowSpan="3" Margin="15,0,0,0"/>
+        <Button x:Name="ButtonColor" Grid.ColumnSpan="3" Height="50" Grid.RowSpan="4" Width="50" Grid.Row="8" Grid.Column="4" 
+               HorizontalAlignment="Right" FontSize="12" BorderBrush="#FF2C6B0A" 
+               Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,0,30,0" Padding="0,0,0,0"/>
     </Grid>
 
 </Window>

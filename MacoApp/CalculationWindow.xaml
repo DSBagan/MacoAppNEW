@@ -47,7 +47,7 @@
         </DataGrid>
 
         <TextBlock Text="Шифр"  Grid.Column="2" Width="70" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
-        <TextBox Name="Code" Grid.Column="2" Width="80" PreviewTextInput="TextBox_PreviewTextInput" PreviewKeyDown="TextBox_PreviewKeyDown" FontSize="12" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.ColumnSpan="1" Background="#FFFDF0F0" Margin="0,5,10,0"/>
+        <TextBox Name="Code" Grid.Column="2" Width="80" PreviewTextInput="TextBox_PreviewTextInput" PreviewKeyDown="TextBox_PreviewKeyDown" FontSize="12" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.ColumnSpan="1" Background="#FFFDF0F0" Margin="0,5,10,0" Height="25"/>
 
         <TextBox Name="TextBoxFFB" Text="450"  PreviewTextInput="TextBox_PreviewTextInput" PreviewKeyDown="TextBox_PreviewKeyDown" Width="60"  FontSize="12" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="2" Grid.ColumnSpan="1" Margin="0,0,10,0"/>
         <TextBox Name="TextBoxFFH" Text="1300"  PreviewTextInput="TextBox_PreviewTextInput" PreviewKeyDown="TextBox_PreviewKeyDown" Grid.Row="3" Width="60" FontSize="12" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="2" Margin="0,0,10,0"/>
