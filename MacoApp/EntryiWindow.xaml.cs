@@ -35,7 +35,6 @@ namespace MacoApp
         {
             InitializeComponent();       
             Loaded += EntryiWindow_Loaded;
-            
         }
         
 
@@ -48,13 +47,7 @@ namespace MacoApp
         }
         private async void UpgradeBD()
         {
-            if (File.Exists(lockFilePath))
-            {
-                // Приложение уже запущено
-                return;
-            }
-            else
-            {
+
                 // Это первый запуск приложения
                 // Создать файл блокировки
                 File.Create(lockFilePath);
@@ -69,25 +62,25 @@ namespace MacoApp
                     // Удаление папки c сохраненными расчетами и всех ее подпапок и файлов
                 }
 
-                FileInfo fileInf = new FileInfo(path);
+                /*FileInfo fileInf = new FileInfo(path);
                 if (fileInf.Exists)
                 {
                     fileInf.Delete();
                 }
                 WebClient webClient = new WebClient();
                 //Качаем БД с Google Drive
-
+                
                 //webClient.DownloadFile("https://drive.google.com/uc?export=download&id=18KBF6LMWrxoDqy8cUdEUaZYCXC_8SLPu", path);
                 webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1_so2lmgt2gagS8oeNXRnfwcY2PZPK9kh", path);
                 webClient.Dispose();
-            }
+            
             
 
 
             ProgressDialogWindow progressDialog = new ProgressDialogWindow();
             progressDialog.Show();
 
-            /*await Task.Run(() =>
+            await Task.Run(() =>
             {
                 string connectionStringMySQL = "server=cz6.h.filess.io;user=BDFurnTBM_forcearmy;database=BDFurnTBM_forcearmy;port=3307;password=e5f1b53ca8619010c3c73fd972facf6e383871ed;";
                 using MySqlConnection connectionMySQL = new MySqlConnection(connectionStringMySQL);
@@ -98,7 +91,7 @@ namespace MacoApp
                 connectionSQLite.Open();
                 
                 // Создание таблицы в базе данных SQLite
-                string createTableQuery = "CREATE TABLE IF NOT EXISTS Elements (Id INTEGER PRIMARY KEY, Name_Furn TEXT, Title TEXT, Article TEXT, Quantity INTEGER, System TEXT, Side TEXT, FFH_before TEXT, FFH_after TEXT, FFB_before TEXT, FFB_after TEXT, Lower_loop TEXT, Micro_ventilation TEXT, Rotation TEXT, Framuga TEXT, Wood TEXT, Konst TEXT)";
+                string createTableQuery = "CREATE TABLE IF NOT EXISTS Elements (Id INTEGER PRIMARY KEY, Name_Furn TEXT, Title TEXT, Article TEXT, Quantity INTEGER, System TEXT, Side TEXT, FFH_before INTEGER, FFH_after INTEGER, FFB_before INTEGER, FFB_after INTEGER, Lower_loop TEXT, Micro_ventilation TEXT, Rotation TEXT, Framuga TEXT, Wood TEXT, Konst TEXT)";
                 using SQLiteCommand createTableCommand = new SQLiteCommand(createTableQuery, connectionSQLite);
                 createTableCommand.ExecuteNonQuery();
 
@@ -116,10 +109,10 @@ namespace MacoApp
                     int quantity = Convert.ToInt32(reader["Quantity"]);
                     string system = reader["System"].ToString();
                     string side = reader["Side"].ToString();
-                    string ffhBefore = reader["FFH_before"].ToString();
-                    string ffhAfter = reader["FFH_after"].ToString();
-                    string ffbBefore = reader["FFB_before"].ToString();
-                    string ffbAfter = reader["FFB_after"].ToString();
+                    int ffhBefore = Convert.ToInt32(reader["FFH_before"]);
+                    int ffhAfter = Convert.ToInt32(reader["FFH_after"]);
+                    int ffbBefore = Convert.ToInt32(reader["FFB_before"]);
+                    int ffbAfter = Convert.ToInt32(reader["FFB_after"]);
                     string lowerLoop = reader["Lower_loop"].ToString();
                     string microVentilation = reader["Micro_ventilation"].ToString();
                     string rotation = reader["Rotation"].ToString();
@@ -179,8 +172,8 @@ namespace MacoApp
 
                 connectionMySQLBox.Close();
                 connectionSQLiteBox.Close();
-            });*/
-            progressDialog.Close();
+            });
+            progressDialog.Close();*/
         }
 
         //Отображение прогрессбара во время обновления базы

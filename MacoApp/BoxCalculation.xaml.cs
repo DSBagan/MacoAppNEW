@@ -67,6 +67,7 @@ namespace TBMFurn
         string textBox5Value;
         string textBox6Value;
         string textBox7Value;
+        string textBox8Value;
 
         public BoxCalculation()
         {
@@ -415,7 +416,7 @@ namespace TBMFurn
             textBox5Value = ((TextBlock)parentStackPanel.Children[8]).Text;
             textBox6Value = ((TextBlock)parentStackPanel.Children[10]).Text;
             textBox7Value = ((TextBlock)parentStackPanel.Children[12]).Text;
-            textBox7Value = ((TextBlock)parentStackPanel.Children[14]).Text;
+            textBox8Value = ((TextBlock)parentStackPanel.Children[14]).Text;
 
 
             // Получаем значения TextBlock элементов в строке
@@ -456,7 +457,7 @@ namespace TBMFurn
                 string Height = textBox5Value;
                 string Color = textBox6Value;
                 Railing = textBox7Value;
-                int quantity = Int32.Parse(textBox7Value);
+                int quantity = Int32.Parse(textBox8Value);
 
 
                 queryString = $"Select * from BoxeFirmaxTAble where (System like 'Newline') and(Type_of_opening  like 'Не имеет значения' or Type_of_opening  like '" + OpenClose + "') " +
@@ -468,6 +469,7 @@ namespace TBMFurn
                 using (var connection = new SqliteConnection("Data Source=Furnapp.db"))
                 {
                     ObservableCollection<ClassList> collection = null; //Обнуляем коллекцию для нового расчета
+                    table1.Rows.Clear();
                     collection = new ObservableCollection<ClassList>();
                     GridListBox.ItemsSource = collection;
                     connection.Open();
@@ -882,7 +884,7 @@ namespace TBMFurn
             ButtonColor.Content = content;
             if (content == "Серый")
             {
-                ButtonColor.Background = Brushes.Gray; // устанавливаем цвет фона          
+                ButtonColor.Background = Brushes.LightGray; // устанавливаем цвет фона          
             }
             else if (content == "Белый")
             {

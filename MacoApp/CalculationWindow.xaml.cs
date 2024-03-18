@@ -562,7 +562,7 @@ namespace MacoApp
             else
             {
                 // Проверяем есть ли на диске C папка, если нет- создаем
-                Directory.CreateDirectory(@"X:\aTBMFURN\");
+                Directory.CreateDirectory(@"C:\aTBMFURN\");
                 String date = DateTime.Now.ToString(" dd.MM.yyyy HH-mm-ss");
                 int CTlangth = Code.Text.Length;
                 if (CTlangth < 6)
@@ -572,7 +572,7 @@ namespace MacoApp
                         Code.Text = "0" + Code.Text;
                     }
                 }
-                using (StreamWriter streamWriter = new StreamWriter(@"X:\aTBMFURN\" + "Z" + Code.Text + " " + date + ".txt", false, Encoding.Default))
+                using (StreamWriter streamWriter = new StreamWriter(@"C:\aTBMFURN\" + "Z" + Code.Text + " " + date + ".txt", false, Encoding.Default))
                 {
                     streamWriter.WriteLine("                    Шифр фирмы " + Code.Text);
                     streamWriter.WriteLine("                    Фирма 123");
