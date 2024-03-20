@@ -1,0 +1,45 @@
+﻿<Window WindowStartupLocation="CenterScreen" x:Class="TBMFurn.FeedbackWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TBMFurn"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        Title="Обратная связь" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <TextBox x:Name="TextBoxName" VerticalAlignment="Center" materialDesign:HintAssist.Hint="Ваш E-mail (Если хотите получить обратную связь)"
+                 Style="{StaticResource MaterialDesignFloatingHintTextBox}" Grid.ColumnSpan="4" Grid.Column="1" />
+        <TextBox x:Name="TextBoxMessage" VerticalAlignment="Center" materialDesign:HintAssist.Hint="Ваше Сообщение (Если нашли ошибку/неточность и тп. приложите к сообщению скрин)"
+         Style="{StaticResource MaterialDesignFloatingHintTextBox}" Grid.ColumnSpan="4" Grid.Column="1" Grid.RowSpan="5" 
+                 TextWrapping="Wrap"/>
+        <Button x:Name="ButtonSendEmail" Content="Отправить" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="4" Height="25"
+                Style="{StaticResource MaterialDesignPaperLightButton}" Padding="16,0,16,0" Click="ButtonSendEmail_Click"/>
+        <TextBox x:Name="TextBoxTheme" VerticalAlignment="Top" materialDesign:HintAssist.Hint="Тема сообщения"
+            Style="{StaticResource MaterialDesignFloatingHintTextBox}" Grid.ColumnSpan="4" Grid.Column="1" Grid.Row="1" />
+        <Button Content="Прикрепить файл" Click="LoadButton_Click" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="4" Grid.Column="1" Height="25"
+                Style="{StaticResource MaterialDesignPaperLightButton}" Padding="10,0,10,4" HorizontalContentAlignment="Left" FontSize="12"/>
+        <TextBlock x:Name="TextBlockPath" TextWrapping="Wrap" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="3" VerticalAlignment="Bottom" Margin="0,0,0,5"/>
+        <materialDesign:PackIcon Kind="EmailFastOutline" Grid.Row="9" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0" />
+        <materialDesign:PackIcon Kind="Paperclip" Grid.Row="4" HorizontalAlignment="Right" Margin="0,0,5,5" VerticalAlignment="Bottom" />
+        <materialDesign:PackIcon Kind="At" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0" />
+        <materialDesign:PackIcon Kind="MessageReplyOutline" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="2" Margin="0,0,5,0" />
+        <materialDesign:PackIcon Kind="CardTextOutline" Grid.Row="1" HorizontalAlignment="Right" Margin="0,5,5,0" />
+    </Grid>
+</Window>

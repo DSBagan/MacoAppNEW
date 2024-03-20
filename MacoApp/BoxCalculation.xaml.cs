@@ -197,7 +197,17 @@ namespace TBMFurn
                         }
                     }
                     connection.Close();
-                    SaveCalc.IsEnabled = true;
+
+                    // Скрываем кнопку "сохранить" если не выбран один из параметров
+                    if (ComboBoxColor.SelectedItem == null|| ComboBoxType.SelectedItem == null || ComboBoxOpenClose.SelectedItem == null || ComboBoxHeight.SelectedItem == null || ComboBoxColor.SelectedItem == null || ComboBoxLenght.SelectedItem == null || (ComboBoxRailing.Visibility == Visibility.Visible && ComboBoxRailing.SelectedItem == null))
+                    {
+                        SaveCalc.IsEnabled = false;
+                    }
+                    else 
+                    {
+                        SaveCalc.IsEnabled = true;
+                    }
+                    //SaveCalc.IsEnabled = true;
                 }
             }
             catch
@@ -705,6 +715,9 @@ namespace TBMFurn
                 ComboBoxLenght.Items.Add("400");
                 ComboBoxLenght.Items.Add("450");
                 ComboBoxLenght.Items.Add("500");
+                ComboBoxColor.Items.Clear();
+                ComboBoxColor.Items.Add("Серый");
+                ComboBoxColor.Items.Add("Белый");
 
 
                 if (ComboBoxHeight.SelectedIndex == 0)
@@ -736,6 +749,9 @@ namespace TBMFurn
                 ComboBoxLenght.Items.Add("400");
                 ComboBoxLenght.Items.Add("450");
                 ComboBoxLenght.Items.Add("500");
+                ComboBoxColor.Items.Clear();
+                ComboBoxColor.Items.Add("Серый");
+                ComboBoxColor.Items.Add("Белый");
 
                 if (ComboBoxHeight.SelectedIndex == 1)
                 {
@@ -764,6 +780,8 @@ namespace TBMFurn
                 ComboBoxLenght.Items.Clear();
                 ComboBoxLenght.Items.Add("450");
                 ComboBoxLenght.Items.Add("500");
+                ComboBoxColor.Items.Clear();
+                ComboBoxColor.Items.Add("Серый");
 
                 if (ComboBoxHeight.SelectedIndex == 0)
                 {
@@ -875,21 +893,29 @@ namespace TBMFurn
                 }
             }
         }
-        // Обработка Сомбобокса Цвет
+        // Обработка Комбобокса Цвет
         private void ComboBoxColor_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBoxError();
-            ComboBoxItem selectedItem = (ComboBoxItem)((ComboBox)sender).SelectedItem;
-            string content = selectedItem.Content.ToString();
-            ButtonColor.Content = content;
-            if (content == "Серый")
+            if (ComboBoxColor.SelectedIndex != null) 
             {
-                ButtonColor.Background = Brushes.LightGray; // устанавливаем цвет фона          
+                /*ComboBoxItem selectedItem = (ComboBoxItem)((ComboBox)sender).SelectedItem;
+                string content = selectedItem.Content.ToString();
+                ButtonColor.Content = content;*/
+
+
+                if (ComboBoxColor.SelectedIndex == 0)
+                {
+                    ButtonColor.Content = "Серый";
+                    ButtonColor.Background = Brushes.LightGray; // устанавливаем цвет фона          
+                }
+                else if (ComboBoxColor.SelectedIndex == 1)
+                {
+                    ButtonColor.Content = "Белый";
+                    ButtonColor.Background = Brushes.White;
+                }
             }
-            else if (content == "Белый")
-            {
-                ButtonColor.Background = Brushes.White;
-            }    
+                
 
             if (ComboBoxColor.SelectedIndex == 0) //Серый
             {
@@ -1220,15 +1246,6 @@ namespace TBMFurn
         //Обработчик пустых Комбобокс********************************
         private void ComboBoxError()
         {
-            try
-            {
-
-            }
-            catch (System.Exception)
-            {
-
-            }
-
             if (ComboBoxColor.SelectedItem == null)
             {
                 // Показываем изображение стрелки и запускаем анимацию
@@ -1303,6 +1320,7 @@ namespace TBMFurn
                     RepeatBehavior = RepeatBehavior.Forever
                 };
                 LabelErrorHeight.BeginAnimation(UIElement.OpacityProperty, animation);
+                
             }
             else
             {
@@ -1364,15 +1382,6 @@ namespace TBMFurn
                 }
             }
             
-        }
-
-        //Тень для фото ящиков
-        private void ShadowBox()
-        {
-            DropShadowEffect dropShadowEffect = new DropShadowEffect(); // Создание эффекта тени
-            dropShadowEffect.Color = Colors.Black; // Цвет тени
-            dropShadowEffect.ShadowDepth = 5; // Размер тени
-            dropShadowEffect.BlurRadius = 5; // Радиус размытия тени
         }
 
         //ввод только цифр в текстбоксы****************************************

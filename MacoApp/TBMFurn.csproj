@@ -19,8 +19,10 @@
   <ItemGroup>
     <None Remove="28.png" />
     <None Remove="FRAM.PNG" />
+    <None Remove="images\akpen-logo.png" />
     <None Remove="images\AkpenFon.png" />
     <None Remove="images\Firmax.png" />
+    <None Remove="images\Firmax1.PNG" />
     <None Remove="images\internikaFon.png" />
     <None Remove="images\MacoFon.png" />
     <None Remove="images\MacoFonMM.png" />
@@ -76,6 +78,7 @@
 
   <ItemGroup>
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.57.0.2859" />
+    <PackageReference Include="MailKit" Version="4.4.0" />
     <PackageReference Include="MaterialDesignColors" Version="2.0.9" />
     <PackageReference Include="MaterialDesignMessageBox" Version="1.0.1" />
     <PackageReference Include="MaterialDesignThemes" Version="4.6.1" />
@@ -94,10 +97,16 @@
   <ItemGroup>
     <Resource Include="28.png" />
     <Resource Include="FRAM.PNG" />
+    <Resource Include="images\akpen-logo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="images\AkpenFon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\Firmax.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Firmax1.PNG">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\internikaFon.png">

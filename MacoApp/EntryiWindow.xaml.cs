@@ -62,7 +62,7 @@ namespace MacoApp
                     // Удаление папки c сохраненными расчетами и всех ее подпапок и файлов
                 }
 
-                /*FileInfo fileInf = new FileInfo(path);
+                FileInfo fileInf = new FileInfo(path);
                 if (fileInf.Exists)
                 {
                     fileInf.Delete();
@@ -77,7 +77,7 @@ namespace MacoApp
             
 
 
-            ProgressDialogWindow progressDialog = new ProgressDialogWindow();
+            /*ProgressDialogWindow progressDialog = new ProgressDialogWindow();
             progressDialog.Show();
 
             await Task.Run(() =>
@@ -214,6 +214,13 @@ namespace MacoApp
             BoxCalculation boxCalculation = new BoxCalculation();
             boxCalculation.Show();
             this.Close();
+        }
+
+        private void ButtonFeedback_Click(object sender, RoutedEventArgs e)
+        {
+            FeedbackWindow feedbackWindow = new FeedbackWindow();
+            feedbackWindow.Show();
+            //this.Close();
         }
     }
 }

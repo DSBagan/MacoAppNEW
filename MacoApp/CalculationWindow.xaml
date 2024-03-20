@@ -39,7 +39,9 @@
 
         <DataGrid x:Name="GridList"  Grid.Column="3" Margin="0,10,15,0" 
                     Grid.RowSpan="16" Grid.ColumnSpan="2"
-                    FontSize="12" Grid.Row="0" FontWeight="Bold" Foreground="#FF0D042B">
+                    FontSize="12" FontWeight="Bold" Foreground="#FF0D042B"
+                  materialDesign:DataGridAssist.CellPadding="40 2 2 2" 
+                  materialDesign:DataGridAssist.ColumnHeaderPadding="40 2 2 2">
 
             <DataGrid.Background>
                 <ImageBrush ImageSource="/MacoFon.png"/>
