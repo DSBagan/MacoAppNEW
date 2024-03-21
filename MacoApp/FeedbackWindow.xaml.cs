@@ -68,6 +68,9 @@ namespace TBMFurn
                 SmtpServer.Send(mail);
                 MessageBox.Show("Сообщение отправлено.");
                 TextBlockPath.Text = "";
+                TextBoxMessage.Text = "";
+                TextBoxName.Text = "";
+                TextBoxTheme.Text = "";
             }
             catch (Exception ex)
             {

@@ -78,16 +78,29 @@
         </ComboBox>
         <TextBox Name="TextBoxColvo" Text="1" PreviewTextInput="TextBox_PreviewTextInput" MaxLength="3" PreviewKeyDown="TextBox_PreviewKeyDown" Grid.Row="11" Width="60" HorizontalAlignment="Right" FontSize="12" VerticalAlignment="Center" Grid.Column="2" Margin="0,0,10,0"/>
 
-        <Button Name="ButtonCalc" Content="Рассчитать" Grid.Row="13" Height="30" HorizontalContentAlignment="Center" 
+        <StackPanel>
+            
+        </StackPanel>
+        <Button Name="ButtonCalc" Grid.Row="13" Height="30" HorizontalContentAlignment="Center" 
                     VerticalAlignment="Top" Margin="9,0,15,0" Click="ButtonCalc_Click" FontSize="14" Cursor="Hand" 
                     ToolTip="Нажми, чтобы рассчитать комплект" 
                     IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-                    Style="{StaticResource MaterialDesignPaperLightButton}" FontWeight="Normal" FontStretch="Normal" Grid.RowSpan="3" Grid.ColumnSpan="2" Grid.Column="1"/>
-        <Button Name="SaveCalc" Content="Сохранить расчет" Grid.Row="14" Margin="9,0,15,10" HorizontalContentAlignment="Center" VerticalContentAlignment="Stretch"
+                    Style="{StaticResource MaterialDesignPaperLightButton}" FontWeight="Normal" FontStretch="Normal" Grid.RowSpan="3" Grid.ColumnSpan="2" Grid.Column="1">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="CalculatorVariantOutline" Margin="0,0,10,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <TextBlock Text="Рассчитать"/>
+            </StackPanel>
+        </Button>
+        <Button Name="SaveCalc" Grid.Row="14" Margin="9,0,15,10" HorizontalContentAlignment="Center" VerticalContentAlignment="Stretch"
                     VerticalAlignment="Bottom" Click="SaveCalc_Click" Height="30" FontSize="14" 
                     ToolTip="Нажми, чтобы добавить расчет к списку на сохранение"
                     IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-                    Style="{StaticResource MaterialDesignPaperLightButton}" FontWeight="Normal" Grid.RowSpan="2" Grid.ColumnSpan="2" Grid.Column="1"/>
+                    Style="{StaticResource MaterialDesignPaperLightButton}" FontWeight="Normal" Grid.RowSpan="2" Grid.ColumnSpan="2" Grid.Column="1">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="ContentSavePlusOutline" Margin="0,0,10,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <TextBlock Text="Сохранить расчет"/>
+            </StackPanel>
+        </Button>
 
         <TextBlock Text="Высота"  Grid.Column="2" Grid.Row="3" Width="70" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
         <TextBlock Text="Ширина"  Grid.Column="2" Width="70" FontSize="12" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
@@ -100,17 +113,27 @@
 
         <ListBox Name="LBList"   Grid.Column="4" Margin="144,7,4,20" Grid.Row="5" Visibility="Hidden"/>
 
-        <Button Name="ButtonSaveTxt" Content="Сохранить в .txt" Grid.Column="3" Grid.Row="16" 
+        <Button Name="ButtonSaveTxt" Grid.Column="3" Grid.Row="16" 
                 Click="Button_Click" FontSize="12" ToolTip="Нажми, чтобы сохранить расчеты в файл. Найти его можно в папке X:\TBMFurn\"
                 IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
                 Style="{StaticResource MaterialDesignPaperLightButton}"
-                HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="250,0,0,10" Background="White" Padding="10,0,10,0"/>
-        <Button x:Name="ButtonExit" Content="Назад" Click="ButtonExit_Click" 
+                HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="250,0,0,10" Background="White" Padding="10,0,10,0">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="TextBoxMultipleOutline" Margin="0,0,10,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <TextBlock Text="Сохранить в .txt"/>
+            </StackPanel>
+        </Button>
+        <Button x:Name="ButtonExit" Click="ButtonExit_Click" 
                 HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="12"
                 IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
                 Style="{StaticResource MaterialDesignPaperLightButton}"
                 ToolTip="Нажми, чтобы выйти в меню выбора"
-                Grid.Column="4" Grid.Row="16" Height="29" Margin="0,0,15,10"/>
+                Grid.Column="4" Grid.Row="16" Height="29" Margin="0,0,15,10">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="ExitRun" Margin="0,0,10,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <TextBlock Text="Выйти"/>
+            </StackPanel>
+        </Button>
         <TextBlock x:Name="TBDate" Grid.Column="4" HorizontalAlignment="Left" Margin="150,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="12"/>
         <TextBlock Text="Фурнитура"  Grid.Column="2" Width="70" FontSize="12" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
         <ComboBox x:Name="ComboBoxFurn" Grid.Row="1" Width="80" FontSize="12" HorizontalAlignment="Right" Grid.Column="2" Grid.ColumnSpan="1" SelectionChanged="ComboBoxFurn_SelectionChanged" Margin="0,0,10,0" VerticalAlignment="Center">
