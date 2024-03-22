@@ -72,7 +72,7 @@ namespace TBMFurn
         public BoxCalculation()
         {
             InitializeComponent();
-
+            StartTextAnimation(); // Запускаем анимацию текстблока обратной связи
             SaveCalc.IsEnabled = false;
             ButtonSaveTxt.IsEnabled = false;
 
@@ -513,7 +513,31 @@ namespace TBMFurn
             SPSF.Children.Remove(parentStackPanel);
         }
 
+        //Анимация текстблока обратной связи
+        private void StartTextAnimation()
+        {
+            string[] texts = new string[] { "Нашел ошибку? Напиши \u2192", "Есть неточность? Напиши \u2192", "Есть предложение по улучшению программы? Напиши \u2192" }; // Замените на свои тексты
+            int currentIndex = 0;
 
+            // Создаем таймер, который будет вызывать смену текста каждые 20 секунд
+            System.Windows.Threading.DispatcherTimer textTimer = new System.Windows.Threading.DispatcherTimer();
+            textTimer.Interval = TimeSpan.FromSeconds(20);
+            textTimer.Tick += (sender, e) =>
+            {
+                var fadeOut = new DoubleAnimation(0, (Duration)TimeSpan.FromSeconds(1));
+                fadeOut.Completed += (s, a) =>
+                {
+                    TextBlockFeedback.Text = texts[currentIndex];
+                    var fadeIn = new DoubleAnimation(1, (Duration)TimeSpan.FromSeconds(1));
+                    TextBlockFeedback.BeginAnimation(UIElement.OpacityProperty, fadeIn);
+                };
+                TextBlockFeedback.BeginAnimation(UIElement.OpacityProperty, fadeOut);
+
+                currentIndex = (currentIndex + 1) % texts.Length;
+            };
+
+            textTimer.Start();
+        }
 
         public void SaveTable2() // Сохранение каждого нового расчета в таблицу 2 для дальнейшего сохранения
         {
@@ -1384,6 +1408,7 @@ namespace TBMFurn
             
         }
 
+
         //ввод только цифр в текстбоксы****************************************
         private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
@@ -1408,6 +1433,12 @@ namespace TBMFurn
             EntryiWindow entryiWindow = new EntryiWindow();
             entryiWindow.Show();
             this.Close();
+        }
+
+        private void ButtonFeedback_Click(object sender, RoutedEventArgs e)
+        {
+            FeedbackWindow feedbackWindow = new FeedbackWindow();
+            feedbackWindow.Show();
         }
     }
 }

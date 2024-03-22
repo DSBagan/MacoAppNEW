@@ -21,6 +21,9 @@ using System.Threading;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace MacoApp
 {
@@ -31,18 +34,38 @@ namespace MacoApp
         //Создаем файл блокировки, если приложение уже запущено
         string lockFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MyAppLock.lock");
 
+        //Создаем коллекцию лого
+        private ObservableCollection<BitmapImage> backgroundsLogo = new ObservableCollection<BitmapImage>();
+
         public EntryiWindow()
         {
-            InitializeComponent();       
+            InitializeComponent();
+
+            backgroundsLogo.Add(new BitmapImage(new Uri("pack://application:,,,/images/maco.png")));
+            backgroundsLogo.Add(new BitmapImage(new Uri("pack://application:,,,/images/roto-transformed.png")));
+            backgroundsLogo.Add(new BitmapImage(new Uri("pack://application:,,,/images/Vorne-logo.png")));
+            backgroundsLogo.Add(new BitmapImage(new Uri("pack://application:,,,/images/28.png")));
+            backgroundsLogo.Add(new BitmapImage(new Uri("pack://application:,,,/images/akpen-logo.png")));
+            backgroundsLogo.Add(new BitmapImage(new Uri("pack://application:,,,/images/Firmax1.png")));
+
             Loaded += EntryiWindow_Loaded;
         }
-        
 
         private void EntryiWindow_Loaded(object sender, RoutedEventArgs e)
         {
             IntOn.Visibility = Visibility.Collapsed;
             IntOff.Visibility = Visibility.Collapsed;
             ButtonEditor.Visibility = Visibility.Collapsed;
+
+            for (int i = 0; i < backgroundsLogo.Count; i++)
+            {
+                Image img = new Image();
+                img.Source = backgroundsLogo[i];
+                stackPanelLogo.Children.Add(img);
+            }
+            
+
+
             UpgradeBD();
         }
         private async void UpgradeBD()

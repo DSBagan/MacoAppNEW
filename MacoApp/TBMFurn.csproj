@@ -19,11 +19,13 @@
   <ItemGroup>
     <None Remove="28.png" />
     <None Remove="FRAM.PNG" />
+    <None Remove="images\28.png" />
     <None Remove="images\akpen-logo.png" />
     <None Remove="images\AkpenFon.png" />
     <None Remove="images\Firmax.png" />
     <None Remove="images\Firmax1.PNG" />
     <None Remove="images\internikaFon.png" />
+    <None Remove="images\maco.png" />
     <None Remove="images\MacoFon.png" />
     <None Remove="images\MacoFonMM.png" />
     <None Remove="images\Newline.png" />
@@ -31,8 +33,10 @@
     <None Remove="images\PP.PNG" />
     <None Remove="images\P_OL.PNG" />
     <None Remove="images\P_OP.PNG" />
+    <None Remove="images\roto-transformed.png" />
     <None Remove="images\RotoFon.png" />
     <None Remove="images\RotoFonNX.png" />
+    <None Remove="images\Vorne-logo.png" />
     <None Remove="images\vorneFon.png" />
     <None Remove="images\Внутренний ящик 135 Белый.png" />
     <None Remove="images\Внутренний ящик 135 Квадрат Цвет.png" />
@@ -95,8 +99,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="28.png" />
     <Resource Include="FRAM.PNG" />
+    <Resource Include="images\28.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="images\akpen-logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -112,6 +118,9 @@
     <Resource Include="images\internikaFon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="images\maco.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="images\MacoFon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -125,10 +134,16 @@
     <Resource Include="images\PP.PNG" />
     <Resource Include="images\P_OL.PNG" />
     <Resource Include="images\P_OP.PNG" />
+    <Resource Include="images\roto-transformed.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="images\RotoFon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\RotoFonNX.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Vorne-logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\vorneFon.png">
@@ -203,12 +218,9 @@
     <Resource Include="images\Ящик под мойку Цвет.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="maco.png" />
     <Resource Include="MacoFon.png" />
     <Resource Include="PP.PNG" />
     <Resource Include="P_OP.PNG" />
-    <Resource Include="roto-transformed.png" />
-    <Resource Include="Vorne-logo.png" />
     <Resource Include="Внутренний ящик 135 Цвет.png" />
   </ItemGroup>
 

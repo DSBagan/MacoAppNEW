@@ -38,10 +38,10 @@
         </Grid.ColumnDefinitions>
 
         <DataGrid x:Name="GridList"  Grid.Column="3" Margin="0,10,15,0" 
-                    Grid.RowSpan="16" Grid.ColumnSpan="2"
+                    Grid.RowSpan="15" Grid.ColumnSpan="2"
                     FontSize="12" FontWeight="Bold" Foreground="#FF0D042B"
                   materialDesign:DataGridAssist.CellPadding="40 2 2 2" 
-                  materialDesign:DataGridAssist.ColumnHeaderPadding="40 2 2 2">
+                  materialDesign:DataGridAssist.ColumnHeaderPadding="40 2 2 2" Grid.Row="1">
 
             <DataGrid.Background>
                 <ImageBrush ImageSource="/MacoFon.png"/>
@@ -191,5 +191,19 @@
                 </Button>
             </StackPanel>
         </ScrollViewer>
+        <TextBlock x:Name="TextBlockFeedback" Grid.Column="3" HorizontalAlignment="Right" FontSize="12" FontWeight="DemiBold" Foreground="#FF002D24" Grid.RowSpan="2" Margin="0,10,45,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+        <Button x:Name="ButtonFeedback" IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
+                ToolTip="MaterialDesignFloatingActionMiniLightButton" Background="#FFEDD7AF" Grid.Column="4" Grid.RowSpan="2" Width="30" Height="30" HorizontalAlignment="Right" Margin="0,5,5,0" VerticalAlignment="Top" Click="ButtonFeedback_Click">
+            <materialDesign:PackIcon Kind="EmailOpenOutline" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Button>
+        
+
+
+        <!--<Label x:Name="LabelErrorСode" Grid.ColumnSpan="1" Height="17" Width="30" Grid.Row="0" HorizontalAlignment="Center" Grid.Column="2">-->
+            <!--<Label.Background>
+                <!-<ImageBrush ImageSource="/images/Стрелка вправо.png"/>-->
+            <!--</Label.Background>-->
+        <!--</Label>-->
     </Grid>
 </Window>

@@ -99,6 +99,7 @@ namespace MacoApp
         {
             InitializeComponent();
             Loaded += CalculationWindow_Loaded;
+            StartTextAnimation(); // Запускаем анимацию текстблока обратной связи
             SaveCalc.IsEnabled = false;
             table1.Columns.Add(new DataColumn("Артикул", typeof(string)));
             table1.Columns.Add(new DataColumn("Название", typeof(string)));
@@ -554,6 +555,7 @@ namespace MacoApp
                 return;
 
             }
+
             if (LBList.Items == null)
             {
                 MaterialMessageBox.ShowDialog("Сначала произведите расчет, нечего сохранять.");
@@ -730,7 +732,35 @@ namespace MacoApp
                 ComboBoxKonst.IsEnabled = true;
             }
 
+
         }
+
+        //Анимация текстблока обратной связи
+        private void StartTextAnimation()
+        {
+            string[] texts = new string[] { "Нашел ошибку? Напиши \u2192", "Есть неточность? Напиши \u2192", "Есть предложение по улучшению программы? Напиши \u2192" }; // Замените на свои тексты
+            int currentIndex = 0;
+
+            // Создаем таймер, который будет вызывать смену текста каждые 20 секунд
+            System.Windows.Threading.DispatcherTimer textTimer = new System.Windows.Threading.DispatcherTimer();
+            textTimer.Interval = TimeSpan.FromSeconds(20);
+            textTimer.Tick += (sender, e) =>
+            {
+                var fadeOut = new DoubleAnimation(0, (Duration)TimeSpan.FromSeconds(1));
+                fadeOut.Completed += (s, a) =>
+                {
+                    TextBlockFeedback.Text = texts[currentIndex];
+                    var fadeIn = new DoubleAnimation(1, (Duration)TimeSpan.FromSeconds(1));
+                    TextBlockFeedback.BeginAnimation(UIElement.OpacityProperty, fadeIn);
+                };
+                TextBlockFeedback.BeginAnimation(UIElement.OpacityProperty, fadeOut);
+
+                currentIndex = (currentIndex + 1) % texts.Length;
+            };
+
+            textTimer.Start();
+        }
+
 
         //Фон для кнопок поворота************************************
         private void ComboBoxSide_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -952,6 +982,12 @@ namespace MacoApp
                 }
             }
 
+        }
+
+        private void ButtonFeedback_Click(object sender, RoutedEventArgs e)
+        {
+            FeedbackWindow feedbackWindow = new FeedbackWindow();
+            feedbackWindow.Show();
         }
     }
 }
