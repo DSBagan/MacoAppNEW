@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -63,18 +64,11 @@ namespace MacoApp
                 img.Source = backgroundsLogo[i];
                 stackPanelLogo.Children.Add(img);
             }
-            
-
-
             UpgradeBD();
         }
+
         private async void UpgradeBD()
         {
-
-                // Это первый запуск приложения
-                // Создать файл блокировки
-                File.Create(lockFilePath);
-
                 if (Directory.Exists(@"X:\aTBMFURN\"))
                 {
                     string[] files = Directory.GetFiles(@"X:\aTBMFURN\");
@@ -84,20 +78,24 @@ namespace MacoApp
                     }
                     // Удаление папки c сохраненными расчетами и всех ее подпапок и файлов
                 }
-
+            try
+            {
                 FileInfo fileInf = new FileInfo(path);
                 if (fileInf.Exists)
                 {
                     fileInf.Delete();
                 }
-                WebClient webClient = new WebClient();
                 //Качаем БД с Google Drive
-
+                WebClient webClient = new WebClient();
                 //webClient.DownloadFile("https://drive.google.com/uc?export=download&id=18KBF6LMWrxoDqy8cUdEUaZYCXC_8SLPu", path);
                 webClient.DownloadFile("https://drive.google.com/uc?export=download&id=11NtSrLJ481KCTRlefNl_KA5IvvwWG6-Q", path);
                 webClient.Dispose();
-            
-
+            }
+            catch (Exception)
+            {
+                return;
+                throw;
+            }
 
             /*ProgressDialogWindow progressDialog = new ProgressDialogWindow();
             progressDialog.Show();
@@ -207,6 +205,7 @@ namespace MacoApp
                 progressDialog.progressText.Text = $"Progress: {value}%";
             });
         }
+
         private void ButtonEditor_Click(object sender, RoutedEventArgs e)
         {
             WindowPassword windowPassword = new WindowPassword();
@@ -224,11 +223,6 @@ namespace MacoApp
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            //workGoogleDrive.DeleteFile("123");
         }
 
         private void ButtonBoxCalculation_Click(object sender, RoutedEventArgs e)
