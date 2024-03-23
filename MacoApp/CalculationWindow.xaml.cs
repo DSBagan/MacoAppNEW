@@ -563,8 +563,8 @@ namespace MacoApp
             }
             else
             {
-                // Проверяем есть ли на диске C папка, если нет- создаем
-                Directory.CreateDirectory(@"C:\aTBMFURN\");
+                // Проверяем есть ли на диске X папка, если нет- создаем
+                Directory.CreateDirectory(@"X:\aTBMFURN\");
                 String date = DateTime.Now.ToString(" dd.MM.yyyy HH-mm-ss");
                 int CTlangth = Code.Text.Length;
                 if (CTlangth < 6)
@@ -574,7 +574,7 @@ namespace MacoApp
                         Code.Text = "0" + Code.Text;
                     }
                 }
-                using (StreamWriter streamWriter = new StreamWriter(@"C:\aTBMFURN\" + "Z" + Code.Text + " " + date + ".txt", false, Encoding.Default))
+                using (StreamWriter streamWriter = new StreamWriter(@"X:\aTBMFURN\" + "Z" + Code.Text + " " + date + ".txt", false, Encoding.Default))
                 {
                     streamWriter.WriteLine("                    Шифр фирмы " + Code.Text);
                     streamWriter.WriteLine("                    Фирма 123");
@@ -738,12 +738,12 @@ namespace MacoApp
         //Анимация текстблока обратной связи
         private void StartTextAnimation()
         {
-            string[] texts = new string[] { "Нашел ошибку? Напиши \u2192", "Есть неточность? Напиши \u2192", "Есть предложение по улучшению программы? Напиши \u2192" }; // Замените на свои тексты
+            string[] texts = new string[] {"Есть предложение по улучшению программы? Напиши \u2192", "Нашел ошибку? Напиши \u2192", "Есть неточность? Напиши \u2192" }; // Замените на свои тексты
             int currentIndex = 0;
 
             // Создаем таймер, который будет вызывать смену текста каждые 20 секунд
             System.Windows.Threading.DispatcherTimer textTimer = new System.Windows.Threading.DispatcherTimer();
-            textTimer.Interval = TimeSpan.FromSeconds(20);
+            textTimer.Interval = TimeSpan.FromSeconds(30);
             textTimer.Tick += (sender, e) =>
             {
                 var fadeOut = new DoubleAnimation(0, (Duration)TimeSpan.FromSeconds(1));
