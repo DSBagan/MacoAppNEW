@@ -65,6 +65,7 @@ namespace MacoApp
                 stackPanelLogo.Children.Add(img);
             }
             UpgradeBD();
+            InitTasks();
         }
 
         private async void UpgradeBD()
@@ -195,6 +196,104 @@ namespace MacoApp
             });
             progressDialog.Close();*/
         }
+
+        private async void InitTasks()
+        {
+            try
+            {
+                await Task.Run(() => CleanOldVersions());
+            }
+            catch (Exception ex)
+            {
+                //Error handling
+            }
+        }
+
+
+
+        public static void CleanOldVersions()
+        {
+
+            string path = AppDomain.CurrentDomain.BaseDirectory;
+            int lastSlash = path.LastIndexOf(@"\");
+            path = path.Substring(0, lastSlash);
+            lastSlash = path.LastIndexOf(@"\");
+            path = path.Substring(0, lastSlash);
+
+            var dirInfo = new DirectoryInfo(path);
+
+            var directories = dirInfo.EnumerateDirectories()
+                                        .OrderByDescending(d => d.CreationTime)
+                                        .ToList();
+
+            List<string> DeletedAppIDs = new List<string>();
+
+            foreach (DirectoryInfo subDirInfo in directories)
+            {
+
+                int first_ = subDirInfo.Name.IndexOf("_");
+                if (first_ < 0) continue;
+                string appID = subDirInfo.Name.Substring(first_ + 1, 21);
+
+                if (DeletedAppIDs.Contains(appID)) continue;
+
+                var subdirectories = subDirInfo.Parent.EnumerateDirectories()
+                                            .Where(d => d.Name.Contains(appID))
+                                            .OrderByDescending(d => d.CreationTime)
+                                            .ToList();
+
+                bool isNewest = true;
+                foreach (DirectoryInfo subDirName in subdirectories)
+                {
+                    if (isNewest)
+                    {
+                        isNewest = false;
+                    }
+                    else
+                    {
+                        try
+                        {
+                            SetAttributesToNormal(subDirName);
+                            subDirName.Delete(true);
+
+                            if (!DeletedAppIDs.Contains(appID))
+                            {
+                                DeletedAppIDs.Add(appID);
+                            }
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+                            //Catch unauthorized access to prevent exit if a previous version has any open dll
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        private static void SetAttributesToNormal(DirectoryInfo dir)
+        {
+            foreach (var subDir in dir.GetDirectories())
+                SetAttributesToNormal(subDir);
+            foreach (var file in dir.GetFiles())
+            {
+                file.Attributes = FileAttributes.Normal;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
 
         //Отображение прогрессбара во время обновления базы
         private void UpdateProgress(ProgressDialogWindow progressDialog, int value)
