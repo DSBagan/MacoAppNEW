@@ -130,8 +130,8 @@
                 ToolTip="Нажми, чтобы выйти в меню выбора"
                 Grid.Column="4" Grid.Row="16" Height="29" Margin="0,0,15,10">
             <StackPanel Orientation="Horizontal">
-                <materialDesign:PackIcon Kind="ExitRun" Margin="0,0,10,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                <TextBlock Text="Выйти"/>
+                <materialDesign:PackIcon Kind="ExitToApp" Margin="0,0,10,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <TextBlock Text="Назад"/>
             </StackPanel>
         </Button>
         <TextBlock x:Name="TBDate" Grid.Column="4" HorizontalAlignment="Left" Margin="150,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="12"/>

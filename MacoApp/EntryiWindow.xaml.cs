@@ -89,7 +89,7 @@ namespace MacoApp
                 //Качаем БД с Google Drive
                 WebClient webClient = new WebClient();
                 //webClient.DownloadFile("https://drive.google.com/uc?export=download&id=18KBF6LMWrxoDqy8cUdEUaZYCXC_8SLPu", path);
-                webClient.DownloadFile("https://drive.google.com/uc?export=download&id=11NtSrLJ481KCTRlefNl_KA5IvvwWG6-Q", path);
+                webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1RWDh48ytWHdHpTKdiSyFl6YR8cwd4mAf", path);
                 webClient.Dispose();
             }
             catch (Exception)
@@ -210,7 +210,7 @@ namespace MacoApp
         }
 
 
-
+        //Удаление старых версий программы
         public static void CleanOldVersions()
         {
 
@@ -263,7 +263,7 @@ namespace MacoApp
                         }
                         catch (UnauthorizedAccessException)
                         {
-                            //Catch unauthorized access to prevent exit if a previous version has any open dll
+                            
                         }
 
                     }

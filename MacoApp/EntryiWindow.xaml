@@ -40,7 +40,7 @@
 
 
         <StackPanel x:Name="stackPanelLogo" Orientation="Horizontal" Grid.Row="5" Grid.ColumnSpan="2" HorizontalAlignment="Left"
-                    MaxHeight="30">
+                    MaxHeight="30" VerticalAlignment="Bottom" Margin="5,0,0,5">
             
         </StackPanel>
         <Button x:Name="ButtonBoxCalculation" Content="Расчет мебельных ящиков Newline" Grid.Row="2" Cursor="Hand"

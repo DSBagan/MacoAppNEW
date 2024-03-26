@@ -742,7 +742,10 @@ namespace TBMFurn
                 ComboBoxColor.Items.Clear();
                 ComboBoxColor.Items.Add("Серый");
                 ComboBoxColor.Items.Add("Белый");
-
+                ComboBoxHeight.Items.Clear();
+                ComboBoxHeight.Items.Add("84");
+                ComboBoxHeight.Items.Add("135");
+                ComboBoxHeight.Items.Add("199");
 
                 if (ComboBoxHeight.SelectedIndex == 0)
                 {
@@ -776,6 +779,9 @@ namespace TBMFurn
                 ComboBoxColor.Items.Clear();
                 ComboBoxColor.Items.Add("Серый");
                 ComboBoxColor.Items.Add("Белый");
+                ComboBoxHeight.Items.Clear();
+                ComboBoxHeight.Items.Add("84");
+                
 
                 if (ComboBoxHeight.SelectedIndex == 1)
                 {
@@ -802,10 +808,17 @@ namespace TBMFurn
                 ComboBoxOpenClose.Items.Add("Soft Close");
                 ComboBoxOpenClose.Items.Add("Push to Open");
                 ComboBoxLenght.Items.Clear();
+                ComboBoxLenght.Items.Add("300");
+                ComboBoxLenght.Items.Add("350");
+                ComboBoxLenght.Items.Add("400");
                 ComboBoxLenght.Items.Add("450");
                 ComboBoxLenght.Items.Add("500");
                 ComboBoxColor.Items.Clear();
-                ComboBoxColor.Items.Add("Серый");
+                ComboBoxColor.Items.Add("Серый"); 
+                ComboBoxHeight.Items.Clear();
+                ComboBoxHeight.Items.Add("84");
+                ComboBoxHeight.Items.Add("135");
+                ComboBoxHeight.Items.Add("199");
 
                 if (ComboBoxHeight.SelectedIndex == 0)
                 {
@@ -831,9 +844,21 @@ namespace TBMFurn
         private void ComboBoxHeight_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBoxError();
-            ComboBoxItem selectedItem = (ComboBoxItem)((ComboBox)sender).SelectedItem;
+
+            /*ComboBoxItem selectedItem = (ComboBoxItem)((ComboBox)sender).SelectedItem;
             string content = selectedItem.Content.ToString();
-            TextBlockHeight.Text = content;
+            TextBlockHeight.Text = content;*/
+
+            ComboBox comboBox = sender as ComboBox;
+            if (comboBox.SelectedItem != null)
+            {
+                // Получаем выбранное значение
+                string selectedValue = comboBox.SelectedItem.ToString();
+
+                // Выводим значение в текстблок
+                TextBlockHeight.Text = selectedValue;
+            }
+
             if (ComboBoxHeight.SelectedIndex == 0)
             {
                 ComboBoxRailing.Items.Clear();
@@ -887,7 +912,6 @@ namespace TBMFurn
                     ImageBrush brush = new ImageBrush(image);
                     DataGridImage.Background = brush;
                 }
-
             }
             else if (ComboBoxHeight.SelectedIndex == 2)
             {
