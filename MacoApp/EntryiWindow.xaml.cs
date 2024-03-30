@@ -25,6 +25,7 @@ using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
+using System.Net.NetworkInformation;
 
 namespace MacoApp
 {
@@ -65,34 +66,45 @@ namespace MacoApp
                 stackPanelLogo.Children.Add(img);
             }
             UpgradeBD();
-            InitTasks();
+            InitTasks(); //Запуск метода удаления старых версий после обновления
         }
 
         private async void UpgradeBD()
         {
-                if (Directory.Exists(@"X:\aTBMFURN\"))
+            if (Directory.Exists(@"X:\aTBMFURN\"))
+            {
+                string[] files = Directory.GetFiles(@"X:\aTBMFURN\");
+                foreach (string file in files)
                 {
-                    string[] files = Directory.GetFiles(@"X:\aTBMFURN\");
-                    foreach (string file in files)
-                    {
-                        File.Delete(file);
-                    }
-                    // Удаление папки c сохраненными расчетами и всех ее подпапок и файлов
+                    File.Delete(file);
                 }
+                // Удаление папки c сохраненными расчетами и всех ее подпапок и файлов
+            }
+
             try
             {
-                FileInfo fileInf = new FileInfo(path);
-                if (fileInf.Exists)
+                // Проверка доступности хотя бы одного известного хоста
+                Ping ping = new Ping();
+                PingReply replyGoogle = ping.Send("www.google.com", 1000); // Пингуем google.com
+                PingReply replyYandex = ping.Send("www.yandex.ru", 1000); // Пингуем yandex.ru
+                PingReply replyMail = ping.Send("www.mail.ru", 1000); // Пингуем mail.ru
+                PingReply replyWikipedia = ping.Send("www.wikipedia.org", 1000); // Пингуем wikipedia.org
+
+                if ((replyGoogle.Status == IPStatus.Success)||(replyYandex.Status == IPStatus.Success) ||(replyMail.Status == IPStatus.Success) ||(replyWikipedia.Status == IPStatus.Success))
                 {
-                    fileInf.Delete();
+                    FileInfo fileInf = new FileInfo(path);
+                    if (fileInf.Exists)
+                    {
+                        fileInf.Delete();
+                    }
+                    //Качаем БД с Google Drive
+                    WebClient webClient = new WebClient();
+                    //webClient.DownloadFile("https://drive.google.com/uc?export=download&id=18KBF6LMWrxoDqy8cUdEUaZYCXC_8SLPu", path);
+                    webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1RWDh48ytWHdHpTKdiSyFl6YR8cwd4mAf", path);
+                    webClient.Dispose();
                 }
-                //Качаем БД с Google Drive
-                WebClient webClient = new WebClient();
-                //webClient.DownloadFile("https://drive.google.com/uc?export=download&id=18KBF6LMWrxoDqy8cUdEUaZYCXC_8SLPu", path);
-                webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1RWDh48ytWHdHpTKdiSyFl6YR8cwd4mAf", path);
-                webClient.Dispose();
             }
-            catch (Exception)
+            catch (PingException)
             {
                 return;
                 throw;
@@ -316,7 +328,9 @@ namespace MacoApp
         {
             CalculationWindow calculationWindow = new CalculationWindow();
             calculationWindow.Show();
-            this.Close();
+            //this.Close();
+            // Скрытие первого окна
+            this.Visibility = Visibility.Hidden;
         }
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
@@ -336,6 +350,13 @@ namespace MacoApp
             FeedbackWindow feedbackWindow = new FeedbackWindow();
             feedbackWindow.Show();
             //this.Close();
+        }
+
+        private void ButtonAntipanic_Click(object sender, RoutedEventArgs e)
+        {
+            WindowAntipanic windowAntipanic = new WindowAntipanic();
+            windowAntipanic.Show();
+            this.Close();
         }
     }
 }

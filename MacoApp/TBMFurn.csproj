@@ -38,6 +38,10 @@
     <None Remove="images\RotoFonNX.png" />
     <None Remove="images\Vorne-logo.png" />
     <None Remove="images\vorneFon.png" />
+    <None Remove="images\Антипаника1.png" />
+    <None Remove="images\Антипаника2.png" />
+    <None Remove="images\Антипаника3.png" />
+    <None Remove="images\Антипаника4.png" />
     <None Remove="images\Внутренний ящик 135 Белый.png" />
     <None Remove="images\Внутренний ящик 135 Квадрат Цвет.png" />
     <None Remove="images\Внутренний ящик 135 Квадрат.png" />
@@ -147,6 +151,18 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\vorneFon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Антипаника1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Антипаника2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Антипаника3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Антипаника4.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\Внутренний ящик 135 Белый.png">

@@ -38,7 +38,6 @@
                 IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
                     Style="{StaticResource MaterialDesignPaperLightButton}" Grid.Column="2" Margin="-2,0,15,15" FontSize="16"/>
 
-
         <StackPanel x:Name="stackPanelLogo" Orientation="Horizontal" Grid.Row="5" Grid.ColumnSpan="2" HorizontalAlignment="Left"
                     MaxHeight="30" VerticalAlignment="Bottom" Margin="5,0,0,5">
             
@@ -52,6 +51,10 @@
                 Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
                 ToolTip="MaterialDesignFloatingActionMiniLightButton" Background="#FFEDD7AF" Grid.Column="4" Grid.RowSpan="2" Width="30" Height="30" HorizontalAlignment="Right" Margin="0,5,5,0" VerticalAlignment="Top" Click="ButtonFeedback_Click">
             <materialDesign:PackIcon Kind="EmailOpenOutline" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Button>
+        <Button x:Name="ButtonAntipanic" Content="Антипаника" Grid.Row="3" Grid.Column="1" VerticalAlignment="Top"
+                Style="{StaticResource MaterialDesignPaperLightButton}" Padding="0,0,0,0" Click="ButtonAntipanic_Click">
+            
         </Button>
     </Grid>
 </Window>
