@@ -21,6 +21,8 @@ namespace TBMFurn
     /// </summary>
     public partial class WindowAntipanic : Window
     {
+        ObservableCollection<ClassList> collection = new ObservableCollection<ClassList> ();
+
         public WindowAntipanic()
         {
             InitializeComponent();
@@ -69,6 +71,7 @@ namespace TBMFurn
             collection.Add(new ClassList() { N = 2, Артикул = "ATP0501.6029", Название = "Перекладина для антипаниковой ручки 1150 мм, зелен.", Шт = 1 });
             collection.Add(new ClassList() { N = 3, Артикул = "ATP0503.06", Название = "Запоры вертикальные 2 штуки, высотой до 2640 мм", Шт = 1 });
             collection.Add(new ClassList() { N = 4, Артикул = "ATP0505.06", Название = "Ручка наружная для антипаники с профильным цилиндром, черн.", Шт = 1 });
+            
         }
 
         private void ButtonAntipanic4_Click(object sender, RoutedEventArgs e)
@@ -87,7 +90,15 @@ namespace TBMFurn
             collection.Add(new ClassList() { N = 5, Артикул = "ATP0505.06", Название = "Ручка наружная для антипаники с профильным цилиндром, черн.", Шт = 1 });
         }
 
-        private void ButtonExit_Click(object sender, RoutedEventArgs e)
+        private int ComboBoxDoor_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ComboboxDoor.SelectedIndex == 1)
+            {
+                collection.Add(new ClassList() { N = 5, Артикул = "ATP4718", Название = "Планка ответная для антипаники ПВХ и деревянных дверей", Шт = 1 });
+            }
+        }
+
+                private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
             EntryiWindow entryiWindow = new EntryiWindow();
             entryiWindow.Show();

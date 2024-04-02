@@ -39,7 +39,7 @@
                     Grid.RowSpan="6" Grid.ColumnSpan="5"
                     FontSize="12" FontWeight="Bold" Foreground="#FF0D042B"
                   materialDesign:DataGridAssist.CellPadding="5 2 2 2" 
-                  materialDesign:DataGridAssist.ColumnHeaderPadding="40 2 2 2" Grid.Row="8" Margin="10,0,15,-3" HorizontalAlignment="Center">
+                  materialDesign:DataGridAssist.ColumnHeaderPadding="5 2 2 2" Grid.Row="9" Margin="10,0,15,-3" HorizontalAlignment="Center">
             <DataGrid.Background>
                 <ImageBrush ImageSource="/images/Newline.png"/>
             </DataGrid.Background>
@@ -69,6 +69,19 @@
                 </Button.Background>
             </Button>
         </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel.Background>
+                <ImageBrush/>
+            </StackPanel.Background>
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,20,0" FontSize="14" Foreground="#FF002A2B">Материал исполнения двери</TextBlock>
+            <ComboBox x:Name="ComboboxDoor" HorizontalAlignment="Center" FontSize="14"
+                      SelectionChanged="ComboBoxDoor_SelectionChanged">
+                <ComboBoxItem IsSelected="True">Металл, алюминий</ComboBoxItem>
+                <ComboBoxItem>ПВХ, дерево</ComboBoxItem>
+            </ComboBox>
+        </StackPanel>
+        
+
         <Button x:Name="ButtonExit"
                 HorizontalAlignment="Right" FontSize="12"
                 IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"

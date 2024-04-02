@@ -2,13 +2,11 @@
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Windows;
-using System.Windows.Controls;
-using MailKit.Net.Smtp;
-using MailKit;
-using MimeKit;
-using System.IO;
 using System.Net;
 using Microsoft.Win32;
+using Telegram.Bot;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace TBMFurn
 {
@@ -26,18 +24,41 @@ namespace TBMFurn
 
         string filePath;
 
+        private TelegramBotClient botClient;
+
         public FeedbackWindow()
         {
             InitializeComponent();
+            botClient = new TelegramBotClient("7143209516:AAGQUKwXPZeDZOdrcg1eii6xnQvGITdePqM");
         }
         
         //Вводные данные и вызов метода с отправкой письма
-        private void ButtonSendEmail_Click(object sender, RoutedEventArgs e)
+        private async void ButtonSendEmail_Click(object sender, RoutedEventArgs e)
         {
             ThemeMessage = TextBoxTheme.Text;
             BodyMessage = TextBoxMessage.Text;
             Name = TextBoxName.Text;
             ButtonSend(Name, Email, Password, ToEmail, ThemeMessage, BodyMessage, filePath);
+
+            /*
+            //Отправка сообщения обратной связи в телеграм бот
+            try
+            {
+                // Получение текста отзыва
+                string feedbackText = TextBoxMessage.Text;
+
+                // Отправка отзыва в Telegram-бот
+                Message message = await botClient.SendTextMessageAsync(
+                    chatId: "7143209516",
+                    text: feedbackText,
+                    parseMode: ParseMode.Html);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Сообщение не отправлено, какая-то ошибка: " + ex.Message);
+                TextBoxMessage.Text = "" + ex.Message;
+            }*/
+
         }
 
         private void ButtonSend(string Name, string fromEmail, string password, string toEmail, string subject, string body, string attachmentFilePath)
@@ -71,6 +92,7 @@ namespace TBMFurn
                 TextBoxMessage.Text = "";
                 TextBoxName.Text = "";
                 TextBoxTheme.Text = "";
+
             }
             catch (Exception ex)
             {
@@ -78,6 +100,9 @@ namespace TBMFurn
                 TextBoxMessage.Text = "" + ex.Message;
             }
         }
+
+        
+
 
         //Подгружаем фото или файл к сообщению
         private void LoadButton_Click(object sender, RoutedEventArgs e)
