@@ -44,10 +44,10 @@
                 <ImageBrush ImageSource="/images/Newline.png"/>
             </DataGrid.Background>
         </DataGrid>
-        <TextBlock Text="Выбери вариант исполнения" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.ColumnSpan="5" FontSize="18" Foreground="#FFFF8000">
+        <TextBlock Text="Выбери вариант исполнения" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.ColumnSpan="5" FontSize="18" Foreground="#FFFF8000" FontWeight="Bold">
 
         </TextBlock>
-        <StackPanel Grid.ColumnSpan="4" Orientation="Horizontal" Margin="5,0,0,0" VerticalAlignment="Top" Grid.Row="1" HorizontalAlignment="Left" Grid.Column="1" Grid.RowSpan="7">
+        <StackPanel Grid.ColumnSpan="4"  Orientation="Horizontal" Margin="5,0,0,0" VerticalAlignment="Top" Grid.Row="1" HorizontalAlignment="Left" Grid.Column="1" Grid.RowSpan="7">
             <Button x:Name="ButtonAntipanic1" Width="100" Height="200" Margin="0,0,30,0" Click="ButtonAntipanic1_Click">
                 <Button.Background>
                     <ImageBrush ImageSource="/images/Антипаника1.png"/>
@@ -69,18 +69,26 @@
                 </Button.Background>
             </Button>
         </StackPanel>
-        <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Left" VerticalAlignment="Center">
             <StackPanel.Background>
                 <ImageBrush/>
             </StackPanel.Background>
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,20,0" FontSize="14" Foreground="#FF002A2B">Материал исполнения двери</TextBlock>
+            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,20,0" 
+                       FontSize="14" Foreground="#FF047A7D" FontWeight="Bold">Материал двери</TextBlock>
             <ComboBox x:Name="ComboboxDoor" HorizontalAlignment="Center" FontSize="14"
-                      SelectionChanged="ComboBoxDoor_SelectionChanged">
+                      SelectionChanged="ComboBoxDoor_SelectionChanged" Margin="0,0,5,0" Background="Transparent" 
+                      Foreground="#FFFB7528" FontWeight="Bold">
                 <ComboBoxItem IsSelected="True">Металл, алюминий</ComboBoxItem>
                 <ComboBoxItem>ПВХ, дерево</ComboBoxItem>
             </ComboBox>
         </StackPanel>
-        
+        <StackPanel x:Name="StackPanelQuantity" Grid.Row="8" Grid.Column="3" Orientation="Horizontal">
+            <TextBlock FontSize="14" Foreground="#FF047A7D" HorizontalAlignment="Left" 
+                       VerticalAlignment="Center" Margin="29,0,0,0" FontWeight="Bold">Количество</TextBlock>
+            <TextBox x:Name="TextBoxQuantity" Text="1" HorizontalContentAlignment="Right" FontSize="14" 
+                     Margin="27,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center" Width="60" 
+                     FontWeight="Bold" Foreground="#FFFB7528" PreviewTextInput="TextBox_PreviewTextInput" PreviewKeyDown="TextBox_PreviewKeyDown"/>
+        </StackPanel>
 
         <Button x:Name="ButtonExit"
                 HorizontalAlignment="Right" FontSize="12"
