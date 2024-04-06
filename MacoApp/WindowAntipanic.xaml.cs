@@ -338,7 +338,5 @@ namespace TBMFurn
             entryiWindow.Show();
             this.Close();
         }
-
-        
     }
 }

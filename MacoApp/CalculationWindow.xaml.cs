@@ -519,31 +519,7 @@ namespace MacoApp
             }
         }
 
-        //ввод только цифр в текстбоксы
-        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            SaveCalc.IsEnabled = false;
-            int val;
-            if (!Int32.TryParse(e.Text, out val) && e.Text != "-")
-            {
-                e.Handled = true; // отклоняем ввод
-            }
-        }
-        //ввод только цифр в текстбоксы (пробел тоже нам не нужен)
-        private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            SaveCalc.IsEnabled = false;
-            if (e.Key == Key.Space)
-            {
-                e.Handled = true; // если пробел, отклоняем ввод
-            }
-        }
-        private void ButtonExit_Click(object sender, RoutedEventArgs e)
-        {
-            EntryiWindow entryiWindow = new EntryiWindow();
-            entryiWindow.Show();
-            this.Close();
-        }
+        
 
         //Сохранение расчета в файл
         //***************************************************************************************************************
@@ -983,7 +959,32 @@ namespace MacoApp
             }
 
         }
-
+        //ввод только цифр в текстбоксы
+        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            SaveCalc.IsEnabled = false;
+            int val;
+            if (!Int32.TryParse(e.Text, out val) && e.Text != "-")
+            {
+                e.Handled = true; // отклоняем ввод
+            }
+        }
+        //ввод только цифр в текстбоксы (пробел тоже нам не нужен)
+        private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            SaveCalc.IsEnabled = false;
+            if (e.Key == Key.Space)
+            {
+                e.Handled = true; // если пробел, отклоняем ввод
+            }
+        }
+        private void ButtonExit_Click(object sender, RoutedEventArgs e)
+        {
+            
+            EntryiWindow entryiWindow = new EntryiWindow();
+            entryiWindow.Show();
+            this.Close();
+        }
         private void ButtonFeedback_Click(object sender, RoutedEventArgs e)
         {
             FeedbackWindow feedbackWindow = new FeedbackWindow();

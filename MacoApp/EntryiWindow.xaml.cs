@@ -90,7 +90,7 @@ namespace MacoApp
                 PingReply replyMail = ping.Send("www.mail.ru", 1000); // Пингуем mail.ru
                 PingReply replyWikipedia = ping.Send("www.wikipedia.org", 1000); // Пингуем wikipedia.org
 
-                if ((replyGoogle.Status == IPStatus.Success)||(replyYandex.Status == IPStatus.Success) ||(replyMail.Status == IPStatus.Success) ||(replyWikipedia.Status == IPStatus.Success))
+                if ((replyGoogle.Status == IPStatus.Success) || (replyYandex.Status == IPStatus.Success) || (replyMail.Status == IPStatus.Success) || (replyWikipedia.Status == IPStatus.Success))
                 {
                     FileInfo fileInf = new FileInfo(path);
                     if (fileInf.Exists)
@@ -103,11 +103,14 @@ namespace MacoApp
                     webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1RWDh48ytWHdHpTKdiSyFl6YR8cwd4mAf", path);
                     webClient.Dispose();
                 }
+                else 
+                {
+                    return;
+                }
             }
             catch (PingException)
             {
-                return;
-                throw;
+                
             }
 
             /*ProgressDialogWindow progressDialog = new ProgressDialogWindow();
@@ -318,9 +321,7 @@ namespace MacoApp
         {
             CalculationWindow calculationWindow = new CalculationWindow();
             calculationWindow.Show();
-            //this.Close();
-            // Скрытие первого окна
-            this.Visibility = Visibility.Hidden;
+            this.Close();
         }
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
