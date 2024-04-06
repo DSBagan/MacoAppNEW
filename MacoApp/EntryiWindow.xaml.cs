@@ -108,7 +108,7 @@ namespace MacoApp
                     return;
                 }
             }
-            catch (PingException)
+            catch
             {
                 
             }
@@ -280,13 +280,9 @@ namespace MacoApp
                         {
                             
                         }
-
                     }
-
                 }
-
             }
-
         }
 
         private static void SetAttributesToNormal(DirectoryInfo dir)

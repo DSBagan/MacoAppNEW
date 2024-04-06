@@ -186,7 +186,7 @@ namespace TBMFurn
         private void ButtonSaveTxt_Click(object sender, RoutedEventArgs e)
         {
             // Проверяем есть ли на диске C папка, если нет- создаем
-            Directory.CreateDirectory(@"C:\aTBMFURN\");
+            Directory.CreateDirectory(@"X:\aTBMFURN\");
             String date = DateTime.Now.ToString(" dd.MM.yyyy HH-mm-ss");
 
             int CTlangth = Code.Text.Length;
@@ -212,7 +212,7 @@ namespace TBMFurn
                     Code.Text = "0" + Code.Text;
                 }
             }
-            using (StreamWriter streamWriter = new StreamWriter(@"C:\aTBMFURN\" + "Z" + Code.Text + " " + date + " Антипаника" + ".txt", false, Encoding.Default))
+            using (StreamWriter streamWriter = new StreamWriter(@"X:\aTBMFURN\" + "Z" + Code.Text + " " + date + " Антипаника" + ".txt", false, Encoding.Default))
             {
                 streamWriter.WriteLine("                    Шифр фирмы " + Code.Text);
                 streamWriter.WriteLine("                    Фирма 123");
