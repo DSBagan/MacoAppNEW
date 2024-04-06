@@ -23,13 +23,61 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
+        <StackPanel Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button x:Name="ButtonCalculation" Grid.Row="1" Click="ButtonCalculation_Click" Cursor="Hand"
+                    IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                    Style="{StaticResource MaterialDesignPaperLightButton}" Grid.Column="0" FontSize="16" Grid.ColumnSpan="3" VerticalAlignment="Center" Height="150" Padding="5,0,5,0" HorizontalAlignment="Center" Margin="0,0,10,0">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Label Height="100" Width="70">
+                        <Label.Background>
+                            <ImageBrush ImageSource="/images/ПО.png"/>
+                        </Label.Background>
+                    </Label>
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                        Оконная 
+                    </TextBlock>
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                        фурнитура
+                    </TextBlock>
+                </StackPanel>
+            </Button>
+            <Button x:Name="ButtonBoxCalculation" Grid.Row="2" Cursor="Hand"
+                    IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"
+                    Style="{StaticResource MaterialDesignPaperLightButton}" Grid.Column="0" VerticalAlignment="Center" 
+                    FontSize="16" Click="ButtonBoxCalculation_Click" Padding="16,0,16,0" Grid.ColumnSpan="3" HorizontalAlignment="Center" Margin="0,0,10,0" Height="150">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Height="150">
+                    <Label Height="100" Width="70">
+                        <Label.Background>
+                            <ImageBrush ImageSource="/images/Ящик Лого.png"/>
+                        </Label.Background>
+                    </Label>
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                         Ящики
+                    </TextBlock>
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                        Newline
+                    </TextBlock>
+                </StackPanel>
+            </Button>
+            <Button x:Name="ButtonAntipanic" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center"
+                    Style="{StaticResource MaterialDesignPaperLightButton}" Padding="5,0,5,0" Click="ButtonAntipanic_Click" Height="150" HorizontalAlignment="Center">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Height="150">
+                    <Label Height="100" Width="70">
+                        <Label.Background>
+                            <ImageBrush ImageSource="/images/АПЛого.png"/>
+                        </Label.Background>
+                    </Label>
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                        Антипаника
+                    </TextBlock>
+                </StackPanel>
+            </Button>
+        </StackPanel>
         <materialDesign:PackIcon Kind="AccessPointCheck" x:Name="IntOn" Width="30" Height="30" HorizontalAlignment="Right"
                                  Foreground="Green" Grid.Column="2" Margin="0,15,15,0" />
         <materialDesign:PackIcon Kind="AccessPointOff" x:Name="IntOff" Width="30" Height="30" HorizontalAlignment="Right"
                                  Foreground="Red" Grid.Column="2" Margin="0,15,15,0" />
-        <Button x:Name="ButtonCalculation" Content="Расчет фурнитуры для ПВХ" Grid.Row="1" Click="ButtonCalculation_Click" Cursor="Hand"
-                IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-                    Style="{StaticResource MaterialDesignPaperLightButton}" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Top" Height="40" FontSize="16" Grid.ColumnSpan="3"/>
+
         <Button x:Name="ButtonEditor" Content="Редактирование каталога" HorizontalAlignment="Left" 
                 VerticalAlignment="Top" Click="ButtonEditor_Click"
                 IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
@@ -40,11 +88,9 @@
 
         <StackPanel x:Name="stackPanelLogo" Orientation="Horizontal" Grid.Row="5" Grid.ColumnSpan="2" HorizontalAlignment="Left"
                     MaxHeight="30" VerticalAlignment="Bottom" Margin="5,0,0,5">
-            
+
         </StackPanel>
-        <Button x:Name="ButtonBoxCalculation" Content="Расчет мебельных ящиков Newline" Grid.Row="2" Cursor="Hand"
-            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"
-            Style="{StaticResource MaterialDesignPaperLightButton}" Grid.Column="0" VerticalAlignment="Top" Height="40" FontSize="16" Click="ButtonBoxCalculation_Click" Padding="16,0,16,0" Grid.ColumnSpan="3" HorizontalAlignment="Center"/>
+
 
         <TextBlock x:Name="TextBlockFeedback" Text="Обратная связь" Grid.Column="3" HorizontalAlignment="Right" FontSize="12" FontWeight="DemiBold" Foreground="#FF002D24" Grid.RowSpan="2" Margin="0,10,45,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
         <Button x:Name="ButtonFeedback" IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
@@ -52,9 +98,6 @@
                 ToolTip="MaterialDesignFloatingActionMiniLightButton" Background="#FFEDD7AF" Grid.Column="4" Grid.RowSpan="2" Width="30" Height="30" HorizontalAlignment="Right" Margin="0,5,5,0" VerticalAlignment="Top" Click="ButtonFeedback_Click">
             <materialDesign:PackIcon Kind="EmailOpenOutline" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Button>
-        <Button x:Name="ButtonAntipanic" Content="Антипаника" Grid.Row="3" Grid.Column="1" VerticalAlignment="Top"
-                Style="{StaticResource MaterialDesignPaperLightButton}" Padding="0,0,0,0" Click="ButtonAntipanic_Click">
-            
-        </Button>
+
     </Grid>
 </Window>

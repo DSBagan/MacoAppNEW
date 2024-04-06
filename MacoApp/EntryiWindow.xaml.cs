@@ -297,16 +297,6 @@ namespace MacoApp
         }
 
 
-
-
-
-
-
-
-
-
-
-
         //Отображение прогрессбара во время обновления базы
         private void UpdateProgress(ProgressDialogWindow progressDialog, int value)
         {
