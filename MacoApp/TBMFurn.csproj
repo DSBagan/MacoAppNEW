@@ -24,6 +24,7 @@
     <None Remove="images\AkpenFon.png" />
     <None Remove="images\Firmax.png" />
     <None Remove="images\Firmax1.PNG" />
+    <None Remove="images\FRAM.PNG" />
     <None Remove="images\internikaFon.png" />
     <None Remove="images\maco.png" />
     <None Remove="images\MacoFon.png" />
@@ -36,6 +37,8 @@
     <None Remove="images\roto-transformed.png" />
     <None Remove="images\RotoFon.png" />
     <None Remove="images\RotoFonNX.png" />
+    <None Remove="images\Stulp_L.png" />
+    <None Remove="images\Stulp_P.png" />
     <None Remove="images\Vorne-logo.png" />
     <None Remove="images\vorneFon.png" />
     <None Remove="images\Антипаника1.png" />
@@ -122,6 +125,9 @@
     <Resource Include="images\Firmax1.PNG">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="images\FRAM.PNG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="images\internikaFon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -137,10 +143,18 @@
     <Resource Include="images\Newline.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="images\PL.PNG" />
-    <Resource Include="images\PP.PNG" />
-    <Resource Include="images\P_OL.PNG" />
-    <Resource Include="images\P_OP.PNG" />
+    <Resource Include="images\PL.PNG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\PP.PNG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\P_OL.PNG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\P_OP.PNG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="images\roto-transformed.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -148,6 +162,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\RotoFonNX.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Stulp_L.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Stulp_P.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\Vorne-logo.png">

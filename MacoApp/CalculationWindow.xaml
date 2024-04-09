@@ -72,14 +72,14 @@
             <ComboBoxItem>Да</ComboBoxItem>
             <ComboBoxItem IsSelected="True">Нет</ComboBoxItem>
         </ComboBox>
-        <ComboBox Name="ComboBoxKonst" Grid.Column="2" Grid.Row="8" Width="100" FontSize="12" Height="25" HorizontalAlignment="Right" SelectionChanged="ComboBoxKonst_SelectionChanged" Margin="0,0,10,0" VerticalAlignment="Center" >
+        <ComboBox Name="ComboBoxKonst" Grid.Column="2" Grid.Row="8" FontSize="12" Height="25" HorizontalAlignment="Right" SelectionChanged="ComboBoxKonst_SelectionChanged" Margin="0,0,10,0" VerticalAlignment="Center" >
             <ComboBoxItem>Константная</ComboBoxItem>
             <ComboBoxItem IsSelected="True">Переменная</ComboBoxItem>
         </ComboBox>
         <TextBox Name="TextBoxColvo" Text="1" PreviewTextInput="TextBox_PreviewTextInput" MaxLength="3" PreviewKeyDown="TextBox_PreviewKeyDown" Grid.Row="11" Width="60" HorizontalAlignment="Right" FontSize="12" VerticalAlignment="Center" Grid.Column="2" Margin="0,0,10,0"/>
 
         <StackPanel>
-            
+
         </StackPanel>
         <Button Name="ButtonCalc" Grid.Row="13" Height="30" HorizontalContentAlignment="Center" 
                     VerticalAlignment="Top" Margin="9,0,15,0" Click="ButtonCalc_Click" FontSize="14" Cursor="Hand" 
@@ -108,7 +108,7 @@
         <TextBlock x:Name="TextBlockSide" Text="Сторона"  Grid.Column="2" Grid.Row="5" Width="70" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
         <TextBlock x:Name="TextBlockLL" Text="Нижняя петля"  Grid.Column="2" Grid.Row="6" Width="110" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
         <TextBlock x:Name="TextBlockMv" Text="Микровентиляция"  Grid.Column="2" Grid.Row="7" Width="110" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
-        <TextBlock x:Name="TextBlockKonst" Text="Высота ручки"  Grid.Column="2" Grid.Row="8" Width="75" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
+        <TextBlock x:Name="TextBlockKonst" Text="Высота ручки"  Grid.Column="2" Grid.Row="8" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
         <TextBlock Text="Колич. комплектов"  Grid.Column="2" Grid.Row="11" Width="110" HorizontalAlignment="Left" FontSize="12" VerticalAlignment="Center" Margin="10,0,0,0"/>
 
         <ListBox Name="LBList"   Grid.Column="4" Margin="144,7,4,20" Grid.Row="5" Visibility="Hidden"/>
@@ -145,30 +145,41 @@
             <ComboBoxItem Content="Internika"/>
             <ComboBoxItem Content="Akpen"/>
         </ComboBox>
-        <Button x:Name="ButtonP_O" Grid.ColumnSpan="1" Margin="5,9,10,10" Grid.RowSpan="3" Height="60"
-                IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-                Style="{StaticResource MaterialDesignPaperLightButton}" Foreground="{x:Null}"
-                ToolTip="Поворотно-откидной комплект" Click="ButtonP_O_Click" BorderThickness="2,2,2,2" BorderBrush="White" Grid.Column="1">
-            <Button.Background>
-                <ImageBrush ImageSource="/P_OP.PNG"/>
-            </Button.Background>
-        </Button>
-        <Button x:Name="ButtonP" Grid.ColumnSpan="1" Margin="5,9,10,10" Grid.RowSpan="3" Height="60"
-            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
-            Style="{StaticResource MaterialDesignPaperLightButton}" Foreground="{x:Null}" Grid.Row="3"
-            ToolTip="Поворотный комплект" Click="ButtonP_Click" BorderBrush="White" BorderThickness="2,2,2,2" Grid.Column="1">
-            <Button.Background>
-                <ImageBrush ImageSource="/PP.PNG"/>
-            </Button.Background>
-        </Button>
-        <Button x:Name="ButtonFram" Grid.ColumnSpan="1" Height="36"
-            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
-            Style="{StaticResource MaterialDesignPaperLightButton}" Foreground="{x:Null}" Grid.Row="6" Width="60"
-            ToolTip="Фрамуга" Click="ButtonFram_Click" BorderThickness="2,2,2,2" BorderBrush="White" Grid.RowSpan="2" Grid.Column="1" Margin="2,0,5,0">
-            <Button.Background>
-                <ImageBrush ImageSource="/FRAM.PNG"/>
-            </Button.Background>
-        </Button>
+        <StackPanel Grid.RowSpan="12" Grid.ColumnSpan="2">
+            <Button x:Name="ButtonP_O"
+                    IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                    Style="{StaticResource MaterialDesignPaperLightButton}" Foreground="{x:Null}"
+                    ToolTip="Поворотно-откидной комплект" Click="ButtonP_O_Click" BorderThickness="2,2,2,2" BorderBrush="White" Grid.Column="1" Width="40" Height="50" Margin="0,10,0,0">
+                <Button.Background>
+                    <ImageBrush ImageSource="/images/P_OP.PNG"/>
+                </Button.Background>
+            </Button>
+            <Button x:Name="ButtonP" Grid.ColumnSpan="1"
+                    IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
+                    Style="{StaticResource MaterialDesignPaperLightButton}" Foreground="{x:Null}" Grid.Row="3"
+                    ToolTip="Поворотный комплект" Click="ButtonP_Click" BorderBrush="White" BorderThickness="2,2,2,2" Grid.Column="1" Margin="0,10,0,0" Height="50" Width="40">
+                <Button.Background>
+                    <ImageBrush ImageSource="/images/PP.PNG"/>
+                </Button.Background>
+            </Button>
+            <Button x:Name="ButtonFram"
+                    IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
+                    Style="{StaticResource MaterialDesignPaperLightButton}" Foreground="{x:Null}" Grid.Row="6" Width="55"
+                    ToolTip="Фрамуга" Click="ButtonFram_Click" BorderThickness="2,2,2,2" BorderBrush="White" Grid.RowSpan="2" Grid.Column="1" Margin="0,10,0,0" Height="30">
+                <Button.Background>
+                    <ImageBrush ImageSource="/images/FRAM.PNG"/>
+                </Button.Background>
+            </Button>
+            <Button x:Name="ButtonStulp"
+        IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
+        Style="{StaticResource MaterialDesignPaperLightButton}" Foreground="{x:Null}" Grid.Row="6" Width="60"
+        ToolTip="Фрамуга" BorderThickness="2,2,2,2" BorderBrush="White" Grid.RowSpan="2" Grid.Column="1" Margin="0,10,0,0" Height="50" Click="ButtonStulp_Click">
+                <Button.Background>
+                    <ImageBrush ImageSource="/images/Stulp_P.png"/>
+                </Button.Background>
+            </Button>
+        </StackPanel>
+        
 
 
         <ListBox Name="LBListCalc"  Grid.ColumnSpan="5" Grid.Row="16" Width="384" FontSize="10" Background="#FFEFF9F8" Visibility="Collapsed"
@@ -197,13 +208,13 @@
                 ToolTip="MaterialDesignFloatingActionMiniLightButton" Background="#FFEDD7AF" Grid.Column="4" Grid.RowSpan="2" Width="30" Height="30" HorizontalAlignment="Right" Margin="0,5,5,0" VerticalAlignment="Top" Click="ButtonFeedback_Click">
             <materialDesign:PackIcon Kind="EmailOpenOutline" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Button>
-        
+
 
 
         <!--<Label x:Name="LabelErrorСode" Grid.ColumnSpan="1" Height="17" Width="30" Grid.Row="0" HorizontalAlignment="Center" Grid.Column="2">-->
-            <!--<Label.Background>
+        <!--<Label.Background>
                 <!-<ImageBrush ImageSource="/images/Стрелка вправо.png"/>-->
-            <!--</Label.Background>-->
+        <!--</Label.Background>-->
         <!--</Label>-->
     </Grid>
 </Window>

@@ -125,8 +125,9 @@ namespace MacoApp
             backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/PL.png")));
             backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/P_OP.png")));
             backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/PP.png")));
+            backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/Stulp_L.png")));
+            backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/Stulp_P.png")));
 
-            
 
         }
 
@@ -684,6 +685,35 @@ namespace MacoApp
             Grid.SetRow(myTextBox1, 3);
         }
 
+        private void ButtonStulp_Click(object sender, RoutedEventArgs e)
+        {
+            ButtonP_O.BorderBrush = Brushes.White;
+            ButtonP.BorderBrush = Brushes.White;
+            ButtonFram.BorderBrush = Brushes.White;
+            ButtonStulp.BorderBrush = Brushes.Orange;
+            rotation = "Нет";
+            rotationTwoArg = "Да/Нет";
+            framuga = "Да";
+            framugaTwoArg = "Да/Нет";
+            konst = "Нет";
+            //konstTwoArg = "Да/Нет";
+            ComboBoxMv.IsEnabled = false;
+            TextBlockMv.IsEnabled = false;
+            ComboBoxLL.IsEnabled = false;
+            TextBlockLL.IsEnabled = false;
+            ComboBoxSide.IsEnabled = false;
+            TextBlockSide.IsEnabled = false;
+            ComboBoxKonst.IsEnabled = false;
+
+            // Получаем доступ к объекту TextBox
+            TextBox myTextBox = this.MainGrid.Children.OfType<TextBox>().ElementAt(2);
+            // Устанавливаем значение свойства Grid.Column
+            Grid.SetRow(myTextBox, 2);
+            TextBox myTextBox1 = this.MainGrid.Children.OfType<TextBox>().ElementAt(1);
+            Grid.SetRow(myTextBox1, 3);
+        }
+
+
         //Фон для GridList*******************************************
         private void ComboBoxFurn_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -753,6 +783,10 @@ namespace MacoApp
                     ImageBrush brush1 = new ImageBrush(image1);
                     ButtonP.Background = brush1;
 
+                    BitmapImage image2 = backgroundsButtons[4];
+                    ImageBrush brush2 = new ImageBrush(image2);
+                    ButtonStulp.Background = brush2;
+
                 }
                 if (ComboBoxSide.SelectedIndex == 1)
                 {
@@ -763,6 +797,10 @@ namespace MacoApp
                     BitmapImage image1 = backgroundsButtons[3];
                     ImageBrush brush1 = new ImageBrush(image1);
                     ButtonP.Background = brush1;
+
+                    BitmapImage image2 = backgroundsButtons[5];
+                    ImageBrush brush2 = new ImageBrush(image2);
+                    ButtonStulp.Background = brush2;
                 }
             }
         }
@@ -990,5 +1028,7 @@ namespace MacoApp
             FeedbackWindow feedbackWindow = new FeedbackWindow();
             feedbackWindow.Show();
         }
+
+        
     }
 }
