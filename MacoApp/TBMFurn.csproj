@@ -78,6 +78,7 @@
     <None Remove="P_O.png" />
     <None Remove="P_OP.PNG" />
     <None Remove="roto-transformed.png" />
+    <None Remove="SaveDB\Furnapp.db" />
     <None Remove="Vorne-logo.png" />
     <None Remove="Внутренний ящик 135 Цвет.png" />
   </ItemGroup>
@@ -109,7 +110,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="FRAM.PNG" />
     <Resource Include="images\28.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -267,9 +267,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="MacoFon.png" />
-    <Resource Include="PP.PNG" />
-    <Resource Include="P_OP.PNG" />
-    <Resource Include="Внутренний ящик 135 Цвет.png" />
+    <Resource Include="SaveDB\Furnapp.db">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>

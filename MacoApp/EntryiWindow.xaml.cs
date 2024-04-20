@@ -31,10 +31,11 @@ namespace MacoApp
 {
     public partial class EntryiWindow : Window
     {
-        static string path = new FileInfo(Assembly.GetEntryAssembly().Location).Directory.ToString()+"\\Furnapp.db";
-
-        //Создаем файл блокировки, если приложение уже запущено
-        string lockFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MyAppLock.lock");
+        static string pathDelBD = new FileInfo(Assembly.GetEntryAssembly().Location).Directory.ToString() + "\\Furnapp.db";
+        //Путь к БД
+        static string path2 = new FileInfo(Assembly.GetEntryAssembly().Location).Directory.ToString();
+        //Путь к папке, где хранится распространяемая с проектом БД
+        static string path = new Uri("pack://application:,,,/SaveDB/Furnapp.db").ToString();
 
         //Создаем коллекцию лого
         private ObservableCollection<BitmapImage> backgroundsLogo = new ObservableCollection<BitmapImage>();
@@ -65,7 +66,16 @@ namespace MacoApp
                 img.Source = backgroundsLogo[i];
                 stackPanelLogo.Children.Add(img);
             }
-            UpgradeBD();
+            //UpgradeBD();
+
+            FileInfo fileInf = new FileInfo(pathDelBD);
+            if (fileInf.Exists)
+            {
+                fileInf.Delete();
+            }
+
+            CopyBD();
+
             InitTasks(); //Запуск метода удаления старых версий после обновления
         }
 
@@ -97,10 +107,12 @@ namespace MacoApp
                     {
                         fileInf.Delete();
                     }
+
+                    CopyBD();
+
                     //Качаем БД с Google Drive
                     WebClient webClient = new WebClient();
-                    //webClient.DownloadFile("https://drive.google.com/uc?export=download&id=18KBF6LMWrxoDqy8cUdEUaZYCXC_8SLPu", path);
-                    webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1RWDh48ytWHdHpTKdiSyFl6YR8cwd4mAf", path);
+                    //webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1RWDh48ytWHdHpTKdiSyFl6YR8cwd4mAf", path);
                     webClient.Dispose();
                 }
                 else 
@@ -112,7 +124,7 @@ namespace MacoApp
             {
                 
             }
-
+            
             /*ProgressDialogWindow progressDialog = new ProgressDialogWindow();
             progressDialog.Show();
 
@@ -127,7 +139,7 @@ namespace MacoApp
                 connectionSQLite.Open();
                 
                 // Создание таблицы в базе данных SQLite
-                string createTableQuery = "CREATE TABLE IF NOT EXISTS Elements (Id INTEGER PRIMARY KEY, Name_Furn TEXT, Title TEXT, Article TEXT, Quantity INTEGER, System TEXT, Side TEXT, FFH_before INTEGER, FFH_after INTEGER, FFB_before INTEGER, FFB_after INTEGER, Lower_loop TEXT, Micro_ventilation TEXT, Rotation TEXT, Framuga TEXT, Wood TEXT, Konst TEXT)";
+                string createTableQuery = "CREATE TABLE IF NOT EXISTS Elements (Id INTEGER PRIMARY KEY, Name_Furn TEXT, Title TEXT, Article TEXT, Quantity INTEGER, System TEXT, Side TEXT, FFH_before INTEGER, FFH_after INTEGER, FFB_before INTEGER, FFB_after INTEGER, Lower_loop TEXT, Micro_ventilation TEXT, Rotation TEXT, Framuga TEXT, Wood TEXT, Konst TEXT, Shtulp TEXT, Color TEXT)";
                 using SQLiteCommand createTableCommand = new SQLiteCommand(createTableQuery, connectionSQLite);
                 createTableCommand.ExecuteNonQuery();
 
@@ -154,9 +166,11 @@ namespace MacoApp
                     string rotation = reader["Rotation"].ToString();
                     string framuga = reader["Framuga"].ToString();
                     string wood = reader["Wood"].ToString();
-                    string konst = reader["Konst"].ToString();
+                    string konst = reader["Konst"].ToString(); 
+                    string shtulp = reader["Shtulp"].ToString();
+                    string color = reader["Color"].ToString();
 
-                    string insertQuery = $"INSERT OR REPLACE INTO Elements (Name_Furn, Title, Article, Quantity, System, Side, FFH_before, FFH_after, FFB_before, FFB_after, Lower_loop, Micro_ventilation, Rotation, Framuga, Wood, Konst) VALUES ('{nameFurn}', '{title}', '{article}', {quantity}, '{system}', '{side}', '{ffhBefore}', '{ffhAfter}', '{ffbBefore}', '{ffbAfter}', '{lowerLoop}', '{microVentilation}', '{rotation}', '{framuga}', '{wood}', '{konst}')";
+                    string insertQuery = $"INSERT OR REPLACE INTO Elements (Name_Furn, Title, Article, Quantity, System, Side, FFH_before, FFH_after, FFB_before, FFB_after, Lower_loop, Micro_ventilation, Rotation, Framuga, Wood, Konst, Shtulp, Color) VALUES ('{nameFurn}', '{title}', '{article}', {quantity}, '{system}', '{side}', '{ffhBefore}', '{ffhAfter}', '{ffbBefore}', '{ffbAfter}', '{lowerLoop}', '{microVentilation}', '{rotation}', '{framuga}', '{wood}', '{konst}', '{shtulp}', '{color}')";
                     using SQLiteCommand insertCommand = new SQLiteCommand(insertQuery, connectionSQLite);
                     insertCommand.ExecuteNonQuery();
                     totalRows++;
@@ -221,6 +235,45 @@ namespace MacoApp
             catch (Exception ex)
             {
                 //Error handling
+            }
+        }
+
+
+        //Копирование базы данных из папки в корень проекта
+        private void CopyBD()
+        {
+            try
+            {
+                FileInfo fileInf = new FileInfo(path2);
+                if (fileInf.Exists)
+                {
+                    fileInf.Delete(); // Удаляем старый файл
+                    File.Copy(path, path2); //Копируем в новую папку БД. чтобы оттуда скопировать в Google Drive
+                }
+                else
+                {
+                    File.Copy(path, path2);
+                }
+            }
+            catch (System.Exception)
+            {
+                return;
+            }
+
+
+            using (WebClient webClient = new WebClient())
+            {
+                // Установить свойство DownloadFile
+                webClient.DownloadFile = true;
+
+                // Задать путь к файлу
+                webClient.Address = new Uri("pack://application:,,,/SaveDB/Furnapp.db");
+
+                // Задать путь для сохранения файла
+                webClient.FileName = pathDelBD;
+
+                // Загрузить файл
+                webClient.DownloadFile();
             }
         }
 

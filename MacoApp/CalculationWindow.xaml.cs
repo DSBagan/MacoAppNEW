@@ -128,7 +128,7 @@ namespace MacoApp
             backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/Stulp_L.png")));
             backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/Stulp_P.png")));
 
-
+            LabelErrorСode.Visibility = Visibility.Hidden;
         }
 
         private void CalculationWindow_Loaded(object sender, RoutedEventArgs e)
@@ -165,6 +165,7 @@ namespace MacoApp
                 string Lower_loop = ComboBoxLL.Text;
                 string Micro_ventilation = ComboBoxMv.Text;
                 string wood;
+                string color = ComboBoxColor.Text;
 
                 if (ComboBoxSystem.Text == "Дерево")
                 {
@@ -183,7 +184,8 @@ namespace MacoApp
                 queryString = $"Select * from Elements where (Name_Furn like '" + Furn + "') and(System  = 'Не имеет значения' or System  = '" + System + "') and(Side like 'Не имеет значения' or Side like '" + side + "') " +
                     "and(Lower_loop like '" + Lower_loop + "' or Lower_loop like 'Нет') and(Micro_ventilation like '" + Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +
                     "and(Rotation like '" + rotation + "' or Rotation like '" + rotationTwoArg + "') and(FFH_before = 0 or '" + FFH + "'>=FFH_before) and(FFH_after = 0 or '" + FFH + "' <= FFH_after)" +
-                    " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after) and(Framuga like '" + framuga + "' or Framuga like '" + framugaTwoArg + "') and(Wood  = 'Да/Нет' or Wood  = '" + wood + "') and(Konst like '" + konst + "' or Konst like '" + konstTwoArg + "')";
+                    " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after) and(Framuga like '" + framuga + "' or Framuga like '" + framugaTwoArg + "') and(Wood  = 'Да/Нет' or Wood  = '" + wood + "') " +
+                    "and(Konst like '" + konst + "' or Konst like '" + konstTwoArg + "') and(Color  = 'Не имеет значения' or Color  = '" + color + "')";
                 quantityBar = sqlRequests.Que(rotation, framuga, Furn, FFH, FFB); //Вытаскиваем из класса количество ответных планок
                 quantitySrPr = sqlRequests.QueSrPr(rotation, Furn, FFH); //Количество средних прижимов на поворотной створке
 
@@ -526,12 +528,12 @@ namespace MacoApp
         //***************************************************************************************************************
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (Code.Text == "")
+            /*if (Code.Text == "")
             {
                 MaterialMessageBox.ShowDialog("Введите шифр фирмы");
                 return;
 
-            }
+            }*/
 
             if (LBList.Items == null)
             {
@@ -540,10 +542,34 @@ namespace MacoApp
             }
             else
             {
-                // Проверяем есть ли на диске X папка, если нет- создаем
-                Directory.CreateDirectory(@"X:\aTBMFURN\");
+                try
+                {
+                    // Проверяем есть диск X b папка aTBMFURN, если нет- создаем
+                    Directory.CreateDirectory(@"X:\aTBMFURN\");
+                }
+                catch (System.Exception)
+                {
+                    MaterialMessageBox.ShowDialog("Нет доступа к диску X");
+                    return;
+                }
+                
                 String date = DateTime.Now.ToString(" dd.MM.yyyy HH-mm-ss");
                 int CTlangth = Code.Text.Length;
+                if (CTlangth == 0)
+                {
+                    // Показываем изображение стрелки и запускаем анимацию
+                    LabelErrorСode.Visibility = Visibility.Visible;
+                    DoubleAnimation animation = new DoubleAnimation
+                    {
+                        From = 1,
+                        To = 0,
+                        Duration = TimeSpan.FromSeconds(0.5),
+                        AutoReverse = true,
+                        RepeatBehavior = RepeatBehavior.Forever
+                    };
+                    LabelErrorСode.BeginAnimation(UIElement.OpacityProperty, animation);
+                    return;
+                }
                 if (CTlangth < 6)
                 {
                     for (int i = 0; i < 6 - CTlangth; i++)
@@ -590,6 +616,11 @@ namespace MacoApp
                         table2.Rows.Clear();
 
                         MaterialMessageBox.ShowDialog("Файл успешно сохранен");
+
+                        // если в TextBox есть символы
+                        // Скрываем изображение стрелки
+                        LabelErrorСode.Visibility = Visibility.Hidden;
+                        LabelErrorСode.BeginAnimation(UIElement.OpacityProperty, null); // Остановка анимации
                     }
                     catch
                     {
@@ -744,7 +775,7 @@ namespace MacoApp
         //Анимация текстблока обратной связи
         private void StartTextAnimation()
         {
-            string[] texts = new string[] {"Есть предложение по улучшению программы? Напиши \u2192", "Нашел ошибку? Напиши \u2192", "Есть неточность? Напиши \u2192" }; // Замените на свои тексты
+            string[] texts = new string[] {"Есть предложение по улучшению программы? Напиши \u2192", "Нашел ошибку? Напиши \u2192", "Есть неточность? Напиши \u2192", "Обязательно проверь расчет после подгрузки в КиС!!!" }; // Замените на свои тексты
             int currentIndex = 0;
 
             // Создаем таймер, который будет вызывать смену текста каждые 20 секунд

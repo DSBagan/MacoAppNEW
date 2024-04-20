@@ -56,7 +56,7 @@ namespace TBMFurn
                     TextBlockPath.Text = "Без вложения";
                 }
 
-                SmtpServer.Port = 587;
+                SmtpServer.Port = 25;
                 SmtpServer.Credentials = new NetworkCredential(fromEmail, password);
                 SmtpServer.EnableSsl = true;
 

@@ -130,7 +130,7 @@
                 ToolTip="Нажми, чтобы выйти в меню выбора"
                 Grid.Column="4" Grid.Row="16" Height="29" Margin="0,0,15,10">
             <StackPanel Orientation="Horizontal">
-                <materialDesign:PackIcon Kind="ExitToApp" Margin="0,0,10,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <materialDesign:PackIcon Kind="ExitToApp" Margin="0,0,10,0" HorizontalAlignment="Center" VerticalAlignment="Center" FlowDirection="RightToLeft" />
                 <TextBlock Text="Назад"/>
             </StackPanel>
         </Button>
@@ -208,13 +208,19 @@
                 ToolTip="MaterialDesignFloatingActionMiniLightButton" Background="#FFEDD7AF" Grid.Column="4" Grid.RowSpan="2" Width="30" Height="30" HorizontalAlignment="Right" Margin="0,5,5,0" VerticalAlignment="Top" Click="ButtonFeedback_Click">
             <materialDesign:PackIcon Kind="EmailOpenOutline" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Button>
+        <ComboBox x:Name="ComboBoxColor" Grid.Column="2" Grid.Row="9" FontSize="12" Height="25" HorizontalAlignment="Right" Margin="138,0,10,0" >
+            <ComboBoxItem IsSelected="True" Content="Белый"/>
+            <ComboBoxItem Content="Коричневый"/>
+            <ComboBoxItem Content="Бронза"/>
+            <ComboBoxItem Content="Серебро"/>
+            <ComboBoxItem Content="Титан"/>
+        </ComboBox>
+        <TextBlock x:Name="TextBlockColor" Text="Цвет накладок"  Grid.Column="2" Grid.Row="9" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
 
-
-
-        <!--<Label x:Name="LabelErrorСode" Grid.ColumnSpan="1" Height="17" Width="30" Grid.Row="0" HorizontalAlignment="Center" Grid.Column="2">-->
-        <!--<Label.Background>
-                <!-<ImageBrush ImageSource="/images/Стрелка вправо.png"/>-->
-        <!--</Label.Background>-->
-        <!--</Label>-->
+        <Label x:Name="LabelErrorСode" Grid.ColumnSpan="1" Height="17" Width="30" Grid.Row="0" HorizontalAlignment="Center" Grid.Column="2">
+            <Label.Background>
+                <ImageBrush ImageSource="/images/Стрелка вправо.png"/>
+            </Label.Background>
+        </Label>
     </Grid>
 </Window>
