@@ -34,11 +34,10 @@ namespace MacoApp
         static string pathDelBD = new FileInfo(Assembly.GetEntryAssembly().Location).Directory.ToString() + "\\Furnapp.db";
         //Путь к БД
         static string path2 = new FileInfo(Assembly.GetEntryAssembly().Location).Directory.ToString();
-        //Путь к папке, где хранится распространяемая с проектом БД
-        static string path = new Uri("pack://application:,,,/SaveDB/Furnapp.db").ToString();
 
         //Создаем коллекцию лого
         private ObservableCollection<BitmapImage> backgroundsLogo = new ObservableCollection<BitmapImage>();
+        Uri uri;
 
         public EntryiWindow()
         {
@@ -50,6 +49,7 @@ namespace MacoApp
             backgroundsLogo.Add(new BitmapImage(new Uri("pack://application:,,,/images/28.png")));
             backgroundsLogo.Add(new BitmapImage(new Uri("pack://application:,,,/images/akpen-logo.png")));
             backgroundsLogo.Add(new BitmapImage(new Uri("pack://application:,,,/images/Firmax1.png")));
+
 
             Loaded += EntryiWindow_Loaded;
         }
@@ -68,12 +68,6 @@ namespace MacoApp
             }
             //UpgradeBD();
 
-            FileInfo fileInf = new FileInfo(pathDelBD);
-            if (fileInf.Exists)
-            {
-                fileInf.Delete();
-            }
-
             CopyBD();
 
             InitTasks(); //Запуск метода удаления старых версий после обновления
@@ -86,12 +80,13 @@ namespace MacoApp
                 string[] files = Directory.GetFiles(@"X:\aTBMFURN\");
                 foreach (string file in files)
                 {
+                    // Удаление папки c сохраненными расчетами и всех ее подпапок и файлов
                     File.Delete(file);
                 }
-                // Удаление папки c сохраненными расчетами и всех ее подпапок и файлов
+                
             }
 
-            try
+            /*try
             {
                 // Проверка доступности хотя бы одного известного хоста
                 Ping ping = new Ping();
@@ -102,13 +97,19 @@ namespace MacoApp
 
                 if ((replyGoogle.Status == IPStatus.Success) || (replyYandex.Status == IPStatus.Success) || (replyMail.Status == IPStatus.Success) || (replyWikipedia.Status == IPStatus.Success))
                 {
+                    string pathBD = @"SaveDB\Furnapp.db";
                     FileInfo fileInf = new FileInfo(path);
                     if (fileInf.Exists)
                     {
                         fileInf.Delete();
+                        File.Copy(pathBD, path2); //Копируем в новую папку БД. чтобы оттуда скопировать в Google Drive
+                    }
+                    else
+                    {
+                        File.Copy(pathBD, path2); //Копируем в новую папку БД. чтобы оттуда скопировать в Google Drive
                     }
 
-                    CopyBD();
+                    //CopyBD();
 
                     //Качаем БД с Google Drive
                     WebClient webClient = new WebClient();
@@ -123,7 +124,7 @@ namespace MacoApp
             catch
             {
                 
-            }
+            }*/
             
             /*ProgressDialogWindow progressDialog = new ProgressDialogWindow();
             progressDialog.Show();
@@ -242,38 +243,73 @@ namespace MacoApp
         //Копирование базы данных из папки в корень проекта
         private void CopyBD()
         {
+            /*// Создать объект DirectoryInfo для папки Save
+            DirectoryInfo saveDBDirectory = new DirectoryInfo("Save");
+
+            // Получить путь к файлу в папке Save
+            string filePath = Path.Combine(saveDBDirectory.FullName, "Furnapp.db");
+
             try
             {
-                FileInfo fileInf = new FileInfo(path2);
+                FileInfo fileInf = new FileInfo(filePath);
                 if (fileInf.Exists)
                 {
-                    fileInf.Delete(); // Удаляем старый файл
-                    File.Copy(path, path2); //Копируем в новую папку БД. чтобы оттуда скопировать в Google Drive
+                    fileInf.Delete();
+                    File.Copy(filePath, path2); //Копируем в новую папку БД.
                 }
                 else
                 {
-                    File.Copy(path, path2);
+                    fileInf.CopyTo(path2, true); //Копируем в новую папку БД.
                 }
             }
-            catch (System.Exception)
+            catch 
             {
                 return;
-            }
+            }*/
+
+            // Создать объект DirectoryInfo для папки Save
+
+            // Получить путь к файлу в папке Save
 
 
-            using (WebClient webClient = new WebClient())
+            // Получить путь к исполняемому файлу приложения
+            string appPath = Assembly.GetExecutingAssembly().Location;
+
+            // Удалить имя исполняемого файла, чтобы получить путь к рабочему каталогу
+            string workingDirectoryPath = Path.GetDirectoryName(appPath);
+
+            // Перейти на три ступени выше по каталогам
+            string parentDirectoryPath = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(workingDirectoryPath)));
+
+            // Определить относительный путь к папке Save
+            string saveDBRelativePath = @"Save";
+
+            // Объединить пути
+            string saveDBPath = Path.Combine(parentDirectoryPath, saveDBRelativePath);
+
+            // Определить относительный путь к нужному файлу в папке Save
+            string relativeFilePath = @"Furnapp.db";
+
+            // Объединить пути
+            string filePath = Path.Combine(saveDBPath, relativeFilePath);
+
+            try
             {
-                // Установить свойство DownloadFile
-                webClient.DownloadFile = true;
+                FileInfo fileInf = new FileInfo(pathDelBD);
 
-                // Задать путь к файлу
-                webClient.Address = new Uri("pack://application:,,,/SaveDB/Furnapp.db");
-
-                // Задать путь для сохранения файла
-                webClient.FileName = pathDelBD;
-
-                // Загрузить файл
-                webClient.DownloadFile();
+                if (fileInf.Exists)
+                {
+                    fileInf.Delete();
+                    File.Copy(filePath, pathDelBD); //Копируем в новую папку БД.
+                }
+                else
+                {
+                    File.Copy(filePath, pathDelBD); //Копируем в новую папку БД.
+                }
+            }
+            catch
+            {
+                return;
             }
         }
 

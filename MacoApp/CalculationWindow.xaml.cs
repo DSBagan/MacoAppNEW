@@ -185,7 +185,7 @@ namespace MacoApp
                     "and(Lower_loop like '" + Lower_loop + "' or Lower_loop like 'Нет') and(Micro_ventilation like '" + Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +
                     "and(Rotation like '" + rotation + "' or Rotation like '" + rotationTwoArg + "') and(FFH_before = 0 or '" + FFH + "'>=FFH_before) and(FFH_after = 0 or '" + FFH + "' <= FFH_after)" +
                     " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after) and(Framuga like '" + framuga + "' or Framuga like '" + framugaTwoArg + "') and(Wood  = 'Да/Нет' or Wood  = '" + wood + "') " +
-                    "and(Konst like '" + konst + "' or Konst like '" + konstTwoArg + "') and(Color  = 'Не имеет значения' or Color  = '" + color + "')";
+                    "and(Konst like '" + konst + "' or Konst like '" + konstTwoArg + "') and(Color  = 'Не имеет значения' or Color  = '" + color + "') and(Color  = 'Не имеет значения' or Color  = '" + color + "')";
                 quantityBar = sqlRequests.Que(rotation, framuga, Furn, FFH, FFB); //Вытаскиваем из класса количество ответных планок
                 quantitySrPr = sqlRequests.QueSrPr(rotation, Furn, FFH); //Количество средних прижимов на поворотной створке
 
@@ -724,24 +724,24 @@ namespace MacoApp
             ButtonStulp.BorderBrush = Brushes.Orange;
             rotation = "Нет";
             rotationTwoArg = "Да/Нет";
-            framuga = "Да";
+            framuga = "Нет";
             framugaTwoArg = "Да/Нет";
             konst = "Нет";
             //konstTwoArg = "Да/Нет";
-            ComboBoxMv.IsEnabled = false;
-            TextBlockMv.IsEnabled = false;
-            ComboBoxLL.IsEnabled = false;
-            TextBlockLL.IsEnabled = false;
-            ComboBoxSide.IsEnabled = false;
-            TextBlockSide.IsEnabled = false;
+            ComboBoxMv.IsEnabled = true;
+            TextBlockMv.IsEnabled = true;
+            ComboBoxLL.IsEnabled = true;
+            TextBlockLL.IsEnabled = true;
+            ComboBoxSide.IsEnabled = true;
+            TextBlockSide.IsEnabled = true;
             ComboBoxKonst.IsEnabled = false;
 
             // Получаем доступ к объекту TextBox
             TextBox myTextBox = this.MainGrid.Children.OfType<TextBox>().ElementAt(2);
             // Устанавливаем значение свойства Grid.Column
-            Grid.SetRow(myTextBox, 2);
+            Grid.SetRow(myTextBox, 3);
             TextBox myTextBox1 = this.MainGrid.Children.OfType<TextBox>().ElementAt(1);
-            Grid.SetRow(myTextBox1, 3);
+            Grid.SetRow(myTextBox1, 2);
         }
 
 

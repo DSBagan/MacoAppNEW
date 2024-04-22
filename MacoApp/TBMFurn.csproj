@@ -17,6 +17,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="SaveDB\**" />
+    <EmbeddedResource Remove="SaveDB\**" />
+    <None Remove="SaveDB\**" />
+    <Page Remove="SaveDB\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="28.png" />
     <None Remove="FRAM.PNG" />
     <None Remove="images\28.png" />
@@ -78,7 +85,7 @@
     <None Remove="P_O.png" />
     <None Remove="P_OP.PNG" />
     <None Remove="roto-transformed.png" />
-    <None Remove="SaveDB\Furnapp.db" />
+    <None Remove="Save\Furnapp.db" />
     <None Remove="Vorne-logo.png" />
     <None Remove="Внутренний ящик 135 Цвет.png" />
   </ItemGroup>
@@ -267,7 +274,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="MacoFon.png" />
-    <Resource Include="SaveDB\Furnapp.db">
+    <Resource Include="Save\Furnapp.db">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
