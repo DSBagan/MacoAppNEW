@@ -37,8 +37,8 @@
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
 
-        <DataGrid x:Name="GridList"  Grid.Column="3" Margin="0,10,15,0" 
-                    Grid.RowSpan="15" Grid.ColumnSpan="2"
+        <DataGrid x:Name="GridList"  Grid.Column="3" Margin="0,10,10,0" 
+                    Grid.RowSpan="14" Grid.ColumnSpan="2"
                     FontSize="12" FontWeight="Bold" Foreground="#FF0D042B"
                   materialDesign:DataGridAssist.CellPadding="40 2 2 2" 
                   materialDesign:DataGridAssist.ColumnHeaderPadding="40 2 2 2" Grid.Row="1">
@@ -179,7 +179,7 @@
                 </Button.Background>
             </Button>
         </StackPanel>
-        
+
 
 
         <ListBox Name="LBListCalc"  Grid.ColumnSpan="5" Grid.Row="16" Width="384" FontSize="10" Background="#FFEFF9F8" Visibility="Collapsed"
@@ -208,19 +208,37 @@
                 ToolTip="MaterialDesignFloatingActionMiniLightButton" Background="#FFEDD7AF" Grid.Column="4" Grid.RowSpan="2" Width="30" Height="30" HorizontalAlignment="Right" Margin="0,5,5,0" VerticalAlignment="Top" Click="ButtonFeedback_Click">
             <materialDesign:PackIcon Kind="EmailOpenOutline" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Button>
-        <ComboBox x:Name="ComboBoxColor" Grid.Column="2" Grid.Row="9" FontSize="12" Height="25" HorizontalAlignment="Right" Margin="138,0,10,0" >
+        <ComboBox x:Name="ComboBoxColor" Grid.Column="2" Grid.Row="9" FontSize="12" Height="25" HorizontalAlignment="Left" Margin="164,0,0,0" 
+                  SelectionChanged="ComboBoxColor_SelectionChanged" Width="60">
             <ComboBoxItem IsSelected="True" Content="Белый"/>
             <ComboBoxItem Content="Коричневый"/>
             <ComboBoxItem Content="Бронза"/>
             <ComboBoxItem Content="Серебро"/>
             <ComboBoxItem Content="Титан"/>
+            <ComboBoxItem Content="Черный"/>
+            <ComboBoxItem Content="Золото"/>
         </ComboBox>
         <TextBlock x:Name="TextBlockColor" Text="Цвет накладок"  Grid.Column="2" Grid.Row="9" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
+        <TextBlock x:Name="TextBlockShtulp" Text="Тип штульпа"  Grid.Column="2" Grid.Row="10" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
+        <ComboBox x:Name="ComboBoxShtulp" Grid.Column="2" Grid.Row="10" FontSize="12" Height="25" HorizontalAlignment="Left" Margin="126,0,0,0" 
+          SelectionChanged="ComboBoxColor_SelectionChanged" Width="98">
+            <ComboBoxItem IsSelected="True" Content="Шпингалеты"/>
+            <ComboBoxItem Content="Штульп. запор"/>
+        </ComboBox>
+        <Button x:Name="ButtonColor" Content="Q" Grid.Row="9" Grid.Column="2" Width="20" Height="20">
 
+        </Button>
         <Label x:Name="LabelErrorСode" Grid.ColumnSpan="1" Height="17" Width="30" Grid.Row="0" HorizontalAlignment="Center" Grid.Column="2">
             <Label.Background>
                 <ImageBrush ImageSource="/images/Стрелка вправо.png"/>
             </Label.Background>
         </Label>
+        <StackPanel Grid.Row="15" Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+            <TextBlock x:Name="TBSR" Margin="0,0,5,0" Foreground="#FF047A7D" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" FontFamily="Calibri" FontWeight="Bold">Рамный шаблон:</TextBlock>
+            <TextBox x:Name="TBShablonRama" Margin="0,0,20,0" Foreground="#FFFB7528" FontSize="14" FontWeight="Bold" FontFamily="Calibri">21958</TextBox>
+            <TextBlock x:Name="TBSS" Margin="0,0,5,0" Foreground="#FF047A7D" VerticalAlignment="Center" FontSize="14" FontFamily="Calibri" FontWeight="Bold">Створочный шаблон:</TextBlock>
+            <TextBox x:Name="TBShablonStvorka" FontSize="14" Foreground="#FFFB7528" VerticalAlignment="Center" FontWeight="Bold" FontFamily="Calibri">21564</TextBox>
+
+        </StackPanel>
     </Grid>
 </Window>

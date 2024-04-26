@@ -71,6 +71,9 @@ namespace MacoApp
         string framugaTwoArg;
         string konst;
         string konstTwoArg;
+        string shtulp;
+        string shtulpTwoArg;
+        string shtulpTreeArg;
         public int quantityBar = 0;
         private bool isPanelExpanded = false;
         string wood;
@@ -129,6 +132,14 @@ namespace MacoApp
             backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/Stulp_P.png")));
 
             LabelErrorСode.Visibility = Visibility.Hidden;
+            ButtonColor.Background = Brushes.White;
+
+            TBSR.Visibility = Visibility.Hidden;
+            TBShablonRama.Visibility = Visibility.Hidden;
+            TBSS.Visibility = Visibility.Hidden;
+            TBShablonStvorka.Visibility = Visibility.Hidden;
+            TextBlockShtulp.Visibility = Visibility.Collapsed;
+            ComboBoxShtulp.Visibility = Visibility.Collapsed;
         }
 
         private void CalculationWindow_Loaded(object sender, RoutedEventArgs e)
@@ -146,11 +157,20 @@ namespace MacoApp
             framugaTwoArg = "Да/Нет";
             konst = "Нет";
             konstTwoArg = "Да/Нет";
+            shtulp = "Нет";
+            shtulpTwoArg = "Да/Нет";
+            shtulpTreeArg = "";
 
         }
 
         private void ButtonCalc_Click(object sender, RoutedEventArgs e)
         {
+
+            TBSR.Visibility = Visibility.Visible;
+            TBShablonRama.Visibility = Visibility.Visible;
+            TBSS.Visibility = Visibility.Visible;
+            TBShablonStvorka.Visibility = Visibility.Visible;
+
             try
             {
                 int count = 0;
@@ -166,7 +186,19 @@ namespace MacoApp
                 string Micro_ventilation = ComboBoxMv.Text;
                 string wood;
                 string color = ComboBoxColor.Text;
-
+                if (ComboBoxShtulp.Text == "Шпингалеты")
+                {
+                    shtulpTreeArg = "Шпингалет";
+                }
+                else if (ComboBoxShtulp.Text == "Штульп. запор")
+                {
+                    shtulpTreeArg = "Запор";
+                }
+                else if (shtulpTreeArg == "")
+                {
+                    shtulpTreeArg = "";
+                }
+                
                 if (ComboBoxSystem.Text == "Дерево")
                 {
                     wood = "Да";
@@ -185,7 +217,7 @@ namespace MacoApp
                     "and(Lower_loop like '" + Lower_loop + "' or Lower_loop like 'Нет') and(Micro_ventilation like '" + Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +
                     "and(Rotation like '" + rotation + "' or Rotation like '" + rotationTwoArg + "') and(FFH_before = 0 or '" + FFH + "'>=FFH_before) and(FFH_after = 0 or '" + FFH + "' <= FFH_after)" +
                     " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after) and(Framuga like '" + framuga + "' or Framuga like '" + framugaTwoArg + "') and(Wood  = 'Да/Нет' or Wood  = '" + wood + "') " +
-                    "and(Konst like '" + konst + "' or Konst like '" + konstTwoArg + "') and(Color  = 'Не имеет значения' or Color  = '" + color + "') and(Color  = 'Не имеет значения' or Color  = '" + color + "')";
+                    "and(Konst like '" + konst + "' or Konst like '" + konstTwoArg + "') and(Color  = 'Не имеет значения' or Color  = '" + color + "') and(Shtulp like '"+ shtulpTwoArg +"' or Shtulp  like '" + shtulp + "' or Shtulp like '"+ shtulpTreeArg +"')";
                 quantityBar = sqlRequests.Que(rotation, framuga, Furn, FFH, FFB); //Вытаскиваем из класса количество ответных планок
                 quantitySrPr = sqlRequests.QueSrPr(rotation, Furn, FFH); //Количество средних прижимов на поворотной створке
 
@@ -319,7 +351,6 @@ namespace MacoApp
                                     table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity);
                                 }
                             }
-
 
 
                             // Получаем таблицы
@@ -545,7 +576,7 @@ namespace MacoApp
                 try
                 {
                     // Проверяем есть диск X b папка aTBMFURN, если нет- создаем
-                    Directory.CreateDirectory(@"X:\aTBMFURN\");
+                    Directory.CreateDirectory(@"C:\aTBMFURN\");
                 }
                 catch (System.Exception)
                 {
@@ -577,7 +608,7 @@ namespace MacoApp
                         Code.Text = "0" + Code.Text;
                     }
                 }
-                using (StreamWriter streamWriter = new StreamWriter(@"X:\aTBMFURN\" + "Z" + Code.Text + " " + date + ".txt", false, Encoding.Default))
+                using (StreamWriter streamWriter = new StreamWriter(@"C:\aTBMFURN\" + "Z" + Code.Text + " " + date + ".txt", false, Encoding.Default))
                 {
                     streamWriter.WriteLine("                    Шифр фирмы " + Code.Text);
                     streamWriter.WriteLine("                    Фирма 123");
@@ -642,11 +673,16 @@ namespace MacoApp
             ButtonP_O.BorderBrush = Brushes.Red;
             ButtonP.BorderBrush = Brushes.White;
             ButtonFram.BorderBrush = Brushes.White;
+            TextBlockShtulp.Visibility = Visibility.Collapsed;
+            ComboBoxShtulp.Visibility = Visibility.Collapsed;
 
             rotation = "Нет";
             rotationTwoArg = "Да/Нет";
             framuga = "Нет";
             framugaTwoArg = "Да/Нет";
+            shtulp = "Нет";
+            shtulpTwoArg = "Да/Нет";
+            shtulpTreeArg = "";
 
             ComboBoxLL.IsEnabled = true;
             TextBlockLL.IsEnabled = true;
@@ -672,6 +708,10 @@ namespace MacoApp
             framuga = "Нет";
             framugaTwoArg = "Да/Нет";
             konst = "Нет";
+            shtulp = "Нет";
+            shtulpTwoArg = "Да/Нет";
+            shtulpTreeArg = "";
+
             //konstTwoArg = "Да/Нет";
             ComboBoxMv.IsEnabled = false;
             TextBlockMv.IsEnabled = false;
@@ -680,6 +720,8 @@ namespace MacoApp
             TextBlockLL.IsEnabled = true;
             ComboBoxSide.IsEnabled = true;
             TextBlockSide.IsEnabled = true;
+            TextBlockShtulp.Visibility = Visibility.Collapsed;
+            ComboBoxShtulp.Visibility = Visibility.Collapsed;
 
             // Получаем доступ к объекту TextBox
             TextBox myTextBox = this.MainGrid.Children.OfType<TextBox>().ElementAt(2);
@@ -699,6 +741,9 @@ namespace MacoApp
             framuga = "Да";
             framugaTwoArg = "Да/Нет";
             konst = "Нет";
+            shtulp = "Нет";
+            shtulpTwoArg = "Да/Нет";
+            shtulpTreeArg = "";
             //konstTwoArg = "Да/Нет";
             ComboBoxMv.IsEnabled = false;
             TextBlockMv.IsEnabled = false;
@@ -707,6 +752,8 @@ namespace MacoApp
             ComboBoxSide.IsEnabled = false;
             TextBlockSide.IsEnabled = false;
             ComboBoxKonst.IsEnabled = false;
+            TextBlockShtulp.Visibility = Visibility.Collapsed;
+            ComboBoxShtulp.Visibility = Visibility.Collapsed;
 
             // Получаем доступ к объекту TextBox
             TextBox myTextBox = this.MainGrid.Children.OfType<TextBox>().ElementAt(2);
@@ -727,6 +774,9 @@ namespace MacoApp
             framuga = "Нет";
             framugaTwoArg = "Да/Нет";
             konst = "Нет";
+            shtulp = "Да";
+            shtulpTwoArg = "Да/Нет";
+
             //konstTwoArg = "Да/Нет";
             ComboBoxMv.IsEnabled = true;
             TextBlockMv.IsEnabled = true;
@@ -735,6 +785,8 @@ namespace MacoApp
             ComboBoxSide.IsEnabled = true;
             TextBlockSide.IsEnabled = true;
             ComboBoxKonst.IsEnabled = false;
+            TextBlockShtulp.Visibility = Visibility.Visible;
+            ComboBoxShtulp.Visibility = Visibility.Visible;
 
             // Получаем доступ к объекту TextBox
             TextBox myTextBox = this.MainGrid.Children.OfType<TextBox>().ElementAt(2);
@@ -769,7 +821,50 @@ namespace MacoApp
                 ComboBoxKonst.IsEnabled = true;
             }
 
+            try
+            {
+                if (index == 0)
+                {
+                    TBShablonRama.Text = "21958";
+                    TBShablonStvorka.Text = "21564";
+                }
+                if (index == 1)
+                {
+                    TBShablonRama.Text = "21958";
+                    TBShablonStvorka.Text = "21564";
+                }
+                if (index == 2)
+                {
+                    TBShablonRama.Text = "V50040714";
+                    TBShablonStvorka.Text = "V50030114N";
+                }
+                if (index == 3)
+                {
+                    TBShablonRama.Text = "Нет";
+                    TBShablonStvorka.Text = "Нет";
+                }
+                if (index == 4)
+                {
+                    TBShablonRama.Text = "Нет";
+                    TBShablonStvorka.Text = "Нет";
+                }
+                if (index == 5)
+                {
+                    TBShablonRama.Text = "1080391";
+                    TBShablonStvorka.Text = "1080369";
+                }
+                if (index == 6)
+                {
+                    TBShablonRama.Text = "ELM0030200";
+                    TBShablonStvorka.Text = "ELM0030100";
+                }
+            }
+            catch (System.Exception)
+            {
 
+                return;
+            }
+            
         }
 
         //Анимация текстблока обратной связи
@@ -859,6 +954,49 @@ namespace MacoApp
             {
                 konst = "Нет";
             }
+        }
+        private void ComboBoxColor_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                if (ComboBoxColor.SelectedIndex >= 0)
+                {
+                    if (ComboBoxColor.SelectedIndex == 0)
+                    {
+                        ButtonColor.Background = Brushes.White;
+                    }
+                    else if (ComboBoxColor.SelectedIndex == 1)
+                    {
+                        ButtonColor.Background = Brushes.Chocolate;
+                    }
+                    else if (ComboBoxColor.SelectedIndex == 2)
+                    {
+                        ButtonColor.Background = Brushes.Brown;
+                    }
+                    else if (ComboBoxColor.SelectedIndex == 3)
+                    {
+                        ButtonColor.Background = Brushes.Gray;
+                    }
+                    else if (ComboBoxColor.SelectedIndex == 4)
+                    {
+                        ButtonColor.Background = Brushes.DarkGray;
+                    }
+                    else if (ComboBoxColor.SelectedIndex == 5)
+                    {
+                        ButtonColor.Background = Brushes.Black;
+                    }
+                    else if (ComboBoxColor.SelectedIndex == 6)
+                    {
+                        ButtonColor.Background = Brushes.Yellow;
+                    }
+                }
+            }
+            catch (System.Exception)
+            {
+                return;
+            }
+            
+
         }
 
 
