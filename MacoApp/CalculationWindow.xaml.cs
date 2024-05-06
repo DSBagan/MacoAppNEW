@@ -61,8 +61,13 @@ namespace MacoApp
             "1077246", "1099378", "1082704", "ELM0020E00", "ELM0050E00"};
         //Список средних прижимов
         List<string> SrPr = new List<string> { "54783", "41342", "41339", "V17010102", "V44020107", "V44030107", "281639", "281638", "208598", "208600",
-        "1080572", "1080573", "1080574", "ELM6000400", "ELM6000500"};
-
+        "1080572", "1080573", "1080574", "ELM6000400", "ELM6000500", "41582", "41583", "40756", "40757", "43568", "43569", "42135", "42136", "362185", "362186",
+        "41340", "41343", "208602", "208604", "229858", "229863", "1092264", "1092265", "V44030108"};
+        //Список штульповых дублирующихся артикулов
+        List<string> ListStulp = new List<string> { "52480", "52486", "52487", "94491", "42083", "42084", "52483", "52478", "41742", "41743", "42087", "52479", "52484",
+        "42186", "42189", "42192", "42195", "42208", "42187", "42190", "42193", "42196", "42209", "43566", "43567", "43760", "43761", "43940", "42048", "42057", "42095", 
+            "42099", "42107", "41752", "41762", "42093", "42097", "42105", "41760", "41763", "42094", "42098", "42106", "42049", "42058", "42096", "42103", "42108"};
+        List<string> ListStulpOtv = new List<string> { "34610"};
 
         int Count = 1;
         string rotation;
@@ -178,6 +183,7 @@ namespace MacoApp
                 string Furn = ComboBoxFurn.Text;
                 int quantity = Int32.Parse(TextBoxColvo.Text);
                 int quantitySrPr = Int32.Parse(TextBoxColvo.Text);
+                int quantityShtulp = Int32.Parse(TextBoxColvo.Text);
                 string System = ComboBoxSystem.Text;
                 string side = ComboBoxSide.Text;
                 int FFH = Int32.Parse(TextBoxFFH.Text);
@@ -186,18 +192,6 @@ namespace MacoApp
                 string Micro_ventilation = ComboBoxMv.Text;
                 string wood;
                 string color = ComboBoxColor.Text;
-                if (ComboBoxShtulp.Text == "Шпингалеты")
-                {
-                    shtulpTreeArg = "Шпингалет";
-                }
-                else if (ComboBoxShtulp.Text == "Штульп. запор")
-                {
-                    shtulpTreeArg = "Запор";
-                }
-                else if (shtulpTreeArg == "")
-                {
-                    shtulpTreeArg = "";
-                }
                 
                 if (ComboBoxSystem.Text == "Дерево")
                 {
@@ -208,7 +202,7 @@ namespace MacoApp
                     wood = "Нет";
                 }
 
-                if (classError.Err(Furn, FFH, FFB, quantity, rotation, framuga, konst) == 1)
+                if (classError.Err(Furn, FFH, FFB, quantity, rotation, framuga, konst, shtulp, shtulpTreeArg) == 1)
                 {
                     return;
                 }
@@ -217,9 +211,10 @@ namespace MacoApp
                     "and(Lower_loop like '" + Lower_loop + "' or Lower_loop like 'Нет') and(Micro_ventilation like '" + Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +
                     "and(Rotation like '" + rotation + "' or Rotation like '" + rotationTwoArg + "') and(FFH_before = 0 or '" + FFH + "'>=FFH_before) and(FFH_after = 0 or '" + FFH + "' <= FFH_after)" +
                     " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after) and(Framuga like '" + framuga + "' or Framuga like '" + framugaTwoArg + "') and(Wood  = 'Да/Нет' or Wood  = '" + wood + "') " +
-                    "and(Konst like '" + konst + "' or Konst like '" + konstTwoArg + "') and(Color  = 'Не имеет значения' or Color  = '" + color + "') and(Shtulp like '"+ shtulpTwoArg +"' or Shtulp  like '" + shtulp + "' or Shtulp like '"+ shtulpTreeArg +"')";
+                    "and(Konst like '" + konst + "' or Konst like '" + konstTwoArg + "') and(Shtulp like '"+ shtulpTwoArg +"' or Shtulp  like '" + shtulp + "' or Shtulp = '"+ shtulpTreeArg +"') and(Color  = 'Не имеет значения' or Color  = '" + color + "')";
                 quantityBar = sqlRequests.Que(rotation, framuga, Furn, FFH, FFB); //Вытаскиваем из класса количество ответных планок
                 quantitySrPr = sqlRequests.QueSrPr(rotation, Furn, FFH); //Количество средних прижимов на поворотной створке
+                quantityShtulp = sqlRequests.QueShtup(shtulp, Furn, FFH, shtulpTreeArg);  //Количество штульповых ответных планок 
 
                 using (var connection = new SqliteConnection("Data Source=Furnapp.db"))
                 {
@@ -244,6 +239,10 @@ namespace MacoApp
                                 {
                                     collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantitySrPr });
                                 }
+                                else if (ListStulpOtv.Contains(reader.GetValue(3).ToString()))
+                                {
+                                    collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantityShtulp });
+                                }
                                 else if (framuga == "Да" && ArticleFram1.Contains(reader.GetValue(3).ToString()) && FFH <= 1600)
                                 {
                                     collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * 2 });
@@ -255,6 +254,10 @@ namespace MacoApp
                                 else if (framuga == "Да" && ArticleFram2.Contains(reader.GetValue(3).ToString()) && FFH >= 1101)
                                 {
                                     collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * 2 });
+                                }
+                                else if (shtulp=="Да" && ListStulp.Contains(reader.GetValue(3).ToString()))
+                                {
+                                    collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * 2});
                                 }
                                 else
                                 {
@@ -285,13 +288,14 @@ namespace MacoApp
                 string Furn = ComboBoxFurn.Text;
                 int quantity = Int32.Parse(TextBoxColvo.Text);
                 int quantitySrPr = Int32.Parse(TextBoxColvo.Text);
+                int quantityShtulp = Int32.Parse(TextBoxColvo.Text);
                 string System = ComboBoxSystem.Text;
                 string side = ComboBoxSide.Text;
                 int FFH = Int32.Parse(TextBoxFFH.Text);
                 int FFB = Int32.Parse(TextBoxFFB.Text);
                 string Lower_loop = ComboBoxLL.Text;
                 string Micro_ventilation = ComboBoxMv.Text;
-
+                string color = ComboBoxColor.Text;
 
                 if (ComboBoxSystem.Text == "Дерево")
                 {
@@ -305,9 +309,11 @@ namespace MacoApp
                 queryString = $"Select * from Elements where (Name_Furn like '" + Furn + "') and(System  = 'Не имеет значения' or System  = '" + System + "') and(Side like 'Не имеет значения' or Side like '" + side + "') " +
                     "and(Lower_loop like '" + Lower_loop + "' or Lower_loop like 'Нет') and(Micro_ventilation like '" + Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +
                     "and(Rotation like '" + rotation + "' or Rotation like '" + rotationTwoArg + "') and(FFH_before = 0 or '" + FFH + "'>=FFH_before) and(FFH_after = 0 or '" + FFH + "' <= FFH_after)" +
-                    " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after) and(Framuga like '" + framuga + "' or Framuga like '" + framugaTwoArg + "') and(Wood  = 'Да/Нет' or Wood  = '" + wood + "') and(Konst like '" + konst + "' or Konst like '" + konstTwoArg + "')";
+                    " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after) and(Framuga like '" + framuga + "' or Framuga like '" + framugaTwoArg + "') and(Wood  = 'Да/Нет' or Wood  = '" + wood + "') " +
+                    "and(Konst like '" + konst + "' or Konst like '" + konstTwoArg + "') and(Shtulp like '" + shtulpTwoArg + "' or Shtulp  like '" + shtulp + "' or Shtulp = '" + shtulpTreeArg + "') and(Color  = 'Не имеет значения' or Color  = '" + color + "')";
                 quantityBar = sqlRequests.Que(rotation, framuga, Furn, FFH, FFB); //Вытаскиваем из класса количество ответных планок               
                 quantitySrPr = sqlRequests.QueSrPr(rotation, Furn, FFH); //Количество средних прижимов на поворотной створке
+                quantityShtulp = sqlRequests.QueShtup(shtulp, Furn, FFH, shtulpTreeArg);  //Количество штульповых ответных планок 
 
                 using (var connection = new SqliteConnection("Data Source=Furnapp.db"))
                 {
@@ -330,6 +336,10 @@ namespace MacoApp
                                 {
                                     table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * quantityBar);
                                 }
+                                else if (ListStulpOtv.Contains(reader.GetValue(3).ToString()))
+                                {
+                                    table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * quantityShtulp);
+                                }
                                 else if (SrPr.Contains(reader.GetValue(3).ToString()))
                                 {
                                     table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * quantitySrPr);
@@ -343,6 +353,10 @@ namespace MacoApp
                                     table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * 3);
                                 }
                                 else if (framuga == "Да" && ArticleFram2.Contains(reader.GetValue(3).ToString()) && FFH >= 1101)
+                                {
+                                    table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * 2);
+                                }
+                                else if (shtulp == "Да" && ListStulp.Contains(reader.GetValue(3).ToString()))
                                 {
                                     table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * 2);
                                 }
@@ -673,6 +687,7 @@ namespace MacoApp
             ButtonP_O.BorderBrush = Brushes.Red;
             ButtonP.BorderBrush = Brushes.White;
             ButtonFram.BorderBrush = Brushes.White;
+            ButtonStulp.BorderBrush = Brushes.White;
             TextBlockShtulp.Visibility = Visibility.Collapsed;
             ComboBoxShtulp.Visibility = Visibility.Collapsed;
 
@@ -703,6 +718,7 @@ namespace MacoApp
             ButtonP.BorderBrush = Brushes.Red;
             ButtonP_O.BorderBrush = Brushes.White;
             ButtonFram.BorderBrush = Brushes.White;
+            ButtonStulp.BorderBrush = Brushes.White;
             rotation = "Да";
             rotationTwoArg = "Да/Нет";
             framuga = "Нет";
@@ -736,6 +752,7 @@ namespace MacoApp
             ButtonP_O.BorderBrush = Brushes.White;
             ButtonP.BorderBrush = Brushes.White;
             ButtonFram.BorderBrush = Brushes.Red;
+            ButtonStulp.BorderBrush = Brushes.White;
             rotation = "Нет";
             rotationTwoArg = "Да/Нет";
             framuga = "Да";
@@ -768,7 +785,7 @@ namespace MacoApp
             ButtonP_O.BorderBrush = Brushes.White;
             ButtonP.BorderBrush = Brushes.White;
             ButtonFram.BorderBrush = Brushes.White;
-            ButtonStulp.BorderBrush = Brushes.Orange;
+            ButtonStulp.BorderBrush = Brushes.Red;
             rotation = "Нет";
             rotationTwoArg = "Да/Нет";
             framuga = "Нет";
@@ -776,6 +793,14 @@ namespace MacoApp
             konst = "Нет";
             shtulp = "Да";
             shtulpTwoArg = "Да/Нет";
+            if (ComboBoxShtulp.Text == "Шпингалеты")
+            {
+                shtulpTreeArg = "Шпингалет";
+            }
+            else if (ComboBoxShtulp.Text == "Штульп. запор")
+            {
+                shtulpTreeArg = "Запор";
+            }
 
             //konstTwoArg = "Да/Нет";
             ComboBoxMv.IsEnabled = true;
@@ -942,6 +967,21 @@ namespace MacoApp
                 }
             }
 
+        }
+
+        private void ComboBoxShtulp_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ComboBoxShtulp != null)
+            {
+                if (ComboBoxShtulp.SelectedIndex == 0)
+                {
+                    shtulpTreeArg = "Шпингалет";
+                }
+                else if (ComboBoxShtulp.SelectedIndex == 1)
+                {
+                    shtulpTreeArg = "Запор";
+                }
+            }
         }
 
         private void ComboBoxKonst_SelectionChanged(object sender, SelectionChangedEventArgs e)

@@ -12,6 +12,7 @@ namespace MacoApp
         public string queryString;
         public int quantityBar = 0;
         public int quantitySrPr = 0;
+        public int quantityShtulp = 0;
 
         public int Que(string Rotation, string framuga, string Furn, int FFH, int FFB)
         {
@@ -298,6 +299,8 @@ namespace MacoApp
                 {
                     return quantityBar = 4;
                 }
+
+                //Штульповое окно
 
 
                 else
@@ -771,6 +774,82 @@ namespace MacoApp
                     return 0;
                 }
             }
+            else
+                return 0;
+        }
+
+
+        // Штульповые ответные планки
+        public int QueShtup(string sthulp, string Furn, int FFH, string shtulpTreeArg)
+        {
+            if (sthulp == "Да" && Furn == "Maco_MM" && shtulpTreeArg == "Шпингалет")
+            {
+                if (FFH >= 801 && FFH <= 1250)
+                {
+                    return quantityShtulp = 1;
+                }
+                else if (FFH >= 1251 && FFH <= 1750)
+                {
+                    return quantityShtulp = 2;
+                }
+                else if (FFH >= 1751 && FFH <= 2250)
+                {
+                    return quantityShtulp = 3;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            /*else if (sthulp == "Да" && Furn == "Vorne" || Furn == "Akpen"))
+            {
+                if (FFH >= 300 && FFH <= 1400)
+                {
+                    return quantitySrPr = 1;
+                }
+                else if (FFH >= 1401 && FFH <= 2000)
+                {
+                    return quantitySrPr = 2;
+                }
+                else if (FFH >= 2001 && FFH <= 2400)
+                {
+                    return quantitySrPr = 2;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else if (Rotation == "Да" && (Furn == "Roto_NT" || Furn == "Roto_NX"))
+            {
+                if (FFH >= 251 && FFH <= 1400)
+                {
+                    return quantitySrPr = 1;
+                }
+                else if (FFH >= 1401 && FFH <= 2400)
+                {
+                    return quantitySrPr = 2;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else if (Rotation == "Да" && Furn == "Internika")
+            {
+                if (FFH >= 501 && FFH <= 1400)
+                {
+                    return quantitySrPr = 1;
+                }
+                else if (FFH >= 1401 && FFH <= 2400)
+                {
+                    return quantitySrPr = 2;
+                }
+                else
+                {
+                    return 0;
+                }
+            }*/
             else
                 return 0;
         }

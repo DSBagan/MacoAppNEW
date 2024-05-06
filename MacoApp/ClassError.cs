@@ -9,7 +9,7 @@ namespace MacoApp
 {
     class ClassError
     {
-        public int Err(string Furn, int FFH, int FFB, int quantity, string rotation, string framuga, string konst)
+        public int Err(string Furn, int FFH, int FFB, int quantity, string rotation, string framuga, string konst, string shtulp, string shtulpTreeArg)
         {
             if (Furn == "Maco_Eco" && framuga == "Нет")
             {
@@ -65,7 +65,7 @@ namespace MacoApp
                     return 0;
                 }
             }
-            else if (Furn == "Maco_MM" && rotation == "Нет" && framuga == "Нет")
+            else if (Furn == "Maco_MM" && rotation == "Нет" && framuga == "Нет" && shtulp =="Нет")
             {
                 if (FFH < 470)
                 {
@@ -123,12 +123,56 @@ namespace MacoApp
             {
                 if (FFH < 300)
                 {
-                    MaterialMessageBox.ShowDialog("Ширина не может быть менее 300 мм");
+                    MaterialMessageBox.ShowDialog("Высота не может быть менее 300 мм");
                     return 1;
                 }
                 else if (FFH > 2400)
                 {
-                    MaterialMessageBox.ShowDialog("Ширина не может быть более 2400 мм");
+                    MaterialMessageBox.ShowDialog("Высота не может быть более 2400 мм");
+                    return 1;
+                }
+                else if (quantity == 0)
+                {
+                    MaterialMessageBox.ShowDialog("Укажите корректное количество комплектов");
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else if (Furn == "Maco_MM" && framuga == "Да")
+            {
+                if (FFH < 300)
+                {
+                    MaterialMessageBox.ShowDialog("Высота не может быть менее 300 мм");
+                    return 1;
+                }
+                else if (FFH > 2400)
+                {
+                    MaterialMessageBox.ShowDialog("Высота не может быть более 2400 мм");
+                    return 1;
+                }
+                else if (quantity == 0)
+                {
+                    MaterialMessageBox.ShowDialog("Укажите корректное количество комплектов");
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else if (Furn == "Maco_MM" && shtulp == "Да" && shtulpTreeArg=="Запор")
+            {
+                if (FFH < 840)
+                {
+                    MaterialMessageBox.ShowDialog("Высота штульпового окна с запором не может быть менее 840 мм");
+                    return 1;
+                }
+                else if (FFH > 2400)
+                {
+                    MaterialMessageBox.ShowDialog("Высота штульпового окна с запором не может быть более 1750 мм");
                     return 1;
                 }
                 else if (quantity == 0)
