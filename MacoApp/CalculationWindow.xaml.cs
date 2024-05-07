@@ -145,6 +145,7 @@ namespace MacoApp
             TBShablonStvorka.Visibility = Visibility.Hidden;
             TextBlockShtulp.Visibility = Visibility.Collapsed;
             ComboBoxShtulp.Visibility = Visibility.Collapsed;
+            ButtonStulp.IsEnabled = false;
         }
 
         private void CalculationWindow_Loaded(object sender, RoutedEventArgs e)
@@ -850,46 +851,58 @@ namespace MacoApp
             {
                 if (index == 0)
                 {
-                    TBShablonRama.Text = "21958";
+                    TBShablonRama.Text = "21958";  //Щаблоны для каждого вида фурнитуры
                     TBShablonStvorka.Text = "21564";
+
+                    ButtonStulp.IsEnabled = false;
                 }
                 if (index == 1)
                 {
                     TBShablonRama.Text = "21958";
                     TBShablonStvorka.Text = "21564";
+
+                    ButtonStulp.IsEnabled = true;
                 }
                 if (index == 2)
                 {
                     TBShablonRama.Text = "V50040714";
                     TBShablonStvorka.Text = "V50030114N";
+
+                    ButtonStulp.IsEnabled = false;
                 }
                 if (index == 3)
                 {
                     TBShablonRama.Text = "Нет";
                     TBShablonStvorka.Text = "Нет";
+
+                    ButtonStulp.IsEnabled = false;
                 }
                 if (index == 4)
                 {
                     TBShablonRama.Text = "Нет";
                     TBShablonStvorka.Text = "Нет";
+
+                    ButtonStulp.IsEnabled = false;
                 }
                 if (index == 5)
                 {
                     TBShablonRama.Text = "1080391";
                     TBShablonStvorka.Text = "1080369";
+
+                    ButtonStulp.IsEnabled = false;
                 }
                 if (index == 6)
                 {
                     TBShablonRama.Text = "ELM0030200";
                     TBShablonStvorka.Text = "ELM0030100";
+
+                    ButtonStulp.IsEnabled = false;
                 }
             }
             catch (System.Exception)
             {
-
                 return;
             }
-            
         }
 
         //Анимация текстблока обратной связи
@@ -1007,19 +1020,19 @@ namespace MacoApp
                     }
                     else if (ComboBoxColor.SelectedIndex == 1)
                     {
-                        ButtonColor.Background = Brushes.Chocolate;
+                        ButtonColor.Background = Brushes.Brown;
                     }
                     else if (ComboBoxColor.SelectedIndex == 2)
                     {
-                        ButtonColor.Background = Brushes.Brown;
+                        ButtonColor.Background = Brushes.Orange;
                     }
                     else if (ComboBoxColor.SelectedIndex == 3)
                     {
-                        ButtonColor.Background = Brushes.Gray;
+                        ButtonColor.Background = Brushes.Silver;
                     }
                     else if (ComboBoxColor.SelectedIndex == 4)
                     {
-                        ButtonColor.Background = Brushes.DarkGray;
+                        ButtonColor.Background = Brushes.Gray;
                     }
                     else if (ComboBoxColor.SelectedIndex == 5)
                     {
@@ -1027,7 +1040,7 @@ namespace MacoApp
                     }
                     else if (ComboBoxColor.SelectedIndex == 6)
                     {
-                        ButtonColor.Background = Brushes.Yellow;
+                        ButtonColor.Background = Brushes.Gold;
                     }
                 }
             }
