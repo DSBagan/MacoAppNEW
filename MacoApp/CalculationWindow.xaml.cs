@@ -59,6 +59,8 @@ namespace MacoApp
         //Список ответных планок
         List<string> response_bars = new List<string> { "34623", "34850", "34780", "V25070102", "V26010102", "V25010102", "338070", "260367", "1077591",
             "1077246", "1099378", "1082704", "ELM0020E00", "ELM0050E00"};
+        List<string> response_barsSthulp = new List<string> { "34623", "34850", "34780", "V25070102", "V26010102", "V25010102", "338070", "260367", "1077591",
+            "1077246", "1099378", "1082704", "ELM0020E00", "ELM0050E00"};
         //Список средних прижимов
         List<string> SrPr = new List<string> { "54783", "41342", "41339", "V17010102", "V44020107", "V44030107", "281639", "281638", "208598", "208600",
         "1080572", "1080573", "1080574", "ELM6000400", "ELM6000500", "41582", "41583", "40756", "40757", "43568", "43569", "42135", "42136", "362185", "362186",
@@ -185,6 +187,7 @@ namespace MacoApp
                 int quantity = Int32.Parse(TextBoxColvo.Text);
                 int quantitySrPr = Int32.Parse(TextBoxColvo.Text);
                 int quantityShtulp = Int32.Parse(TextBoxColvo.Text);
+                int quantityBarShtulp = Int32.Parse(TextBoxColvo.Text);
                 string System = ComboBoxSystem.Text;
                 string side = ComboBoxSide.Text;
                 int FFH = Int32.Parse(TextBoxFFH.Text);
@@ -216,6 +219,7 @@ namespace MacoApp
                 quantityBar = sqlRequests.Que(rotation, framuga, Furn, FFH, FFB); //Вытаскиваем из класса количество ответных планок
                 quantitySrPr = sqlRequests.QueSrPr(rotation, Furn, FFH); //Количество средних прижимов на поворотной створке
                 quantityShtulp = sqlRequests.QueShtup(shtulp, Furn, FFH, shtulpTreeArg);  //Количество штульповых ответных планок 
+                quantityBarShtulp = sqlRequests.QueShtupOtvet(shtulp, Furn, FFH);  //Количество обычных ответных планок в штульповом окне
 
                 using (var connection = new SqliteConnection("Data Source=Furnapp.db"))
                 {
@@ -231,10 +235,14 @@ namespace MacoApp
                             while (reader.Read())   // построчно считываем данные
                             {
                                 count++;
-                                //Записываем данные в объект класса и ,тем самым, передаём в таблицу
-                                if (response_bars.Contains(reader.GetValue(3).ToString()))
+                                //Записываем данные в объект класса и ,тем самым, передаём в таблицу 
+                                if (shtulp != "Да" && response_bars.Contains(reader.GetValue(3).ToString()))
                                 {
                                     collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantityBar });
+                                }
+                                else if (shtulp == "Да" && response_bars.Contains(reader.GetValue(3).ToString()))
+                                {
+                                    collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * quantityBarShtulp });
                                 }
                                 else if (SrPr.Contains(reader.GetValue(3).ToString()))
                                 {
@@ -290,6 +298,7 @@ namespace MacoApp
                 int quantity = Int32.Parse(TextBoxColvo.Text);
                 int quantitySrPr = Int32.Parse(TextBoxColvo.Text);
                 int quantityShtulp = Int32.Parse(TextBoxColvo.Text);
+                int quantityBarShtulp = Int32.Parse(TextBoxColvo.Text);
                 string System = ComboBoxSystem.Text;
                 string side = ComboBoxSide.Text;
                 int FFH = Int32.Parse(TextBoxFFH.Text);
@@ -297,6 +306,7 @@ namespace MacoApp
                 string Lower_loop = ComboBoxLL.Text;
                 string Micro_ventilation = ComboBoxMv.Text;
                 string color = ComboBoxColor.Text;
+                
 
                 if (ComboBoxSystem.Text == "Дерево")
                 {
@@ -315,6 +325,7 @@ namespace MacoApp
                 quantityBar = sqlRequests.Que(rotation, framuga, Furn, FFH, FFB); //Вытаскиваем из класса количество ответных планок               
                 quantitySrPr = sqlRequests.QueSrPr(rotation, Furn, FFH); //Количество средних прижимов на поворотной створке
                 quantityShtulp = sqlRequests.QueShtup(shtulp, Furn, FFH, shtulpTreeArg);  //Количество штульповых ответных планок 
+                quantityBarShtulp = sqlRequests.QueShtupOtvet(shtulp, Furn, FFH);  //Количество обычных ответных планок в штульповом окне
 
                 using (var connection = new SqliteConnection("Data Source=Furnapp.db"))
                 {
@@ -333,9 +344,13 @@ namespace MacoApp
                             {
                                 count++;
                                 //Записываем данные в объект класса и ,тем самым, передаём в таблицу
-                                if (response_bars.Contains(reader.GetValue(3).ToString()))
+                                if (shtulp != "Да" && response_bars.Contains(reader.GetValue(3).ToString()))
                                 {
                                     table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * quantityBar);
+                                }
+                                else if (shtulp == "Да" && response_bars.Contains(reader.GetValue(3).ToString()))
+                                {
+                                    table1.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * quantityBarShtulp);
                                 }
                                 else if (ListStulpOtv.Contains(reader.GetValue(3).ToString()))
                                 {

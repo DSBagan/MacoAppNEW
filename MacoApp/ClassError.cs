@@ -43,7 +43,7 @@ namespace MacoApp
                     return 0;
                 }
             }
-            else if (Furn == "Maco_Eco" && framuga=="Да")
+            else if (Furn == "Maco_Eco" && framuga == "Да")
             {
                 if (FFH < 601)
                 {
@@ -59,13 +59,13 @@ namespace MacoApp
                 {
                     MaterialMessageBox.ShowDialog("Укажите корректное количество комплектов");
                     return 1;
-                }          
+                }
                 else
                 {
                     return 0;
                 }
             }
-            else if (Furn == "Maco_MM" && rotation == "Нет" && framuga == "Нет" && shtulp =="Нет")
+            else if (Furn == "Maco_MM" && rotation == "Нет" && framuga == "Нет" && shtulp == "Нет")
             {
                 if (FFH < 470)
                 {
@@ -163,16 +163,16 @@ namespace MacoApp
                     return 0;
                 }
             }
-            else if (Furn == "Maco_MM" && shtulp == "Да" && shtulpTreeArg=="Запор")
+            else if (Furn == "Maco_MM" && shtulp == "Да" && shtulpTreeArg == "Запор")
             {
                 if (FFH < 840)
                 {
                     MaterialMessageBox.ShowDialog("Высота штульпового окна с запором не может быть менее 840 мм");
                     return 1;
                 }
-                else if (FFH > 2400)
+                else if (FFH > 2250)
                 {
-                    MaterialMessageBox.ShowDialog("Высота штульпового окна с запором не может быть более 1750 мм");
+                    MaterialMessageBox.ShowDialog("Высота штульпового окна с запором не может быть более 2250 мм");
                     return 1;
                 }
                 else if (quantity == 0)
@@ -185,6 +185,40 @@ namespace MacoApp
                     return 0;
                 }
             }
+
+            else if (Furn == "Maco_MM" && shtulp == "Да" && shtulpTreeArg == "Шпингалет")
+            {
+                if (FFH < 470)
+                {
+                    MaterialMessageBox.ShowDialog("Высота не может быть менее 470 мм");
+                    return 1;
+                }
+                else if (FFB < 320)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина не может быть менее 320 мм");
+                    return 1;
+                }
+                else if (FFH > 2350)
+                {
+                    MaterialMessageBox.ShowDialog("Высота не может быть более 2250 мм");
+                    return 1;
+                }
+                else if (FFB > 1300)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина не может быть более 1300 мм");
+                    return 1;
+                }
+                else if (quantity == 0)
+                {
+                    MaterialMessageBox.ShowDialog("Укажите корректное количество комплектов");
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+
 
             else if (Furn == "Vorne" && rotation == "Нет" && framuga == "Нет")
             {
@@ -372,7 +406,7 @@ namespace MacoApp
                     return 0;
                 }
             }
-            else if ((Furn == "Roto_NT" || Furn == "Roto_NX")  && rotation == "Да")
+            else if ((Furn == "Roto_NT" || Furn == "Roto_NX") && rotation == "Да")
             {
                 if (FFH < 251)
                 {

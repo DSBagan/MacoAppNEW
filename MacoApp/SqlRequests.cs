@@ -1,4 +1,6 @@
 ﻿
+using System.Windows.Media.Imaging;
+
 namespace MacoApp
 {
     internal class SqlRequests
@@ -299,8 +301,6 @@ namespace MacoApp
                 {
                     return quantityBar = 4;
                 }
-
-                //Штульповое окно
 
 
                 else
@@ -850,6 +850,120 @@ namespace MacoApp
                     return 0;
                 }
             }*/
+            else
+                return 0;
+        }
+
+        // Штульповые ответные планки
+        public int QueShtupOtvet(string sthulp, string Furn, int FFH)
+        {
+            if (Furn == "Maco_MM" && sthulp == "Да")
+            {
+                if (FFH >= 470 && FFH <= 800 && FFB <= 600)
+                {
+                    return quantityBar = 1;
+                }
+                else if (FFH >= 470 && FFH <= 800 && FFB >= 601 && FFB <= 800)
+                {
+                    return quantityBar = 2;
+                }
+                else if (FFH >= 470 && FFH <= 800 && FFB >= 801)
+                {
+                    return quantityBar = 3;
+                }
+                //**********************
+                else if (FFH >= 801 && FFH <= 1250 && FFB <= 600)
+                {
+                    return quantityBar = 2;
+                }
+                else if (FFH >= 801 && FFH <= 1250 && FFB >= 601 && FFB <= 800)
+                {
+                    return quantityBar = 3;
+                }
+                else if (FFH >= 801 && FFH <= 1250 && FFB >= 801)
+                {
+                    return quantityBar = 4;
+                }
+
+                //*********************
+
+                else if (FFH >= 1251 && FFH <= 1350 && FFB <= 600)
+                {
+                    return quantityBar = 3;
+                }
+                else if (FFH >= 1251 && FFH <= 1350 && FFB >= 601 && FFB <= 800)
+                {
+                    return quantityBar = 4;
+                }
+                else if (FFH >= 1251 && FFH <= 1350 && FFB >= 801)
+                {
+                    return quantityBar = 5;
+                }
+
+                //*********************
+
+                else if (FFH >= 1351 && FFH <= 1500 && FFB <= 600)
+                {
+                    return quantityBar = 3;
+                }
+                else if (FFH >= 1351 && FFH <= 1500 && FFB >= 601 && FFB <= 800)
+                {
+                    return quantityBar = 4;
+                }
+                else if (FFH >= 1351 && FFH <= 1500 && FFB >= 801)
+                {
+                    return quantityBar = 5;
+                }
+
+                //*********************
+
+                else if (FFH >= 1501 && FFH <= 1750 && FFB <= 600)
+                {
+                    return quantityBar = 4;
+                }
+                else if (FFH >= 1501 && FFH <= 1750 && FFB >= 601 && FFB <= 800)
+                {
+                    return quantityBar = 5;
+                }
+                else if (FFH >= 1501 && FFH <= 1750 && FFB >= 801)
+                {
+                    return quantityBar = 6;
+                }
+
+                //*********************
+
+                else if (FFH >= 1751 && FFH <= 2000 && FFB <= 600)
+                {
+                    return quantityBar = 5;
+                }
+                else if (FFH >= 1751 && FFH <= 2000 && FFB >= 601 && FFB <= 800)
+                {
+                    return quantityBar = 6;
+                }
+                else if (FFH >= 1751 && FFH <= 2000 && FFB >= 801)
+                {
+                    return quantityBar = 7;
+                }
+
+                //*********************
+
+                else if (FFH >= 2001 && FFH <= 2250 && FFB <= 600)
+                {
+                    return quantityBar = 5;
+                }
+                else if (FFH >= 2001 && FFH <= 2250 && FFB >= 601 && FFB <= 800)
+                {
+                    return quantityBar = 6;
+                }
+                else if (FFH >= 2001 && FFH <= 2250 && FFB >= 801)
+                {
+                    return quantityBar = 7;
+                }
+                else
+                    return 0;
+            }
+            /*else if (sthulp == "Да" && Furn == "Vorne" || Furn == "Akpen"))*/
+
             else
                 return 0;
         }
