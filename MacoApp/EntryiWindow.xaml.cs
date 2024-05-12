@@ -35,6 +35,9 @@ namespace MacoApp
         //Путь к БД
         static string path2 = new FileInfo(Assembly.GetEntryAssembly().Location).Directory.ToString();
 
+
+        static string path = new FileInfo(Assembly.GetEntryAssembly().Location).Directory.ToString() + "\\Furnapp.db";
+
         //Создаем коллекцию лого
         private ObservableCollection<BitmapImage> backgroundsLogo = new ObservableCollection<BitmapImage>();
         Uri uri;
@@ -68,7 +71,7 @@ namespace MacoApp
             }
             //UpgradeBD();
 
-            CopyBD();
+            //CopyBD();
 
             InitTasks(); //Запуск метода удаления старых версий после обновления
         }
@@ -86,7 +89,7 @@ namespace MacoApp
                 
             }
 
-            /*try
+            try
             {
                 // Проверка доступности хотя бы одного известного хоста
                 Ping ping = new Ping();
@@ -113,7 +116,7 @@ namespace MacoApp
 
                     //Качаем БД с Google Drive
                     WebClient webClient = new WebClient();
-                    //webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1RWDh48ytWHdHpTKdiSyFl6YR8cwd4mAf", path);
+                    //webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1MVBa4uUbJJMcvW2ppCgv5stw7JHuk5Da", path);
                     webClient.Dispose();
                 }
                 else 
@@ -124,7 +127,7 @@ namespace MacoApp
             catch
             {
                 
-            }*/
+            }
             
             /*ProgressDialogWindow progressDialog = new ProgressDialogWindow();
             progressDialog.Show();
