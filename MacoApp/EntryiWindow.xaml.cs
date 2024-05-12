@@ -69,7 +69,7 @@ namespace MacoApp
                 img.Source = backgroundsLogo[i];
                 stackPanelLogo.Children.Add(img);
             }
-            //UpgradeBD();
+            UpgradeBD();
 
             //CopyBD();
 
@@ -100,23 +100,23 @@ namespace MacoApp
 
                 if ((replyGoogle.Status == IPStatus.Success) || (replyYandex.Status == IPStatus.Success) || (replyMail.Status == IPStatus.Success) || (replyWikipedia.Status == IPStatus.Success))
                 {
-                    string pathBD = @"SaveDB\Furnapp.db";
+                    //string pathBD = @"SaveDB\Furnapp.db";
                     FileInfo fileInf = new FileInfo(path);
                     if (fileInf.Exists)
                     {
                         fileInf.Delete();
-                        File.Copy(pathBD, path2); //Копируем в новую папку БД. чтобы оттуда скопировать в Google Drive
+                        //File.Copy(pathBD, path2); //Копируем в новую папку БД. чтобы оттуда скопировать в Google Drive
                     }
                     else
                     {
-                        File.Copy(pathBD, path2); //Копируем в новую папку БД. чтобы оттуда скопировать в Google Drive
+                        //File.Copy(pathBD, path2); //Копируем в новую папку БД. чтобы оттуда скопировать в Google Drive
                     }
 
                     //CopyBD();
 
                     //Качаем БД с Google Drive
                     WebClient webClient = new WebClient();
-                    //webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1MVBa4uUbJJMcvW2ppCgv5stw7JHuk5Da", path);
+                    webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1MVBa4uUbJJMcvW2ppCgv5stw7JHuk5Da", path);
                     webClient.Dispose();
                 }
                 else 
