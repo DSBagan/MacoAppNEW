@@ -168,12 +168,10 @@ namespace MacoApp
             shtulp = "Нет";
             shtulpTwoArg = "Да/Нет";
             shtulpTreeArg = "";
-
         }
 
         private void ButtonCalc_Click(object sender, RoutedEventArgs e)
         {
-
             TBSR.Visibility = Visibility.Visible;
             TBShablonRama.Visibility = Visibility.Visible;
             TBSS.Visibility = Visibility.Visible;
@@ -606,7 +604,7 @@ namespace MacoApp
                 try
                 {
                     // Проверяем есть диск X b папка aTBMFURN, если нет- создаем
-                    Directory.CreateDirectory(@"C:\aTBMFURN\");
+                    Directory.CreateDirectory(@"X:\aTBMFURN\");
                 }
                 catch (System.Exception)
                 {
@@ -638,7 +636,7 @@ namespace MacoApp
                         Code.Text = "0" + Code.Text;
                     }
                 }
-                using (StreamWriter streamWriter = new StreamWriter(@"C:\aTBMFURN\" + "Z" + Code.Text + " " + date + ".txt", false, Encoding.Default))
+                using (StreamWriter streamWriter = new StreamWriter(@"X:\aTBMFURN\" + "Z" + Code.Text + " " + date + ".txt", false, Encoding.Default))
                 {
                     streamWriter.WriteLine("                    Шифр фирмы " + Code.Text);
                     streamWriter.WriteLine("                    Фирма 123");
