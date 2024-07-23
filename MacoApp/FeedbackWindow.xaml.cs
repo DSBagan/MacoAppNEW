@@ -40,7 +40,7 @@ namespace TBMFurn
             try
             {
                 MailMessage mail = new MailMessage();
-                System.Net.Mail.SmtpClient SmtpServer = new System.Net.Mail.SmtpClient("smtp.yandex.ru");
+                System.Net.Mail.SmtpClient SmtpServer = new System.Net.Mail.SmtpClient("smtp.relay.tbm.ru");
 
                 mail.From = new MailAddress(fromEmail);
                 mail.To.Add(toEmail);
