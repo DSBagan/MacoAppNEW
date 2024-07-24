@@ -4,6 +4,11 @@ using System.Net.Mime;
 using System.Windows;
 using System.Net;
 using Microsoft.Win32;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.IO;
+using Telegram.Bot;
+using Telegram.Bot.Types.InputFiles;
 
 namespace TBMFurn
 {
@@ -12,71 +17,52 @@ namespace TBMFurn
     /// </summary>
     public partial class FeedbackWindow : Window
     {
-        string Email = "furntbm@yandex.ru";
-        string Password = "gjmogbttlewbjtew";
-        string ToEmail = "furntbm@yandex.ru";
-        string ThemeMessage;
-        string BodyMessage;
-        string Name;
-
         string filePath;
+
+        private readonly TelegramBotClient _botClient;
+        private const string BotToken = "7143209516:AAGQUKwXPZeDZOdrcg1eii6xnQvGITdePqM";
+        private const long ChatId = 1145674047;
+
 
         public FeedbackWindow()
         {
             InitializeComponent();
+            _botClient = new TelegramBotClient(BotToken);
         }
         
         //Вводные данные и вызов метода с отправкой письма
         private async void ButtonSendEmail_Click(object sender, RoutedEventArgs e)
         {
-            ThemeMessage = TextBoxTheme.Text;
-            BodyMessage = TextBoxMessage.Text;
-            Name = TextBoxName.Text;
-            ButtonSend(Name, Email, Password, ToEmail, ThemeMessage, BodyMessage, filePath);
-        }
 
-        private void ButtonSend(string Name, string fromEmail, string password, string toEmail, string subject, string body, string attachmentFilePath)
-        {
+            var message = TextBoxMessage.Text;
+            var photoPath = filePath;
             try
             {
-                MailMessage mail = new MailMessage();
-                System.Net.Mail.SmtpClient SmtpServer = new System.Net.Mail.SmtpClient("smtp.relay.tbm.ru");
-
-                mail.From = new MailAddress(fromEmail);
-                mail.To.Add(toEmail);
-                mail.Subject = Name + ": " + subject;
-                mail.Body = body;
-                if (attachmentFilePath != null)
+                if (!string.IsNullOrWhiteSpace(message)) // Отправляем текст боту
                 {
-                    Attachment attachment = new Attachment(attachmentFilePath, MediaTypeNames.Application.Octet);
-                    mail.Attachments.Add(attachment);
-                }
-                else
-                {
-                    TextBlockPath.Text = "Без вложения";
+                    await _botClient.SendTextMessageAsync(ChatId, message);
                 }
 
-                SmtpServer.Port = 465;
-                SmtpServer.Credentials = new NetworkCredential(fromEmail, password);
-                SmtpServer.EnableSsl = true;
-
-                SmtpServer.Send(mail);
-                MessageBox.Show("Сообщение отправлено.");
-                TextBlockPath.Text = "";
+                if (!string.IsNullOrWhiteSpace(photoPath) && File.Exists(photoPath))  // отправляем фото боту
+                {
+                    using (var stream = new FileStream(photoPath, FileMode.Open, FileAccess.Read))
+                    {
+                        var inputFile = new InputOnlineFile(stream, Path.GetFileName(photoPath));
+                        await _botClient.SendPhotoAsync(ChatId, inputFile, "");
+                    }
+                }
+                MessageBox.Show("Сообщение отправлено, возможно когда-нибудь я обращу на него внимание");
                 TextBoxMessage.Text = "";
-                TextBoxName.Text = "";
-                TextBoxTheme.Text = "";
-
+                TextBlockPath.Text = "";
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                MessageBox.Show("Сообщение не отправлено, какая-то ошибка: " + ex.Message);
-                TextBoxMessage.Text = "" + ex.Message;
+                MessageBox.Show("Сообщение НЕ отправлено, произошла какая-то неприятность");
+                throw;
             }
+            
+
         }
-
-        
-
 
         //Подгружаем фото или файл к сообщению
         private void LoadButton_Click(object sender, RoutedEventArgs e)

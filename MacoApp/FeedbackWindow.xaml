@@ -24,13 +24,9 @@
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
-        <TextBox x:Name="TextBoxName" VerticalAlignment="Center" materialDesign:HintAssist.Hint="Ваш E-mail (Если хотите получить обратную связь)"
-                 Style="{StaticResource MaterialDesignFloatingHintTextBox}" Grid.ColumnSpan="4" Grid.Column="1" />
-        <TextBox x:Name="TextBoxTheme" VerticalAlignment="Top" materialDesign:HintAssist.Hint="Тема сообщения"
-                 Style="{StaticResource MaterialDesignFloatingHintTextBox}" Grid.ColumnSpan="4" Grid.Column="1" Grid.Row="1" />
-        <TextBox x:Name="TextBoxMessage" VerticalAlignment="Center" materialDesign:HintAssist.Hint="Ваше Сообщение (Если нашли ошибку/неточность и тп. приложите к сообщению скрин)"
+        <TextBox x:Name="TextBoxMessage" VerticalAlignment="Center" materialDesign:HintAssist.Hint="Опишите проблему/предложение, приложите скрин в конце концов"
          Style="{StaticResource MaterialDesignFloatingHintTextBox}" Grid.ColumnSpan="4" Grid.Column="1" Grid.RowSpan="5" 
-                 TextWrapping="Wrap"/>
+                 TextWrapping="Wrap" FontSize="16"/>
         <Button Content="Прикрепить файл" Click="LoadButton_Click" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="4" Grid.Column="1" Height="25"
                 Style="{StaticResource MaterialDesignPaperLightButton}" Padding="10,0,10,4" HorizontalContentAlignment="Left" FontSize="12"/>
         <Button x:Name="ButtonSendEmail" Content="Отправить" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="4" Height="25"
@@ -41,10 +37,7 @@
         <TextBlock x:Name="TextBlockPath" TextWrapping="Wrap" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="3" VerticalAlignment="Bottom" Margin="0,0,0,5"/>
         <materialDesign:PackIcon Kind="EmailFastOutline" Grid.Row="9" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0" />
         <materialDesign:PackIcon Kind="Paperclip" Grid.Row="4" HorizontalAlignment="Right" Margin="0,0,5,5" VerticalAlignment="Bottom" />
-        <materialDesign:PackIcon Kind="At" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0" />
         <materialDesign:PackIcon Kind="MessageReplyOutline" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="2" Margin="0,0,5,0" />
-        <materialDesign:PackIcon Kind="CardTextOutline" Grid.Row="1" HorizontalAlignment="Right" Margin="0,5,5,0" />
-        <TextBlock Grid.Column="1" HorizontalAlignment="Left" Grid.Row="1" TextWrapping="Wrap" Text="Пока не работает" VerticalAlignment="Top" Height="73" Width="400" Grid.ColumnSpan="4" Margin="61,5,0,0" Grid.RowSpan="2" FontSize="48" Foreground="#FFBB0A0A"/>
 
     </Grid>
 </Window>
