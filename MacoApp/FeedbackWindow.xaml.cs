@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.IO;
 using Telegram.Bot;
 using Telegram.Bot.Types.InputFiles;
+using MaterialDesignMessageBox;
 
 namespace TBMFurn
 {
@@ -51,13 +52,13 @@ namespace TBMFurn
                         await _botClient.SendPhotoAsync(ChatId, inputFile, "");
                     }
                 }
-                MessageBox.Show("Сообщение отправлено, возможно когда-нибудь я обращу на него внимание");
+                MaterialMessageBox.ShowDialog("Сообщение отправлено. Возможно когда-нибудь я обращу на него внимание.");
                 TextBoxMessage.Text = "";
                 TextBlockPath.Text = "";
             }
             catch (Exception)
             {
-                MessageBox.Show("Сообщение НЕ отправлено, произошла какая-то неприятность");
+                MaterialMessageBox.ShowDialog("Сообщение НЕ отправлено, произошла какая-то неприятная ошибка.");
                 throw;
             }
             
