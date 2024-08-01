@@ -85,8 +85,7 @@ namespace MacoApp
                 {
                     // Удаление папки c сохраненными расчетами и всех ее подпапок и файлов
                     File.Delete(file);
-                }
-                
+                } 
             }
 
             try
@@ -398,6 +397,9 @@ namespace MacoApp
             });
         }
 
+
+
+
         private void ButtonEditor_Click(object sender, RoutedEventArgs e)
         {
             WindowPassword windowPassword = new WindowPassword();
@@ -435,6 +437,13 @@ namespace MacoApp
         {
             WindowAntipanic windowAntipanic = new WindowAntipanic();
             windowAntipanic.Show();
+            this.Close();
+        }
+
+        private void ButtonPortalCalculation_Click(object sender, RoutedEventArgs e)
+        {
+            PortalWindow portalWindow = new PortalWindow();
+            portalWindow.Show();
             this.Close();
         }
     }

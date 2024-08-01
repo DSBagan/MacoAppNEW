@@ -1,12 +1,145 @@
-﻿<Window x:Class="TBMFurn.PortalWindow"
+﻿<Window WindowStartupLocation="CenterScreen"
+        x:Class="TBMFurn.PortalWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TBMFurn"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="PortalWindow" Height="450" Width="800">
+        Title="Портальные системы ПВХ" Height="450" Width="800">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+
+        <DataGrid x:Name="GridList"  Grid.Column="4" Margin="10,10,10,0" 
+            Grid.RowSpan="13" Grid.ColumnSpan="7"
+            FontSize="12" FontWeight="Bold" Foreground="#FF0D042B"
+          materialDesign:DataGridAssist.CellPadding="40 2 2 2" 
+          materialDesign:DataGridAssist.ColumnHeaderPadding="40 2 2 2" Grid.Row="1">
+
+            <DataGrid.Background>
+                <ImageBrush ImageSource="/MacoFon.png"/>
+            </DataGrid.Background>
+        </DataGrid>
+
+        <Label Grid.RowSpan="6" Grid.ColumnSpan="3" Margin="30,10,30,10" Grid.Column="1" Grid.Row="0">
+            <Label.Background>
+                <ImageBrush ImageSource="/images/PortalRama.png"/>
+            </Label.Background>
+        </Label>
+
+        <Label x:Name="LabelStvorka" Grid.RowSpan="6" Grid.ColumnSpan="3" Margin="90,10,90,10" Grid.Column="1" Grid.Row="0">
+            <Label.Background>
+                <ImageBrush ImageSource="/images/PortalStvorka.png"/>
+            </Label.Background>
+        </Label>
+
+        <Button x:Name="ButtonExit" Grid.Row="14" Grid.Column="9"
+                Style="{StaticResource MaterialDesignPaperLightButton}" Click="ButtonExit_Click"
+                ToolTip="Нажми, чтобы выйти в меню выбора" Padding="0,0,0,4" ScrollViewer.CanContentScroll="True" Grid.ColumnSpan="2" Margin="20,0,20,5" Grid.RowSpan="2">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="ExitToApp" Margin="0,0,10,0" HorizontalAlignment="Center" VerticalAlignment="Center" FlowDirection="RightToLeft" />
+                <TextBlock Text="Назад"/>
+            </StackPanel>
+        </Button>
+        <Button x:Name="ButtonLeft" Grid.Row="6" Grid.Column="1" Click="ButtonLeft_Click"
+                IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                Style="{StaticResource MaterialDesignPaperLightButton}" VerticalAlignment="Top" Padding="0,0,0,0" Grid.RowSpan="2" Height="18" Grid.ColumnSpan="2" Width="100" HorizontalAlignment="Left">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+                <materialDesign:PackIcon Kind="ArrowLeftBold" Foreground="#DDD66200" />
+                <TextBlock Margin="10,0,0,0" Height="22" HorizontalAlignment="Center" VerticalAlignment="Center">Влево</TextBlock>
+            </StackPanel>
+        </Button>
+        <Button x:Name="ButtonRight" Grid.Row="6" Grid.Column="2" Click="ButtonRight_Click"
+                IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                Style="{StaticResource MaterialDesignPaperLightButton}" VerticalAlignment="Top" Padding="0,0,0,0" Grid.RowSpan="2" Height="18" Grid.ColumnSpan="2" HorizontalAlignment="Right" Width="100">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+                <TextBlock Height="22" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,10,0">Вправо</TextBlock>
+                <materialDesign:PackIcon Kind="ArrowRightBold" Foreground="#DDD66200"/>
+            </StackPanel>
+        </Button>
         
+        <TextBlock x:Name="TextBlockCode" Text="Шифр" Grid.Row="7" Grid.Column="1" HorizontalAlignment="Left" FontSize="14" VerticalAlignment="Center"/>
+        <TextBox x:Name="TextBoxCode" Grid.Row="7" Grid.Column="3" HorizontalAlignment="Right" Width="80" FontSize="13" HorizontalContentAlignment="Right"/>
+        
+        <TextBlock x:Name="TextBlockFurn" Text="Фурнитура" Grid.Row="8" Grid.Column="1" HorizontalAlignment="Left" FontSize="14" VerticalAlignment="Center"/>
+        <ComboBox x:Name="ComboBoxFurn" Grid.Row="8" FontSize="14" HorizontalAlignment="Right" Grid.Column="2" Grid.ColumnSpan="2" VerticalAlignment="Center">
+            <ComboBoxItem IsSelected="True" Content="Maco_Eco"/>
+            <ComboBoxItem Content="Maco_MM"/>
+            <ComboBoxItem Content="Vorne"/>
+            <ComboBoxItem Content="Roto_NT"/>
+            <ComboBoxItem Content="Roto_NX"/>
+            <ComboBoxItem Content="Internika"/>
+            <ComboBoxItem Content="Akpen"/>
+        </ComboBox>
+
+        <TextBlock Text="Ширина" VerticalAlignment="Center" Grid.Row="9" Grid.Column="1" FontSize="14"/>
+        <TextBox x:Name="TextBoxFFB" Width="60" Grid.Row="9" Grid.Column="3" HorizontalAlignment="Right" FontSize="13" HorizontalContentAlignment="Right"/>
+
+        <TextBlock Text="Высота" VerticalAlignment="Center" Grid.Row="10" Grid.Column="1" FontSize="14"/>
+        <TextBox x:Name="TextBoxFFH" Width="60" Grid.Row="10" Grid.Column="3" FontSize="13" HorizontalAlignment="Right" HorizontalContentAlignment="Right"/>
+        
+        <TextBlock x:Name="TextBlockProfile" Text="Профиль" Grid.Row="11" Grid.Column="1" HorizontalAlignment="Left" FontSize="14" VerticalAlignment="Center"/>
+        <ComboBox x:Name="ComboBoxProfile" Grid.Row="11" FontSize="14" HorizontalAlignment="Right" Grid.Column="2" Grid.ColumnSpan="2" VerticalAlignment="Center">
+            <ComboBoxItem IsSelected="True" Content="Veka"/>
+            <ComboBoxItem Content="KBE AD70"/>
+        </ComboBox>
+
+        <TextBlock x:Name="TextBlockColor" Text="Цвет" Grid.Row="12" Grid.Column="1" HorizontalAlignment="Left" FontSize="14" VerticalAlignment="Center"/>
+        <Button x:Name="ButtonColor" Content="Q" Grid.Row="12" Grid.Column="2" Width="20" Height="20"/>
+        <ComboBox x:Name="ComboBoxColor" Grid.Row="12" FontSize="14" HorizontalAlignment="Right" Grid.Column="2" Grid.ColumnSpan="2" VerticalAlignment="Center"
+                  SelectionChanged="ComboBoxColor_SelectionChanged">
+            <ComboBoxItem IsSelected="True" Content="Белый"/>
+            <ComboBoxItem Content="Коричневый"/>
+            <ComboBoxItem Content="Бронза"/>
+            <ComboBoxItem Content="Серебро"/>
+        </ComboBox>
+        <Button x:Name="ButtonCalculation" Content="Рассчитать" Grid.Row="14" Grid.Column="1" Grid.ColumnSpan="3"
+                IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                Style="{StaticResource MaterialDesignPaperLightButton}" Padding="0,0,0,0" VerticalAlignment="Center" Grid.RowSpan="2"/>
+        <Button x:Name="ButtonSaveCalc" Grid.Row="14" Grid.Column="5" Grid.ColumnSpan="3"
+        IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+        Style="{StaticResource MaterialDesignPaperLightButton}" Padding="0,0,0,0" VerticalAlignment="Center" Grid.RowSpan="2">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="TextBoxMultipleOutline" />
+                <TextBlock Text="Сохранить в .txt" Margin="10,0,0,2"/>
+            </StackPanel>
+        </Button>
+        <TextBlock x:Name="TextBlockFeedback" Grid.Column="4" HorizontalAlignment="Right" FontSize="12" FontWeight="DemiBold" Foreground="#FF002D24" Margin="0,10,45,0" VerticalAlignment="Top" Grid.ColumnSpan="7" Grid.RowSpan="2"/>
+        <Button x:Name="ButtonFeedback" IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"
+        Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
+        ToolTip="MaterialDesignFloatingActionMiniLightButton" Background="#FFEDD7AF" Grid.Column="10" Grid.RowSpan="2" Width="30" Height="30" HorizontalAlignment="Right" Margin="0,5,5,0" VerticalAlignment="Top" Click="ButtonFeedback_Click">
+            <materialDesign:PackIcon Kind="EmailOpenOutline" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Button>
     </Grid>
 </Window>

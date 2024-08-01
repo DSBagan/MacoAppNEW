@@ -41,6 +41,23 @@
                     </TextBlock>
                 </StackPanel>
             </Button>
+
+            <Button x:Name="ButtonPortalCalculation" Grid.Row="1" Cursor="Hand"
+        IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+        Style="{StaticResource MaterialDesignPaperLightButton}" Grid.Column="0" FontSize="16" Grid.ColumnSpan="3" VerticalAlignment="Center" Padding="5,0,5,0" HorizontalAlignment="Center" Margin="0,0,10,0" Click="ButtonPortalCalculation_Click" Height="150" Width="110">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Label Height="80" Width="70">
+                        <Label.Background>
+                            <ImageBrush ImageSource="/images/Portal.png"/>
+                        </Label.Background>
+                    </Label>
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Портальные</TextBlock>
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">системы ПВХ</TextBlock>
+                </StackPanel>
+            </Button>
+
+
+
             <Button x:Name="ButtonBoxCalculation" Grid.Row="2" Cursor="Hand"
                     IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"
                     Style="{StaticResource MaterialDesignPaperLightButton}" Grid.Column="0" VerticalAlignment="Center" 

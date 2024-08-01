@@ -38,6 +38,9 @@
     <None Remove="images\MacoFonMM.png" />
     <None Remove="images\Newline.png" />
     <None Remove="images\PL.PNG" />
+    <None Remove="images\Portal.png" />
+    <None Remove="images\PortalRama.png" />
+    <None Remove="images\PortalStvorka.png" />
     <None Remove="images\PP.PNG" />
     <None Remove="images\P_OL.PNG" />
     <None Remove="images\P_OP.PNG" />
@@ -81,6 +84,8 @@
     <None Remove="maco.png" />
     <None Remove="MacoFon.png" />
     <None Remove="PO.PNG" />
+    <None Remove="PortalRama.png" />
+    <None Remove="PortalStvorka.png" />
     <None Remove="PP.PNG" />
     <None Remove="P_O.png" />
     <None Remove="P_OP.PNG" />
@@ -152,6 +157,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\PL.PNG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\Portal.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\PortalRama.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\PortalStvorka.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\PP.PNG">
