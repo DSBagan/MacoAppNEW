@@ -5,8 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MacoApp" 
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
+        
         mc:Ignorable="d"
         Title="" Height="500" Width="800">
+
+
+  
 
     <Grid Effect="{DynamicResource MaterialDesignElevationShadow16}">
         <Grid.ColumnDefinitions>
@@ -23,6 +28,11 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
+        <tb:TaskbarIcon x:Name="MyNotifyIcon"
+                    Visibility="Visible"
+                    IconSource="/Images/Trayicon.ico"
+                    MenuActivation="LeftOrRightClick"/>
+        
         <StackPanel Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Center">
             <Button x:Name="ButtonCalculation" Grid.Row="1" Click="ButtonCalculation_Click" Cursor="Hand"
                     IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"

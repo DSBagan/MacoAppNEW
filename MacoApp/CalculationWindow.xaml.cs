@@ -1256,8 +1256,8 @@ namespace MacoApp
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
             
-            EntryiWindow entryiWindow = new EntryiWindow();
-            entryiWindow.Show();
+            /*EntryiWindow entryiWindow = new EntryiWindow();
+            entryiWindow.Show();*/
             this.Close();
         }
         private void ButtonFeedback_Click(object sender, RoutedEventArgs e)

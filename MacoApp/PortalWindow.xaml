@@ -90,24 +90,23 @@
         </Button>
         
         <TextBlock x:Name="TextBlockCode" Text="Шифр" Grid.Row="7" Grid.Column="1" HorizontalAlignment="Left" FontSize="14" VerticalAlignment="Center"/>
-        <TextBox x:Name="TextBoxCode" Grid.Row="7" Grid.Column="3" HorizontalAlignment="Right" Width="80" FontSize="13" HorizontalContentAlignment="Right"/>
+        <TextBox x:Name="TextBoxCode" Grid.Row="7" Grid.Column="3" HorizontalAlignment="Right" Width="80" FontSize="13" HorizontalContentAlignment="Right"
+                 PreviewTextInput="TextBox_PreviewTextInput" PreviewKeyDown="TextBox_PreviewKeyDown"/>
         
         <TextBlock x:Name="TextBlockFurn" Text="Фурнитура" Grid.Row="8" Grid.Column="1" HorizontalAlignment="Left" FontSize="14" VerticalAlignment="Center"/>
         <ComboBox x:Name="ComboBoxFurn" Grid.Row="8" FontSize="14" HorizontalAlignment="Right" Grid.Column="2" Grid.ColumnSpan="2" VerticalAlignment="Center">
-            <ComboBoxItem IsSelected="True" Content="Maco_Eco"/>
-            <ComboBoxItem Content="Maco_MM"/>
+            <ComboBoxItem IsSelected="True" Content="Maco SKB"/>
             <ComboBoxItem Content="Vorne"/>
-            <ComboBoxItem Content="Roto_NT"/>
-            <ComboBoxItem Content="Roto_NX"/>
-            <ComboBoxItem Content="Internika"/>
-            <ComboBoxItem Content="Akpen"/>
+            <ComboBoxItem Content="Roto Alversa"/>
         </ComboBox>
 
         <TextBlock Text="Ширина" VerticalAlignment="Center" Grid.Row="9" Grid.Column="1" FontSize="14"/>
-        <TextBox x:Name="TextBoxFFB" Width="60" Grid.Row="9" Grid.Column="3" HorizontalAlignment="Right" FontSize="13" HorizontalContentAlignment="Right"/>
+        <TextBox x:Name="TextBoxFFB" Width="60" Grid.Row="9" Grid.Column="3" HorizontalAlignment="Right" FontSize="13" HorizontalContentAlignment="Right"
+                 PreviewTextInput="TextBox_PreviewTextInput" PreviewKeyDown="TextBox_PreviewKeyDown"/>
 
         <TextBlock Text="Высота" VerticalAlignment="Center" Grid.Row="10" Grid.Column="1" FontSize="14"/>
-        <TextBox x:Name="TextBoxFFH" Width="60" Grid.Row="10" Grid.Column="3" FontSize="13" HorizontalAlignment="Right" HorizontalContentAlignment="Right"/>
+        <TextBox x:Name="TextBoxFFH" Width="60" Grid.Row="10" Grid.Column="3" FontSize="13" HorizontalAlignment="Right" HorizontalContentAlignment="Right"
+                 PreviewTextInput="TextBox_PreviewTextInput" PreviewKeyDown="TextBox_PreviewKeyDown"/>
         
         <TextBlock x:Name="TextBlockProfile" Text="Профиль" Grid.Row="11" Grid.Column="1" HorizontalAlignment="Left" FontSize="14" VerticalAlignment="Center"/>
         <ComboBox x:Name="ComboBoxProfile" Grid.Row="11" FontSize="14" HorizontalAlignment="Right" Grid.Column="2" Grid.ColumnSpan="2" VerticalAlignment="Center">
@@ -124,9 +123,14 @@
             <ComboBoxItem Content="Бронза"/>
             <ComboBoxItem Content="Серебро"/>
         </ComboBox>
+
+        <TextBlock x:Name="TextBlockColvo" Text="Количество" Grid.Row="13" Grid.Column="1" HorizontalAlignment="Left" FontSize="14" VerticalAlignment="Center"/>
+        <TextBox x:Name="TextBoxColvo" Text="1" PreviewTextInput="TextBox_PreviewTextInput" PreviewKeyDown="TextBox_PreviewKeyDown" Grid.Row="13" 
+                 Width="60" HorizontalAlignment="Right" FontSize="12" VerticalAlignment="Center" Grid.Column="3"/>
+
         <Button x:Name="ButtonCalculation" Content="Рассчитать" Grid.Row="14" Grid.Column="1" Grid.ColumnSpan="3"
                 IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-                Style="{StaticResource MaterialDesignPaperLightButton}" Padding="0,0,0,0" VerticalAlignment="Center" Grid.RowSpan="2"/>
+                Style="{StaticResource MaterialDesignPaperLightButton}" Padding="0,0,0,0" VerticalAlignment="Center" Grid.RowSpan="2" Click="ButtonCalculation_Click"/>
         <Button x:Name="ButtonSaveCalc" Grid.Row="14" Grid.Column="5" Grid.ColumnSpan="3"
         IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
         Style="{StaticResource MaterialDesignPaperLightButton}" Padding="0,0,0,0" VerticalAlignment="Center" Grid.RowSpan="2">

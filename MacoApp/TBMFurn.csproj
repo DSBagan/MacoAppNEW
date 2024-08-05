@@ -49,6 +49,7 @@
     <None Remove="images\RotoFonNX.png" />
     <None Remove="images\Stulp_L.png" />
     <None Remove="images\Stulp_P.png" />
+    <None Remove="images\Trayicon.ico" />
     <None Remove="images\Vorne-logo.png" />
     <None Remove="images\vorneFon.png" />
     <None Remove="images\Антипаника1.png" />
@@ -96,6 +97,30 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="images\Trayicon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <COMReference Include="Microsoft.Vbe.Interop.Forms">
+      <WrapperTool>tlbimp</WrapperTool>
+      <VersionMinor>0</VersionMinor>
+      <VersionMajor>2</VersionMajor>
+      <Guid>0d452ee1-e08f-101a-852e-02608c4d0bb4</Guid>
+      <Lcid>0</Lcid>
+      <Isolated>false</Isolated>
+      <EmbedInteropTypes>true</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="{d37e2a3e-8545-3a39-9f4f-31827c9124ab}">
+      <WrapperTool>tlbimp</WrapperTool>
+      <VersionMinor>0</VersionMinor>
+      <VersionMajor>2</VersionMajor>
+      <Guid>d37e2a3e-8545-3a39-9f4f-31827c9124ab</Guid>
+    </COMReference>
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="favicon.ico" />
   </ItemGroup>
 
@@ -105,6 +130,7 @@
 
   <ItemGroup>
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.57.0.2859" />
+    <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.0.5" />
     <PackageReference Include="MailKit" Version="4.4.0" />
     <PackageReference Include="MaterialDesignColors" Version="2.0.9" />
     <PackageReference Include="MaterialDesignMessageBox" Version="1.0.1" />

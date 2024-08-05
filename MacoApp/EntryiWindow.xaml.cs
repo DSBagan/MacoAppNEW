@@ -5,7 +5,6 @@ using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -26,6 +25,7 @@ using System.Collections.ObjectModel;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System.Net.NetworkInformation;
+using Hardcodet.Wpf.TaskbarNotification;
 
 namespace MacoApp
 {
@@ -35,12 +35,17 @@ namespace MacoApp
         //Путь к БД
         static string path2 = new FileInfo(Assembly.GetEntryAssembly().Location).Directory.ToString();
 
-
         static string path = new FileInfo(Assembly.GetEntryAssembly().Location).Directory.ToString() + "\\Furnapp.db";
 
         //Создаем коллекцию лого
         private ObservableCollection<BitmapImage> backgroundsLogo = new ObservableCollection<BitmapImage>();
         Uri uri;
+
+        private TaskbarIcon _notifyIcon;
+        private PortalWindow _secondWindow1;
+        private WindowAntipanic _secondWindow2;
+        private BoxCalculation _secondWindow3;
+        private CalculationWindow _secondWindow4;
 
         public EntryiWindow()
         {
@@ -56,6 +61,7 @@ namespace MacoApp
 
             Loaded += EntryiWindow_Loaded;
         }
+
 
         private void EntryiWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -97,7 +103,7 @@ namespace MacoApp
                 PingReply replyMail = ping.Send("www.mail.ru", 1000); // Пингуем mail.ru
                 PingReply replyWikipedia = ping.Send("www.wikipedia.org", 1000); // Пингуем wikipedia.org
 
-                if ((replyGoogle.Status == IPStatus.Success) || (replyYandex.Status == IPStatus.Success) || (replyMail.Status == IPStatus.Success) || (replyWikipedia.Status == IPStatus.Success))
+               /* if ((replyGoogle.Status == IPStatus.Success) || (replyYandex.Status == IPStatus.Success) || (replyMail.Status == IPStatus.Success) || (replyWikipedia.Status == IPStatus.Success))
                 {
                     //string pathBD = @"SaveDB\Furnapp.db";
                     FileInfo fileInf = new FileInfo(path);
@@ -121,7 +127,7 @@ namespace MacoApp
                 else 
                 {
                     return;
-                }
+                }*/
             }
             catch
             {
@@ -398,6 +404,13 @@ namespace MacoApp
         }
 
 
+        //Сворачиваем в трей окно входа при выборе одного из калькуляторов
+
+        private void Window_Closed(object sender, System.EventArgs e)
+        {
+            this.Show();
+        }
+
 
 
         private void ButtonEditor_Click(object sender, RoutedEventArgs e)
@@ -409,9 +422,17 @@ namespace MacoApp
 
         private void ButtonCalculation_Click(object sender, RoutedEventArgs e)
         {
-            CalculationWindow calculationWindow = new CalculationWindow();
+            /*CalculationWindow calculationWindow = new CalculationWindow();
             calculationWindow.Show();
-            this.Close();
+            this.Close();*/
+            ShowCalculationWindow();
+        }
+        private void ShowCalculationWindow()
+        {
+            _secondWindow4 = new CalculationWindow();
+            _secondWindow4.Closed += Window_Closed;
+            _secondWindow4.Show();
+            this.Hide();
         }
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
@@ -421,9 +442,17 @@ namespace MacoApp
 
         private void ButtonBoxCalculation_Click(object sender, RoutedEventArgs e)
         {
-            BoxCalculation boxCalculation = new BoxCalculation();
+            /*BoxCalculation boxCalculation = new BoxCalculation();
             boxCalculation.Show();
-            this.Close();
+            this.Close();*/
+            ShowBoxCalculation();
+        }
+        private void ShowBoxCalculation()
+        {
+            _secondWindow3 = new BoxCalculation();
+            _secondWindow3.Closed += Window_Closed;
+            _secondWindow3.Show();
+            this.Hide();
         }
 
         private void ButtonFeedback_Click(object sender, RoutedEventArgs e)
@@ -435,16 +464,33 @@ namespace MacoApp
 
         private void ButtonAntipanic_Click(object sender, RoutedEventArgs e)
         {
-            WindowAntipanic windowAntipanic = new WindowAntipanic();
+            /*WindowAntipanic windowAntipanic = new WindowAntipanic();
             windowAntipanic.Show();
-            this.Close();
+            this.Close();*/
+            ShowWindowAntipanic();
+        }
+        private void ShowWindowAntipanic()
+        {
+            _secondWindow2 = new WindowAntipanic();
+            _secondWindow2.Closed += Window_Closed;
+            _secondWindow2.Show();
+            this.Hide();
         }
 
         private void ButtonPortalCalculation_Click(object sender, RoutedEventArgs e)
         {
-            PortalWindow portalWindow = new PortalWindow();
+            /*PortalWindow portalWindow = new PortalWindow();
             portalWindow.Show();
-            this.Close();
+            this.Close();*/
+            ShowPortalWindow();
         }
+        private void ShowPortalWindow()
+        {
+            _secondWindow1 = new PortalWindow();
+            _secondWindow1.Closed += Window_Closed;
+            _secondWindow1.Show();
+            this.Hide();
+        }
+
     }
 }

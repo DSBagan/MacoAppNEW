@@ -1453,8 +1453,8 @@ namespace TBMFurn
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
-            EntryiWindow entryiWindow = new EntryiWindow();
-            entryiWindow.Show();
+            /*EntryiWindow entryiWindow = new EntryiWindow();
+            entryiWindow.Show();*/
             this.Close();
         }
 
