@@ -6,8 +6,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TBMFurn"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        mc:Ignorable="d"
-        Title="Портальные системы ПВХ" Height="450" Width="800">
+        mc:Ignorable="d" ResizeMode="CanMinimize"
+        Title="Портальные системы ПВХ" Height="500" Width="840">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
@@ -44,8 +44,8 @@
         <DataGrid x:Name="GridList"  Grid.Column="4" Margin="10,10,10,0" 
             Grid.RowSpan="13" Grid.ColumnSpan="7"
             FontSize="12" FontWeight="Bold" Foreground="#FF0D042B"
-          materialDesign:DataGridAssist.CellPadding="40 2 2 2" 
-          materialDesign:DataGridAssist.ColumnHeaderPadding="40 2 2 2" Grid.Row="1">
+          materialDesign:DataGridAssist.CellPadding="10 2 2 2" 
+          materialDesign:DataGridAssist.ColumnHeaderPadding="10 2 2 2" Grid.Row="1">
 
             <DataGrid.Background>
                 <ImageBrush ImageSource="/MacoFon.png"/>
@@ -90,11 +90,26 @@
         </Button>
         
         <TextBlock x:Name="TextBlockCode" Text="Шифр" Grid.Row="7" Grid.Column="1" HorizontalAlignment="Left" FontSize="14" VerticalAlignment="Center"/>
+        <Label x:Name="LabelErrorСode" Grid.ColumnSpan="1" Height="17" Width="30" Grid.Row="7" HorizontalAlignment="Center" Grid.Column="2">
+            <Label.Background>
+                <ImageBrush ImageSource="/images/Стрелка вправо.png"/>
+            </Label.Background>
+        </Label>
+        <Label x:Name="LabelErrorFFB" Grid.ColumnSpan="1" Height="17" Width="30" Grid.Row="9" HorizontalAlignment="Center" Grid.Column="2">
+            <Label.Background>
+                <ImageBrush ImageSource="/images/Стрелка вправо.png"/>
+            </Label.Background>
+        </Label>
+        <Label x:Name="LabelErrorFFH" Grid.ColumnSpan="1" Height="17" Width="30" Grid.Row="10" HorizontalAlignment="Center" Grid.Column="2">
+            <Label.Background>
+                <ImageBrush ImageSource="/images/Стрелка вправо.png"/>
+            </Label.Background>
+        </Label>
         <TextBox x:Name="TextBoxCode" Grid.Row="7" Grid.Column="3" HorizontalAlignment="Right" Width="80" FontSize="13" HorizontalContentAlignment="Right"
                  PreviewTextInput="TextBox_PreviewTextInput" PreviewKeyDown="TextBox_PreviewKeyDown"/>
         
         <TextBlock x:Name="TextBlockFurn" Text="Фурнитура" Grid.Row="8" Grid.Column="1" HorizontalAlignment="Left" FontSize="14" VerticalAlignment="Center"/>
-        <ComboBox x:Name="ComboBoxFurn" Grid.Row="8" FontSize="14" HorizontalAlignment="Right" Grid.Column="2" Grid.ColumnSpan="2" VerticalAlignment="Center">
+        <ComboBox x:Name="ComboBoxFurn" Grid.Row="8" FontSize="14" HorizontalAlignment="Right" Grid.Column="2" Grid.ColumnSpan="2" VerticalAlignment="Center" SelectionChanged="ComboBoxFurn_SelectionChanged">
             <ComboBoxItem IsSelected="True" Content="Maco SKB"/>
             <ComboBoxItem Content="Vorne"/>
             <ComboBoxItem Content="Roto Alversa"/>
@@ -111,7 +126,8 @@
         <TextBlock x:Name="TextBlockProfile" Text="Профиль" Grid.Row="11" Grid.Column="1" HorizontalAlignment="Left" FontSize="14" VerticalAlignment="Center"/>
         <ComboBox x:Name="ComboBoxProfile" Grid.Row="11" FontSize="14" HorizontalAlignment="Right" Grid.Column="2" Grid.ColumnSpan="2" VerticalAlignment="Center">
             <ComboBoxItem IsSelected="True" Content="Veka"/>
-            <ComboBoxItem Content="KBE AD70"/>
+            <ComboBoxItem Content="KBEAD70"/>
+            <ComboBoxItem Content="Дерево"/>
         </ComboBox>
 
         <TextBlock x:Name="TextBlockColor" Text="Цвет" Grid.Row="12" Grid.Column="1" HorizontalAlignment="Left" FontSize="14" VerticalAlignment="Center"/>
@@ -133,7 +149,7 @@
                 Style="{StaticResource MaterialDesignPaperLightButton}" Padding="0,0,0,0" VerticalAlignment="Center" Grid.RowSpan="2" Click="ButtonCalculation_Click"/>
         <Button x:Name="ButtonSaveCalc" Grid.Row="14" Grid.Column="5" Grid.ColumnSpan="3"
         IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-        Style="{StaticResource MaterialDesignPaperLightButton}" Padding="0,0,0,0" VerticalAlignment="Center" Grid.RowSpan="2">
+        Style="{StaticResource MaterialDesignPaperLightButton}" Padding="0,0,0,0" VerticalAlignment="Center" Grid.RowSpan="2" Click="ButtonSaveCalc_Click">
             <StackPanel Orientation="Horizontal">
                 <materialDesign:PackIcon Kind="TextBoxMultipleOutline" />
                 <TextBlock Text="Сохранить в .txt" Margin="10,0,0,2"/>

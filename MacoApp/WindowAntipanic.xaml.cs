@@ -28,6 +28,7 @@ namespace TBMFurn
         int NumberButton;
         int Quantity;
         DataTable table1 = new DataTable("Table1"); //Таблица для сохранения расчета
+        string SavePathTXT = "";
 
         public WindowAntipanic()
         {
@@ -185,8 +186,19 @@ namespace TBMFurn
 
         private void ButtonSaveTxt_Click(object sender, RoutedEventArgs e)
         {
-            // Проверяем есть ли на диске C папка, если нет- создаем
-            Directory.CreateDirectory(@"X:\aTBMFURN\");
+            try
+            {
+                // Проверяем есть диск X и папка aTBMFURN, если нет- создаем
+                Directory.CreateDirectory(@"X:\aTBMFURN\");
+                SavePathTXT = @"X:\aTBMFURN\";
+            }
+            catch (System.Exception)
+            {
+                // Проверяем есть ли на диске C папка aTBMFURN, если нет- создаем
+                Directory.CreateDirectory(@"C:\aTBMFURN\");
+                MessageBox.Show("Нет доступа к диску X, файл будет сохранен в папку aTBMFURN на диске C");
+                SavePathTXT = @"C:\aTBMFURN\";
+            }
             String date = DateTime.Now.ToString(" dd.MM.yyyy HH-mm-ss");
 
             int CTlangth = Code.Text.Length;
@@ -212,7 +224,7 @@ namespace TBMFurn
                     Code.Text = "0" + Code.Text;
                 }
             }
-            using (StreamWriter streamWriter = new StreamWriter(@"X:\aTBMFURN\" + "Z" + Code.Text + " " + date + " Антипаника" + ".txt", false, Encoding.Default))
+            using (StreamWriter streamWriter = new StreamWriter(SavePathTXT + "Z" + Code.Text + " " + date + " Антипаника" + ".txt", false, Encoding.Default))
             {
                 streamWriter.WriteLine("                    Шифр фирмы " + Code.Text);
                 streamWriter.WriteLine("                    Фирма 123");

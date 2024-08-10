@@ -1,6 +1,7 @@
 ﻿using MaterialDesignMessageBox;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,111 @@ namespace MacoApp
 {
     class ClassError
     {
+        public int ErrorPortal(string Furn, int FFH, int FFB, int quantity)
+        {
+            if (Furn == "Maco SKB")
+            {
+                if (FFH < 841)
+                {
+                    MaterialMessageBox.ShowDialog("Высота не может быть менее 841 мм");
+                    return 1;
+                }
+                else if (FFB < 620)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина не может быть менее 620 мм");
+                    return 1;
+                }
+                else if (FFH > 2250)
+                {
+                    MaterialMessageBox.ShowDialog("Высота не может быть более 2250 мм");
+                    return 1;
+                }
+                else if (FFB > 1650)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина не может быть ,более 1650 мм");
+                    return 1;
+                }
+                else if (quantity == 0)
+                {
+                    MaterialMessageBox.ShowDialog("Укажите корректное количество комплектов");
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else if (Furn == "Vorne")
+            {
+                if (FFH < 450)
+                {
+                    MaterialMessageBox.ShowDialog("Высота не может быть менее 450 мм");
+                    return 1;
+                }
+                else if (FFB < 600)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина не может быть менее 600 мм");
+                    return 1;
+                }
+                else if (FFH > 2400)
+                {
+                    MaterialMessageBox.ShowDialog("Высота не может быть более 2400 мм");
+                    return 1;
+                }
+                else if (FFB > 1350)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина не может быть ,более 1350 мм");
+                    return 1;
+                }
+                else if (quantity == 0)
+                {
+                    MaterialMessageBox.ShowDialog("Укажите корректное количество комплектов");
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else if (Furn == "Vorne")
+            {
+                if (FFH < 621)
+                {
+                    MaterialMessageBox.ShowDialog("Высота не может быть менее 621 мм");
+                    return 1;
+                }
+                else if (FFB < 600)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина не может быть менее 600 мм");
+                    return 1;
+                }
+                else if (FFH > 2400)
+                {
+                    MaterialMessageBox.ShowDialog("Высота не может быть более 2400 мм");
+                    return 1;
+                }
+                else if (FFB > 1650)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина не может быть ,более 1650 мм");
+                    return 1;
+                }
+                else if (quantity == 0)
+                {
+                    MaterialMessageBox.ShowDialog("Укажите корректное количество комплектов");
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else
+            {
+                return 0;
+            }
+
+        }
+
         public int Err(string Furn, int FFH, int FFB, int quantity, string rotation, string framuga, string konst, string shtulp, string shtulpTreeArg)
         {
             if (Furn == "Maco_Eco" && framuga == "Нет")

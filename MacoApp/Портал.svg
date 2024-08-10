@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<svg width="640" height="480.00000000000006" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+ <!-- Created with SVG-edit - http://svg-edit.googlecode.com/ -->
+ <defs>
+  <linearGradient spreadMethod="pad" id="svg_7">
+   <stop offset="0" stop-color="#none"/>
+   <stop offset="1" stop-color="#NaNNaNNaN"/>
+  </linearGradient>
+ </defs>
+ <g>
+  <title>Layer 1</title>
+  <rect stroke="#1b9696" fill-opacity="0" id="svg_1" height="445.771622" width="605.739484" y="17.099398" x="17.159289" stroke-width="34" fill="url(#svg_7)"/>
+  <path stroke="#dd7f4f" id="svg_6" d="m226.745015,434.093103l94,-396.374967l94,396.374967l-188,0z" fill-opacity="0" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="16" fill="#000000"/>
+  <rect stroke="#1b9696" id="svg_3" height="418" width="212.999998" y="27" x="214.000002" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="35" fill="none"/>
+ </g>
+</svg>

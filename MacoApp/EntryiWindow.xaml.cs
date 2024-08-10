@@ -93,7 +93,15 @@ namespace MacoApp
                     File.Delete(file);
                 } 
             }
-
+            if (Directory.Exists(@"C:\aTBMFURN\"))
+            {
+                string[] files = Directory.GetFiles(@"C:\aTBMFURN\");
+                foreach (string file in files)
+                {
+                    // Удаление папки c сохраненными расчетами и всех ее подпапок и файлов
+                    File.Delete(file);
+                }
+            }
             try
             {
                 // Проверка доступности хотя бы одного известного хоста
@@ -103,31 +111,31 @@ namespace MacoApp
                 PingReply replyMail = ping.Send("www.mail.ru", 1000); // Пингуем mail.ru
                 PingReply replyWikipedia = ping.Send("www.wikipedia.org", 1000); // Пингуем wikipedia.org
 
-               /* if ((replyGoogle.Status == IPStatus.Success) || (replyYandex.Status == IPStatus.Success) || (replyMail.Status == IPStatus.Success) || (replyWikipedia.Status == IPStatus.Success))
-                {
-                    //string pathBD = @"SaveDB\Furnapp.db";
-                    FileInfo fileInf = new FileInfo(path);
-                    if (fileInf.Exists)
-                    {
-                        fileInf.Delete();
-                        //File.Copy(pathBD, path2); //Копируем в новую папку БД. чтобы оттуда скопировать в Google Drive
-                    }
-                    else
-                    {
-                        //File.Copy(pathBD, path2); //Копируем в новую папку БД. чтобы оттуда скопировать в Google Drive
-                    }
+                if ((replyGoogle.Status == IPStatus.Success) || (replyYandex.Status == IPStatus.Success) || (replyMail.Status == IPStatus.Success) || (replyWikipedia.Status == IPStatus.Success))
+                 {
+                     //string pathBD = @"SaveDB\Furnapp.db";
+                     FileInfo fileInf = new FileInfo(path);
+                     if (fileInf.Exists)
+                     {
+                         fileInf.Delete();
+                         //File.Copy(pathBD, path2); //Копируем в новую папку БД. чтобы оттуда скопировать в Google Drive
+                     }
+                     else
+                     {
+                         //File.Copy(pathBD, path2); //Копируем в новую папку БД. чтобы оттуда скопировать в Google Drive
+                     }
 
-                    //CopyBD();
+                     //CopyBD();
 
-                    //Качаем БД с Google Drive
-                    WebClient webClient = new WebClient();
-                    webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1AWZm-LcbOjRYTG7CLIjDfYyX1EYpVGdc", path);
-                    webClient.Dispose();
-                }
-                else 
-                {
-                    return;
-                }*/
+                     //Качаем БД с Google Drive
+                     WebClient webClient = new WebClient();
+                     webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1AcuvhDkjaS2aRt_qlPPu4piQ2Xx8j21D", path);
+                     webClient.Dispose();
+                 }
+                 else 
+                 {
+                     return;
+                 }
             }
             catch
             {

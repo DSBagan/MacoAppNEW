@@ -94,6 +94,7 @@
     <None Remove="Save\Furnapp.db" />
     <None Remove="Vorne-logo.png" />
     <None Remove="Внутренний ящик 135 Цвет.png" />
+    <None Remove="Портал.svg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -316,6 +317,9 @@
     </Resource>
     <Resource Include="MacoFon.png" />
     <Resource Include="Save\Furnapp.db">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Портал.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

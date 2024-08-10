@@ -37,6 +37,8 @@ namespace MacoApp
 {
     public partial class CalculationWindow : Window
     {
+        string SavePathTXT;
+
         SqlRequests sqlRequests = new SqlRequests();
         ClassError classError = new ClassError();
         public ObservableCollection<ClassList> ClassLists { get; set; }
@@ -605,13 +607,14 @@ namespace MacoApp
                 {
                     // Проверяем есть диск X и папка aTBMFURN, если нет- создаем
                     Directory.CreateDirectory(@"X:\aTBMFURN\");
+                    SavePathTXT = @"X:\aTBMFURN\";
                 }
                 catch (System.Exception)
                 {
                     // Проверяем есть ли на диске С папка aTBMFURN, если нет- создаем
-                    Directory.CreateDirectory(@"С:\aTBMFURN\");
+                    Directory.CreateDirectory(@"C:\aTBMFURN\");
                     MaterialMessageBox.ShowDialog("Нет доступа к диску X, файл ,будет сохранен в папку aTBMFURN на диске C");
-                    return;
+                    SavePathTXT = @"C:\aTBMFURN\";
                 }
                 
                 String date = DateTime.Now.ToString(" dd.MM.yyyy HH-mm-ss");
@@ -638,7 +641,7 @@ namespace MacoApp
                         Code.Text = "0" + Code.Text;
                     }
                 }
-                using (StreamWriter streamWriter = new StreamWriter(@"X:\aTBMFURN\" + "Z" + Code.Text + " " + date + ".txt", false, Encoding.Default))
+                using (StreamWriter streamWriter = new StreamWriter(SavePathTXT + "Z" + Code.Text + " " + date + ".txt", false, Encoding.Default))
                 {
                     streamWriter.WriteLine("                    Шифр фирмы " + Code.Text);
                     streamWriter.WriteLine("                    Фирма 123");
@@ -875,7 +878,6 @@ namespace MacoApp
                 {
                     TBShablonRama.Text = "21958";
                     TBShablonStvorka.Text = "21564";
-
                     ButtonStulp.IsEnabled = true;
                 }
                 if (index == 2)

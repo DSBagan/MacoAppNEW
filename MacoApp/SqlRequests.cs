@@ -16,6 +16,47 @@ namespace MacoApp
         public int quantitySrPr = 0;
         public int quantityShtulp = 0;
 
+        /*public int PortalQue(string Furn, int FFH, int FFB)
+        {
+            if (Furn == "Maco SKB")
+            {
+                if (FFB >= 620 && FFB <= 900 && FFH >= 841 && FFH <= 1250)
+                {
+                    quantityBar = 5;
+                }
+                else if (FFB >= 620 && FFB <= 900 && FFH >= 1251 && FFH <= 1750)
+                {
+                    quantityBar = 5;
+                }
+                else if (FFB >= 620 && FFB <= 900 && FFH >= 1751 && FFH <= 2250)
+                {
+                    quantityBar = 5;
+                }
+
+
+
+
+
+                else if (FFB >= 901 && FFB <= 1150)
+                {
+                    quantityBar = 2;
+                }
+                else if (FFB >= 1151 && FFB <= 1400)
+                {
+                    quantityBar = 2;
+                }
+                else if (FFB >= 1401 && FFB <= 1650)
+                {
+                    quantityBar = 2;
+                }
+                return quantityBar;
+            }
+            else
+            {
+                return 0;
+            }
+        }*/
+
         public int Que(string Rotation, string framuga, string Furn, int FFH, int FFB)
         {
             //Варианты запросов в БД с разными параметрами, выбранными в форме
