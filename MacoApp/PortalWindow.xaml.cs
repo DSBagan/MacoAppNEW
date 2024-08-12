@@ -40,6 +40,9 @@ namespace TBMFurn
 
         string SavePathTXT;
 
+        private bool _isPaused = false;
+        private int _pauseCounter = 0;
+
         List<string> response_bars = new List<string> { "34283", "34943", "V25010102", "V25020102", "V26010102", "V25040102", "V25070102", "260367", "332438", "338019", "332439", "338070", "260360"};
 
         public PortalWindow()
@@ -61,14 +64,37 @@ namespace TBMFurn
             LabelErrorСode.Visibility = Visibility.Hidden;
             LabelErrorFFB.Visibility = Visibility.Hidden;
             LabelErrorFFH.Visibility = Visibility.Hidden;
+            LabelErrorR.Visibility = Visibility.Hidden;
+            LabelErrorL.Visibility = Visibility.Hidden;
             ButtonSaveCalc.IsEnabled = false;
         }
-
 
         private void ButtonCalculation_Click(object sender, RoutedEventArgs e)
         {
             table1.Rows.Clear();
             GridList.ItemsSource = null;
+            if (Side == "")
+            {
+                // Показываем изображение стрелки и запускаем анимацию
+                LabelErrorR.Visibility = Visibility.Visible;
+                LabelErrorL.Visibility = Visibility.Visible;
+                DoubleAnimation animation = new DoubleAnimation
+                {
+                    From = 1,
+                    To = 0,
+                    Duration = TimeSpan.FromSeconds(0.5),
+                    AutoReverse = true,
+                    RepeatBehavior = RepeatBehavior.Forever
+                };
+                LabelErrorR.BeginAnimation(UIElement.OpacityProperty, animation);
+                LabelErrorL.BeginAnimation(UIElement.OpacityProperty, animation);
+                return;
+            }
+            else 
+            {
+                LabelErrorR.Visibility = Visibility.Hidden;
+                LabelErrorL.Visibility = Visibility.Hidden;
+            }
             if (TextBoxFFB.Text == "" || TextBoxFFH.Text == "")
             {
                 if (TextBoxFFB.Text == "")
@@ -396,6 +422,9 @@ namespace TBMFurn
 
         private void ButtonLeft_Click(object sender, RoutedEventArgs e)
         {
+            ButtonRight.BorderBrush = Brushes.White;
+            ButtonLeft.BorderBrush = Brushes.Red;
+
             Side = "Влево";
             LabelStvorka.Margin = _originalMargin;
             _timer.Start();
@@ -403,6 +432,9 @@ namespace TBMFurn
 
         private void ButtonRight_Click(object sender, RoutedEventArgs e)
         {
+            ButtonRight.BorderBrush = Brushes.Red;
+            ButtonLeft.BorderBrush = Brushes.White;
+
             Side = "Вправо";
             LabelStvorka.Margin = _originalMargin;
             _timer.Start();
@@ -410,29 +442,51 @@ namespace TBMFurn
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            if (Side == "Влево")
+            if (!_isPaused)
             {
-                if (LabelStvorka.Margin.Left > 38)
+                if (Side == "Влево")
                 {
-                    LabelStvorka.Margin = new Thickness(LabelStvorka.Margin.Left - 1, LabelStvorka.Margin.Top, LabelStvorka.Margin.Right + 1, LabelStvorka.Margin.Bottom);
+                    if (LabelStvorka.Margin.Left > 30)
+                    {
+                        LabelStvorka.Margin = new Thickness(LabelStvorka.Margin.Left - 1, LabelStvorka.Margin.Top, LabelStvorka.Margin.Right + 1, LabelStvorka.Margin.Bottom);
+                    }
+                    else
+                    {
+                        _pauseCounter++;
+                        if (_pauseCounter == 15)
+                        {
+                            _isPaused = true;
+                            _pauseCounter = 0;
+                        }
+                    }
                 }
-                else
+                else if (Side == "Вправо")
                 {
-                    LabelStvorka.Margin = _originalMargin;
+                    if (LabelStvorka.Margin.Right > 30)
+                    {
+                        LabelStvorka.Margin = new Thickness(LabelStvorka.Margin.Left + 1, LabelStvorka.Margin.Top, LabelStvorka.Margin.Right - 1, LabelStvorka.Margin.Bottom);
+                    }
+                    else
+                    {
+                        _pauseCounter++;
+                        if (_pauseCounter == 15)
+                        {
+                            _isPaused = true;
+                            _pauseCounter = 0;
+                        }
+                    }
                 }
             }
-            else if (Side == "Вправо")
+            else
             {
-                if (LabelStvorka.Margin.Right > 38)
+                _pauseCounter++;
+                if (_pauseCounter == 15)
                 {
-                    LabelStvorka.Margin = new Thickness(LabelStvorka.Margin.Left + 1, LabelStvorka.Margin.Top, LabelStvorka.Margin.Right -1, LabelStvorka.Margin.Bottom);
-                }
-                else
-                {
-                    LabelStvorka.Margin = _originalMargin;
+                    _isPaused = false;
+                    _pauseCounter = 0;
                 }
             }
-            
+
         }
 
         private void ButtonFeedback_Click(object sender, RoutedEventArgs e)
@@ -444,8 +498,8 @@ namespace TBMFurn
         //Анимация текстблока обратной связи
         private void StartTextAnimation()
         {
-            string[] texts = new string[] { "Количество ответных планок в порталах пока считайте вручную", "Есть предложение по улучшению программы? Напиши \u2192", "Нашел ошибку? Напиши \u2192", "Есть неточность? Напиши \u2192", 
-                "Обязательно проверь расчет после подгрузки в КиС!!!" }; // Замените на свои тексты
+            string[] texts = new string[] { "Количество ответных планок в порталах пока считайте вручную", "Есть предложение по улучшению программы? Напиши \u2192", "Количество ответных планок в порталах пока считайте вручную", "Нашел ошибку? Напиши \u2192", "Количество ответных планок в порталах пока считайте вручную", "Есть неточность? Напиши \u2192", 
+                "Обязательно проверь расчет после подгрузки в КиС!!!", "Количество ответных планок в порталах пока считайте вручную", };
             int currentIndex = 0;
 
             // Создаем таймер, который будет вызывать смену текста каждые 20 секунд

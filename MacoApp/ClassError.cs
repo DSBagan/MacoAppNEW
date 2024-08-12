@@ -14,22 +14,22 @@ namespace MacoApp
         {
             if (Furn == "Maco SKB")
             {
-                if (FFH < 841)
+                if (FFB < 841)
                 {
                     MaterialMessageBox.ShowDialog("Высота не может быть менее 841 мм");
                     return 1;
                 }
-                else if (FFB < 620)
+                else if (FFH < 620)
                 {
                     MaterialMessageBox.ShowDialog("Ширина не может быть менее 620 мм");
                     return 1;
                 }
-                else if (FFH > 2250)
+                else if (FFB > 2250)
                 {
                     MaterialMessageBox.ShowDialog("Высота не может быть более 2250 мм");
                     return 1;
                 }
-                else if (FFB > 1650)
+                else if (FFH > 1650)
                 {
                     MaterialMessageBox.ShowDialog("Ширина не может быть ,более 1650 мм");
                     return 1;
@@ -46,22 +46,22 @@ namespace MacoApp
             }
             else if (Furn == "Vorne")
             {
-                if (FFH < 450)
+                if (FFB < 450)
                 {
                     MaterialMessageBox.ShowDialog("Высота не может быть менее 450 мм");
                     return 1;
                 }
-                else if (FFB < 600)
+                else if (FFH < 600)
                 {
                     MaterialMessageBox.ShowDialog("Ширина не может быть менее 600 мм");
                     return 1;
                 }
-                else if (FFH > 2400)
+                else if (FFB > 2400)
                 {
                     MaterialMessageBox.ShowDialog("Высота не может быть более 2400 мм");
                     return 1;
                 }
-                else if (FFB > 1350)
+                else if (FFH > 1350)
                 {
                     MaterialMessageBox.ShowDialog("Ширина не может быть ,более 1350 мм");
                     return 1;
@@ -78,22 +78,22 @@ namespace MacoApp
             }
             else if (Furn == "Vorne")
             {
-                if (FFH < 621)
+                if (FFB < 621)
                 {
                     MaterialMessageBox.ShowDialog("Высота не может быть менее 621 мм");
                     return 1;
                 }
-                else if (FFB < 600)
+                else if (FFH < 600)
                 {
                     MaterialMessageBox.ShowDialog("Ширина не может быть менее 600 мм");
                     return 1;
                 }
-                else if (FFH > 2400)
+                else if (FFB > 2400)
                 {
                     MaterialMessageBox.ShowDialog("Высота не может быть более 2400 мм");
                     return 1;
                 }
-                else if (FFB > 1650)
+                else if (FFH > 1650)
                 {
                     MaterialMessageBox.ShowDialog("Ширина не может быть ,более 1650 мм");
                     return 1;
