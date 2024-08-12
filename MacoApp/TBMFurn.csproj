@@ -36,6 +36,7 @@
     <None Remove="images\maco.png" />
     <None Remove="images\MacoFon.png" />
     <None Remove="images\MacoFonMM.png" />
+    <None Remove="images\MacoFonPortal.png" />
     <None Remove="images\Newline.png" />
     <None Remove="images\PL.PNG" />
     <None Remove="images\Portal.png" />
@@ -47,6 +48,7 @@
     <None Remove="images\roto-transformed.png" />
     <None Remove="images\RotoFon.png" />
     <None Remove="images\RotoFonNX.png" />
+    <None Remove="images\RotoFonPortal.png" />
     <None Remove="images\Stulp_L.png" />
     <None Remove="images\Stulp_P.png" />
     <None Remove="images\Trayicon.ico" />
@@ -98,6 +100,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="images\MacoFonPortal.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\RotoFonPortal.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="images\Trayicon.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

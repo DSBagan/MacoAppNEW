@@ -40,6 +40,8 @@ namespace TBMFurn
 
         string SavePathTXT;
 
+        private ObservableCollection<BitmapImage> backgroundsFON = new ObservableCollection<BitmapImage>(); //Коллекция фонов для таблицы
+
         private bool _isPaused = false;
         private int _pauseCounter = 0;
 
@@ -49,6 +51,10 @@ namespace TBMFurn
         {
             InitializeComponent();
             StartTextAnimation(); // Запускаем анимацию текстблока обратной связи
+
+            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/MacoFonPortal.png")));
+            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/vorneFon.png")));
+            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/RotoFonPortal.png")));
 
             table1.Columns.Add(new DataColumn("Артикул", typeof(string)));
             table1.Columns.Add(new DataColumn("Название", typeof(string)));
@@ -333,6 +339,15 @@ namespace TBMFurn
         //Обработчик комбобокс
         private void ComboBoxFurn_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            //Меняем фон Gridlist в зависимости от выбранной фурнитуры
+            int index = ComboBoxFurn.SelectedIndex;
+            if (index >= 0 && index < backgroundsFON.Count)
+            {
+                BitmapImage image = backgroundsFON[index];
+                ImageBrush brush = new ImageBrush(image);
+                GridList.Background = brush;
+            }
+
             if (ComboBoxFurn != null && ComboBoxFurn.SelectedIndex == 0)
             {
                 if (ComboBoxProfile != null)
