@@ -437,27 +437,44 @@ namespace TBMFurn
 
         private void ButtonLeft_Click(object sender, RoutedEventArgs e)
         {
-            ButtonRight.BorderBrush = Brushes.White;
-            ButtonLeft.BorderBrush = Brushes.Red;
-
-            Side = "Влево";
-            LabelStvorka.Margin = _originalMargin;
-            _timer.Start();
+            ChangeDirection("Влево");
         }
 
         private void ButtonRight_Click(object sender, RoutedEventArgs e)
         {
-            ButtonRight.BorderBrush = Brushes.Red;
-            ButtonLeft.BorderBrush = Brushes.White;
+            ChangeDirection("Вправо");
+        }
 
-            Side = "Вправо";
-            LabelStvorka.Margin = _originalMargin;
-            _timer.Start();
+        private void ChangeDirection(string direction)
+        {
+            if (ButtonLeft != null && ButtonRight != null)
+            {
+                if (direction == "Влево")
+                {
+                    ButtonLeft.BorderBrush = Brushes.Red;
+                    ButtonRight.BorderBrush = Brushes.White;
+                }
+                else if (direction == "Вправо")
+                {
+                    ButtonLeft.BorderBrush = Brushes.White;
+                    ButtonRight.BorderBrush = Brushes.Red;
+                }
+
+                Side = direction;
+                if (LabelStvorka != null)
+                {
+                    LabelStvorka.Margin = _originalMargin;
+                }
+                if (_timer != null)
+                {
+                    _timer.Start();
+                }
+            }
         }
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            if (!_isPaused)
+            if (!_isPaused && LabelStvorka != null)
             {
                 if (Side == "Влево")
                 {
@@ -467,12 +484,7 @@ namespace TBMFurn
                     }
                     else
                     {
-                        _pauseCounter++;
-                        if (_pauseCounter == 15)
-                        {
-                            _isPaused = true;
-                            _pauseCounter = 0;
-                        }
+                        //Side = "Вправо"; // Переключение направления движения
                     }
                 }
                 else if (Side == "Вправо")
@@ -483,25 +495,10 @@ namespace TBMFurn
                     }
                     else
                     {
-                        _pauseCounter++;
-                        if (_pauseCounter == 15)
-                        {
-                            _isPaused = true;
-                            _pauseCounter = 0;
-                        }
+                        //Side = "Влево"; // Переключение направления движения
                     }
                 }
             }
-            else
-            {
-                _pauseCounter++;
-                if (_pauseCounter == 15)
-                {
-                    _isPaused = false;
-                    _pauseCounter = 0;
-                }
-            }
-
         }
 
         private void ButtonFeedback_Click(object sender, RoutedEventArgs e)

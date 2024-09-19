@@ -58,6 +58,7 @@ namespace MacoApp
             backgroundsLogo.Add(new BitmapImage(new Uri("pack://application:,,,/images/akpen-logo.png")));
             backgroundsLogo.Add(new BitmapImage(new Uri("pack://application:,,,/images/Firmax1.png")));
 
+            this.Title = "Калькулятор фурнитуры";
 
             Loaded += EntryiWindow_Loaded;
         }
@@ -68,6 +69,8 @@ namespace MacoApp
             IntOn.Visibility = Visibility.Collapsed;
             IntOff.Visibility = Visibility.Collapsed;
             ButtonEditor.Visibility = Visibility.Collapsed;
+
+            System.Windows.Application.Current.MainWindow.ShowActivated = true;
 
             for (int i = 0; i < backgroundsLogo.Count; i++)
             {
@@ -129,7 +132,7 @@ namespace MacoApp
 
                      //Качаем БД с Google Drive
                      WebClient webClient = new WebClient();
-                     webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1ugK_6ce8Jk4WcGjpYPw-pymLxY-6y5Oh", path);
+                     webClient.DownloadFile("https://drive.google.com/uc?export=download&id=1XAhINVFOvhyFPJowsgK-AIzfo-fuCbcc", path);
                      webClient.Dispose();
                  }
                  else 

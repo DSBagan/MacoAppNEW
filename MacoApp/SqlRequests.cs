@@ -390,11 +390,11 @@ namespace MacoApp
                 //**********************
                 if (FFH >= 1201 && FFH <= 1700 && FFB <= 600 && Rotation == "Нет" && framuga == "Нет")
                 {
-                    return quantityBar = 4;
+                    return quantityBar = 5;
                 }
                 else if (FFH >= 1201 && FFH <= 1700 && FFB >= 601 && FFB <= 650 && Rotation == "Нет" && framuga == "Нет")
                 {
-                    return quantityBar = 5;
+                    return quantityBar = 6;
                 }
                 else if (FFH >= 1201 && FFH <= 1700 && FFB >= 651 && FFB <= 850 && Rotation == "Нет" && framuga == "Нет")
                 {
