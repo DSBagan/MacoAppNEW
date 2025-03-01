@@ -36,6 +36,13 @@ namespace TBMFurn
         ClassError classError = new ClassError();
         public ObservableCollection<ClassList> ClassLists { get; set; }
 
+        private System.Windows.Threading.DispatcherTimer _textTimer;
+        private int _currentIndex;
+        private readonly string[] _texts = new[]
+        {    "Есть предложение по улучшению программы? Напиши \u2192",    "Нашел ошибку? Напиши \u2192",    "Есть неточность? Напиши \u2192",
+            "Обязательно проверь расчет после подгрузки в КиС!!!"
+        };
+
         DataTable table1 = new DataTable("Table1"); //Таблица для сохранения расчета
 
         string SavePathTXT;
@@ -507,32 +514,66 @@ namespace TBMFurn
             feedbackWindow.Show();
         }
 
-        //Анимация текстблока обратной связи
+
+
+
         private void StartTextAnimation()
         {
-            string[] texts = new string[] { "Количество ответных планок в порталах пока считайте вручную", "Есть предложение по улучшению программы? Напиши \u2192", "Количество ответных планок в порталах пока считайте вручную", "Нашел ошибку? Напиши \u2192", "Количество ответных планок в порталах пока считайте вручную", "Есть неточность? Напиши \u2192", 
-                "Обязательно проверь расчет после подгрузки в КиС!!!", "Количество ответных планок в порталах пока считайте вручную", };
-            int currentIndex = 0;
+            _currentIndex = 0;
 
-            // Создаем таймер, который будет вызывать смену текста каждые 20 секунд
-            System.Windows.Threading.DispatcherTimer textTimer = new System.Windows.Threading.DispatcherTimer();
-            textTimer.Interval = TimeSpan.FromSeconds(30);
-            textTimer.Tick += (sender, e) =>
+            // Создаем таймер
+            _textTimer = new System.Windows.Threading.DispatcherTimer
             {
-                var fadeOut = new DoubleAnimation(0, (Duration)TimeSpan.FromSeconds(1));
-                fadeOut.Completed += (s, a) =>
-                {
-                    TextBlockFeedback.Text = texts[currentIndex];
-                    var fadeIn = new DoubleAnimation(1, (Duration)TimeSpan.FromSeconds(1));
-                    TextBlockFeedback.BeginAnimation(UIElement.OpacityProperty, fadeIn);
-                };
-                TextBlockFeedback.BeginAnimation(UIElement.OpacityProperty, fadeOut);
-
-                currentIndex = (currentIndex + 1) % texts.Length;
+                Interval = TimeSpan.FromSeconds(30)
             };
+            _textTimer.Tick += OnTextTimerTick;
+            _textTimer.Start();
 
-            textTimer.Start();
+            // Подписываемся на событие закрытия окна, чтобы остановить таймер
+            this.Closed += OnWindowClosed;
         }
+
+        private void OnTextTimerTick(object sender, EventArgs e)
+        {
+            // Анимация исчезновения текста
+            var fadeOut = new DoubleAnimation(0, TimeSpan.FromSeconds(1));
+            fadeOut.Completed += OnFadeOutCompleted;
+            TextBlockFeedback.BeginAnimation(UIElement.OpacityProperty, fadeOut);
+        }
+
+        private void OnFadeOutCompleted(object sender, EventArgs e)
+        {
+            // Обновляем текст
+            TextBlockFeedback.Text = _texts[_currentIndex];
+            _currentIndex = (_currentIndex + 1) % _texts.Length;
+
+            // Анимация появления текста
+            var fadeIn = new DoubleAnimation(1, TimeSpan.FromSeconds(1));
+            TextBlockFeedback.BeginAnimation(UIElement.OpacityProperty, fadeIn);
+        }
+
+        private void OnWindowClosed(object sender, EventArgs e)
+        {
+            // Останавливаем таймер при закрытии окна
+            if (_textTimer != null)
+            {
+                _textTimer.Stop();
+                _textTimer.Tick -= OnTextTimerTick;
+                _textTimer = null;
+            }
+
+            // Отписываемся от события
+            this.Closed -= OnWindowClosed;
+        }
+
+
+
+
+
+
+
+
+
 
         private void ComboBoxColor_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
