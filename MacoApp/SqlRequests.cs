@@ -210,6 +210,157 @@ namespace MacoApp
                 }
             }
 
+            //Maco_Eco_RU**********************************************************************************
+            else if (Furn == "Maco_Eco_Ru")
+            {
+                //(высота до 900, ширина до 431)
+                if (FFH >= 601 && FFH <= 900 && FFB <= 430 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 3;
+                }
+
+                //*********************
+
+                //Высота до 1300, ширина до 431
+                else if (FFH >= 901 && FFH <= 1300 && FFB <= 430 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 3;
+                }
+                //*********************
+
+                //Высота от1301 до 1800, ширина до 431
+                else if (FFH >= 1301 && FFH <= 1800 && FFB <= 430 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 5;
+                }
+                //*********************
+
+                //Высота от 1801 до 2350, ширина до 431
+                else if (FFH >= 1801 && FFH <= 2350 && FFB <= 430 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 6;
+                }
+                //*********************
+
+                //(высота до 900, ширина до 600)
+                else if (FFH <= 900 && FFB >= 431 && FFB <= 600 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 2;
+                }
+
+                //*********************
+
+                //Высота до 1300, ширина до 600
+                else if (FFH >= 901 && FFH <= 1300 && FFB >= 431 && FFB <= 600 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 3;
+                }
+
+                //*********************
+
+                //Высота от1301 до 1800, ширина до 600
+                else if (FFH >= 1301 && FFH <= 1800 && FFB >= 431 && FFB <= 600 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 5;
+                }
+
+                //*********************
+
+                //Высота от 1801 до 2350, ширина до 600
+                else if (FFH >= 1801 && FFH <= 2350 && FFB >= 431 && FFB <= 600 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 6;
+                }
+
+                //*********************
+
+                //ШИРИНА 601-800
+                //Высота до 900, ширина 601-800
+
+                else if (FFH <= 900 && FFB >= 601 && FFB <= 800 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 4;
+                }
+
+                //*********************
+
+                //Высота до 1300, ширина 601-800
+                else if (FFH >= 901 && FFH <= 1300 && FFB >= 601 && FFB <= 800 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 4;
+                }
+
+                //*********************
+
+                //Высота от1301 до 1800, ширина 601-800
+                else if (FFH >= 1301 && FFH <= 1800 && FFB >= 601 && FFB <= 800 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 6;
+                }
+
+                //*********************
+
+                //Высота от 1801 до 2350, ширина до 600
+                else if (FFH >= 1801 && FFH <= 2350 && FFB >= 601 && FFB <= 800 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 7;
+                }
+
+                //*********************
+
+                //ШИРИНА 801-1300
+                //Высота до 900, ширина 801-1300
+                else if (FFH <= 900 && FFB >= 801 && FFB <= 1300 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 5;
+                }
+
+                //*********************
+
+                //Высота до 1300, ширина 801-1300
+                else if (FFH >= 901 && FFH <= 1300 && FFB >= 801 && FFB <= 1300 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 5;
+                }
+
+                //*********************
+
+                //Высота от1301 до 1800, ширина 801-1300
+                else if (FFH >= 1301 && FFH <= 1800 && FFB >= 801 && FFB <= 1300 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 7;
+                }
+
+                //*********************
+
+                //Высота от 1801 до 2350, ширина 801-1300
+                else if (FFH >= 1801 && FFH <= 2350 && FFB >= 801 && FFB <= 1300 && Rotation == "Нет" && framuga == "Нет")
+                {
+                    return quantityBar = 8;
+                }
+                //Поворотная и Фрамуга
+                else if (Rotation == "Да" && FFH >= 300 && FFH <= 1300)
+                {
+                    return quantityBar = 1;
+                }
+                else if (Rotation == "Да" && FFH >= 1301 && FFH <= 2350)
+                {
+                    return quantityBar = 2;
+                }
+                else if (framuga == "Да" && FFH >= 300 && FFH <= 1300)
+                {
+                    return quantityBar = 1;
+                }
+                else if (framuga == "Да" && FFH >= 1301 && FFH <= 2350)
+                {
+                    return quantityBar = 2;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+
             //MACO_MM********************************************************************************
 
             else if (Furn == "Maco_MM")
@@ -747,7 +898,7 @@ namespace MacoApp
 
         public int QueSrPr(string Rotation, string Furn, int FFH)
         {
-            if (Rotation == "Да" && (Furn == "Maco_MM" || Furn == "Maco_Eco"))
+            if (Rotation == "Да" && (Furn == "Maco_MM" || Furn == "Maco_Eco" || Furn == "Maco_Eco_Ru"))
             {
                 if (FFH >= 300 && FFH <= 1300)
                 {

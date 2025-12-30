@@ -78,14 +78,15 @@ namespace MacoApp
                 img.Source = backgroundsLogo[i];
                 stackPanelLogo.Children.Add(img);
             }
-            UpgradeBD();
+            //UpgradeBD();
 
             //CopyBD();
-
+            
+            InitializeDatabase(); // Инициализируем базу данных (без интернета!)
             InitTasks(); //Запуск метода удаления старых версий после обновления
         }
 
-        private async void UpgradeBD()
+        /*private async void UpgradeBD()
         {
             if (Directory.Exists(@"X:\aTBMFURN\"))
             {
@@ -132,7 +133,7 @@ namespace MacoApp
 
                      //Качаем БД с Google Drive
                      WebClient webClient = new WebClient();
-                     webClient.DownloadFile("https://drive.google.com/uc?export=download&id=16zVHQVIYtKbUv3w8Aasdfr-bpl5rr1Fd", path);
+                     webClient.DownloadFile("https://drive.google.com/file/d/1grOTFs196K1H6Z7P4uZkIepzJi4IcR1z/view?usp=sharing", path);
                      webClient.Dispose();
                  }
                  else 
@@ -144,107 +145,110 @@ namespace MacoApp
             {
                 
             }
-            
-            /*ProgressDialogWindow progressDialog = new ProgressDialogWindow();
-            progressDialog.Show();
+        }*/
 
-            await Task.Run(() =>
+        private void InitializeDatabase()
+        {
+            string dbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Furnapp.db");
+
+            // Если база данных уже существует и не пуста - используем её
+            if (File.Exists(dbPath) && new FileInfo(dbPath).Length > 0)
             {
-                string connectionStringMySQL = "server=cz6.h.filess.io;user=BDFurnTBM_forcearmy;database=BDFurnTBM_forcearmy;port=3307;password=e5f1b53ca8619010c3c73fd972facf6e383871ed;";
-                using MySqlConnection connectionMySQL = new MySqlConnection(connectionStringMySQL);
-                connectionMySQL.Open();
+                path = dbPath;
+                return;
+            }
 
-                string connectionStringSQLite = "Data Source=Furnapp.db;";
-                using SQLiteConnection connectionSQLite = new SQLiteConnection(connectionStringSQLite);
-                connectionSQLite.Open();
-                
-                // Создание таблицы в базе данных SQLite
-                string createTableQuery = "CREATE TABLE IF NOT EXISTS Elements (Id INTEGER PRIMARY KEY, Name_Furn TEXT, Title TEXT, Article TEXT, Quantity INTEGER, System TEXT, Side TEXT, FFH_before INTEGER, FFH_after INTEGER, FFB_before INTEGER, FFB_after INTEGER, Lower_loop TEXT, Micro_ventilation TEXT, Rotation TEXT, Framuga TEXT, Wood TEXT, Konst TEXT, Shtulp TEXT, Color TEXT)";
-                using SQLiteCommand createTableCommand = new SQLiteCommand(createTableQuery, connectionSQLite);
-                createTableCommand.ExecuteNonQuery();
-
-                // Извлечение данных из таблицы MySQL и вставка их в таблицу SQLite
-                string selectQuery = "SELECT * FROM Elements";
-                using MySqlCommand selectCommand = new MySqlCommand(selectQuery, connectionMySQL);
-                using MySqlDataReader reader = selectCommand.ExecuteReader();
-                int totalRows = 0;
-                while (reader.Read())
-                {
-                    //int Id = Convert.ToInt32(reader["Id"]);
-                    string nameFurn = reader["Name_Furn"].ToString();
-                    string title = reader["Title"].ToString();
-                    string article = reader["Article"].ToString();
-                    int quantity = Convert.ToInt32(reader["Quantity"]);
-                    string system = reader["System"].ToString();
-                    string side = reader["Side"].ToString();
-                    int ffhBefore = Convert.ToInt32(reader["FFH_before"]);
-                    int ffhAfter = Convert.ToInt32(reader["FFH_after"]);
-                    int ffbBefore = Convert.ToInt32(reader["FFB_before"]);
-                    int ffbAfter = Convert.ToInt32(reader["FFB_after"]);
-                    string lowerLoop = reader["Lower_loop"].ToString();
-                    string microVentilation = reader["Micro_ventilation"].ToString();
-                    string rotation = reader["Rotation"].ToString();
-                    string framuga = reader["Framuga"].ToString();
-                    string wood = reader["Wood"].ToString();
-                    string konst = reader["Konst"].ToString(); 
-                    string shtulp = reader["Shtulp"].ToString();
-                    string color = reader["Color"].ToString();
-
-                    string insertQuery = $"INSERT OR REPLACE INTO Elements (Name_Furn, Title, Article, Quantity, System, Side, FFH_before, FFH_after, FFB_before, FFB_after, Lower_loop, Micro_ventilation, Rotation, Framuga, Wood, Konst, Shtulp, Color) VALUES ('{nameFurn}', '{title}', '{article}', {quantity}, '{system}', '{side}', '{ffhBefore}', '{ffhAfter}', '{ffbBefore}', '{ffbAfter}', '{lowerLoop}', '{microVentilation}', '{rotation}', '{framuga}', '{wood}', '{konst}', '{shtulp}', '{color}')";
-                    using SQLiteCommand insertCommand = new SQLiteCommand(insertQuery, connectionSQLite);
-                    insertCommand.ExecuteNonQuery();
-                    totalRows++;
-                    System.Threading.Thread.Sleep(570); // Для имитации процесса
-                    UpdateProgress(progressDialog, totalRows);
-                }
-                connectionMySQL.Close();
-                connectionSQLite.Close();
-
-                string connectionStringMySQLBox = "server=cz6.h.filess.io;user=BDFurnTBM_forcearmy;database=BDFurnTBM_forcearmy;port=3307;password=e5f1b53ca8619010c3c73fd972facf6e383871ed;";
-                using MySqlConnection connectionMySQLBox = new MySqlConnection(connectionStringMySQL);
-                connectionMySQL.Open();
-
-                string connectionStringSQLiteBox = "Data Source=Furnapp.db;";
-                using SQLiteConnection connectionSQLiteBox = new SQLiteConnection(connectionStringSQLite);
-                connectionSQLite.Open();
-
-                // Создание таблицы в базе данных SQLite
-                string createTableQueryBox = "CREATE TABLE IF NOT EXISTS BoxeFirmaxTable (Id INTEGER PRIMARY KEY, Name TEXT, Article TEXT, System TEXT, Type_of_opening TEXT, Length TEXT, Height TEXT, Color TEXT, Railing TEXT, Inner_drawer TEXT, Washing TEXT)";
-                using SQLiteCommand createTableCommandBox = new SQLiteCommand(createTableQueryBox, connectionSQLite);
-                createTableCommandBox.ExecuteNonQuery();
-
-                // Извлечение данных из таблицы MySQL и вставка их в таблицу SQLite
-                string selectQueryBox = "SELECT * FROM BoxeFirmaxTable";
-                using MySqlCommand selectCommandBox = new MySqlCommand(selectQueryBox, connectionMySQL);
-                using MySqlDataReader readerBox = selectCommandBox.ExecuteReader();
-                int totalRowsBox = 0;
-                while (readerBox.Read())
-                {
-                    //int Id = Convert.ToInt32(reader["Id"]);
-                    string name = readerBox["Name"].ToString();
-                    string articleBox = readerBox["Article"].ToString();
-                    string systemBox = readerBox["System"].ToString();
-                    string Type_of_opening = readerBox["Type_of_opening"].ToString();
-                    string lenght = readerBox["Length"].ToString();
-                    string height = readerBox["Height"].ToString();
-                    string color = readerBox["Color"].ToString();
-                    string railing = readerBox["Railing"].ToString();
-                    string inner_drawer = readerBox["Inner_drawer"].ToString();
-                    string washing = readerBox["Washing"].ToString();
-
-                    string insertQueryBox = $"INSERT OR REPLACE INTO BoxeFirmaxTable (Name, Article, System, Type_of_opening, Length, Height, Color, Railing, Inner_drawer, Washing) VALUES ('{name}', '{articleBox}', '{systemBox}', '{Type_of_opening}', '{lenght}', '{height}', '{color}', '{railing}', '{inner_drawer}', '{washing}')";
-                    using SQLiteCommand insertCommandBox = new SQLiteCommand(insertQueryBox, connectionSQLite);
-                    insertCommandBox.ExecuteNonQuery();
-                    totalRowsBox++;
-                    System.Threading.Thread.Sleep(168); // Для имитации процесса
-                    UpdateProgress(progressDialog, totalRowsBox);
-                }
-
-                connectionMySQLBox.Close();
-                connectionSQLiteBox.Close();
-            });
-            progressDialog.Close();*/
+            // Если базы нет - извлекаем из ресурсов
+            ExtractDatabaseFromResources(dbPath);
+            path = dbPath;
         }
+
+        private void ExtractDatabaseFromResources(string targetPath)
+        {
+            try
+            {
+                // Получаем встроенный ресурс
+                var assembly = Assembly.GetExecutingAssembly();
+                var resourceName = "MacoApp.Resources.Furnapp.db";
+
+                Stream resourceStream = null;
+                try
+                {
+                    // Пытаемся получить ресурс по ожидаемому имени
+                    resourceStream = assembly.GetManifestResourceStream(resourceName);
+
+                    if (resourceStream == null)
+                    {
+                        // Попробуем найти ресурс с другим именем
+                        resourceName = assembly.GetManifestResourceNames()
+                            .FirstOrDefault(name => name.EndsWith("Furnapp.db"));
+
+                        if (resourceName == null)
+                            throw new FileNotFoundException("Встроенная база данных не найдена в ресурсах");
+
+                        resourceStream = assembly.GetManifestResourceStream(resourceName);
+                    }
+
+                    // Сохраняем на диск
+                    using (FileStream fileStream = new FileStream(targetPath, FileMode.Create))
+                    {
+                        resourceStream.CopyTo(fileStream);
+                    }
+                }
+                finally
+                {
+                    // Закрываем stream вручную, так как он не в using блоке
+                    resourceStream?.Dispose();
+                }
+
+                MessageBox.Show("База данных успешно инициализирована!", "Информация",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка инициализации базы данных: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+
+                // Создаем пустую базу как запасной вариант
+                CreateEmptyDatabase(targetPath);
+            }
+        }
+
+        private void CreateEmptyDatabase(string dbPath)
+        {
+            try
+            {
+                // Создаем минимальную структуру базы данных SQLite
+                SQLiteConnection.CreateFile(dbPath);
+
+                using (var connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open();
+
+                    // Создаем базовые таблицы (пример)
+                    string[] createTables =
+                    {
+                "CREATE TABLE IF NOT EXISTS Fittings (Id INTEGER PRIMARY KEY, Name TEXT, Price REAL)",
+                "CREATE TABLE IF NOT EXISTS Categories (Id INTEGER PRIMARY KEY, Name TEXT)",
+                // Добавьте другие необходимые таблицы
+            };
+
+                    foreach (var sql in createTables)
+                    {
+                        using (var command = new SQLiteCommand(sql, connection))
+                        {
+                            command.ExecuteNonQuery();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось создать базу данных: {ex.Message}", "Критическая ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
 
         private async void InitTasks()
         {
@@ -257,82 +261,6 @@ namespace MacoApp
                 //Error handling
             }
         }
-
-
-        //Копирование базы данных из папки в корень проекта
-        private void CopyBD()
-        {
-            /*// Создать объект DirectoryInfo для папки Save
-            DirectoryInfo saveDBDirectory = new DirectoryInfo("Save");
-
-            // Получить путь к файлу в папке Save
-            string filePath = Path.Combine(saveDBDirectory.FullName, "Furnapp.db");
-
-            try
-            {
-                FileInfo fileInf = new FileInfo(filePath);
-                if (fileInf.Exists)
-                {
-                    fileInf.Delete();
-                    File.Copy(filePath, path2); //Копируем в новую папку БД.
-                }
-                else
-                {
-                    fileInf.CopyTo(path2, true); //Копируем в новую папку БД.
-                }
-            }
-            catch 
-            {
-                return;
-            }*/
-
-            // Создать объект DirectoryInfo для папки Save
-
-            // Получить путь к файлу в папке Save
-
-
-            // Получить путь к исполняемому файлу приложения
-            string appPath = Assembly.GetExecutingAssembly().Location;
-
-            // Удалить имя исполняемого файла, чтобы получить путь к рабочему каталогу
-            string workingDirectoryPath = Path.GetDirectoryName(appPath);
-
-            // Перейти на три ступени выше по каталогам
-            string parentDirectoryPath = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(workingDirectoryPath)));
-
-            // Определить относительный путь к папке Save
-            string saveDBRelativePath = @"Save";
-
-            // Объединить пути
-            string saveDBPath = Path.Combine(parentDirectoryPath, saveDBRelativePath);
-
-            // Определить относительный путь к нужному файлу в папке Save
-            string relativeFilePath = @"Furnapp.db";
-
-            // Объединить пути
-            string filePath = Path.Combine(saveDBPath, relativeFilePath);
-
-            try
-            {
-                FileInfo fileInf = new FileInfo(pathDelBD);
-
-                if (fileInf.Exists)
-                {
-                    fileInf.Delete();
-                    File.Copy(filePath, pathDelBD); //Копируем в новую папку БД.
-                }
-                else
-                {
-                    File.Copy(filePath, pathDelBD); //Копируем в новую папку БД.
-                }
-            }
-            catch
-            {
-                return;
-            }
-        }
-
-
         //Удаление старых версий программы
         public static void CleanOldVersions()
         {

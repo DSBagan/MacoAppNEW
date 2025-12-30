@@ -171,6 +171,60 @@ namespace MacoApp
                     return 0;
                 }
             }
+            else if (Furn == "Maco_Eco_Ru" && framuga == "Нет")
+            {
+                if (FFH < 601)
+                {
+                    MaterialMessageBox.ShowDialog("Высота не может быть менее 601 мм");
+                    return 1;
+                }
+                else if (FFB < 400)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина не может быть менее 400 мм");
+                    return 1;
+                }
+                else if (FFH > 2350)
+                {
+                    MaterialMessageBox.ShowDialog("Высота не может быть более 2350 мм");
+                    return 1;
+                }
+                else if (FFB > 1300)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина не может быть ,более 1300 мм");
+                    return 1;
+                }
+                else if (quantity == 0)
+                {
+                    MaterialMessageBox.ShowDialog("Укажите корректное количество комплектов");
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else if (Furn == "Maco_Eco_Ru" && framuga == "Да")
+            {
+                if (FFH < 601)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина не может быть менее 601 мм");
+                    return 1;
+                }
+                else if (FFH > 2350)
+                {
+                    MaterialMessageBox.ShowDialog("Ширина не может быть более 2350 мм");
+                    return 1;
+                }
+                else if (quantity == 0)
+                {
+                    MaterialMessageBox.ShowDialog("Укажите корректное количество комплектов");
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
             else if (Furn == "Maco_MM" && rotation == "Нет" && framuga == "Нет" && shtulp == "Нет")
             {
                 if (FFH < 470)

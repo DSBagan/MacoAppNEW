@@ -165,8 +165,9 @@
         </Button>
         <TextBlock x:Name="TBDate" Grid.Column="4" HorizontalAlignment="Left" Margin="150,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="12"/>
         <TextBlock Text="Фурнитура"  Grid.Column="2" Width="70" FontSize="12" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
-        <ComboBox x:Name="ComboBoxFurn" Grid.Row="1" Width="80" FontSize="12" HorizontalAlignment="Right" Grid.Column="2" Grid.ColumnSpan="1" SelectionChanged="ComboBoxFurn_SelectionChanged" Margin="0,0,10,0" VerticalAlignment="Center">
-            <ComboBoxItem IsSelected="True" Content="Maco_Eco"/>
+        <ComboBox x:Name="ComboBoxFurn" Grid.Row="1" Width="98" FontSize="12" HorizontalAlignment="Left" Grid.Column="2" Grid.ColumnSpan="1" SelectionChanged="ComboBoxFurn_SelectionChanged" Margin="126,0,0,0">
+            <ComboBoxItem IsSelected="True" Content="Maco_Eco_Ru"/>
+            <ComboBoxItem Content="Maco_Eco"/>
             <ComboBoxItem Content="Maco_MM"/>
             <ComboBoxItem Content="Vorne"/>
             <ComboBoxItem Content="Roto_NT"/>
