@@ -81,13 +81,7 @@ namespace MacoApp
             //UpgradeBD();
 
             //CopyBD();
-            
-            InitializeDatabase(); // Инициализируем базу данных (без интернета!)
-            InitTasks(); //Запуск метода удаления старых версий после обновления
-        }
 
-        /*private async void UpgradeBD()
-        {
             if (Directory.Exists(@"X:\aTBMFURN\"))
             {
                 string[] files = Directory.GetFiles(@"X:\aTBMFURN\");
@@ -95,7 +89,7 @@ namespace MacoApp
                 {
                     // Удаление папки c сохраненными расчетами и всех ее подпапок и файлов
                     File.Delete(file);
-                } 
+                }
             }
             if (Directory.Exists(@"C:\aTBMFURN\"))
             {
@@ -106,6 +100,14 @@ namespace MacoApp
                     File.Delete(file);
                 }
             }
+
+            InitializeDatabase(); // Инициализируем базу данных (без интернета!)
+            InitTasks(); //Запуск метода удаления старых версий после обновления
+        }
+
+        /*private async void UpgradeBD()
+        {
+            
             try
             {
                 // Проверка доступности хотя бы одного известного хоста
@@ -201,8 +203,8 @@ namespace MacoApp
                     resourceStream?.Dispose();
                 }
 
-                MessageBox.Show("База данных успешно инициализирована!", "Информация",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
+                /*MessageBox.Show("База данных успешно инициализирована!", "Информация",
+                    MessageBoxButton.OK, MessageBoxImage.Information);*/
             }
             catch (Exception ex)
             {
