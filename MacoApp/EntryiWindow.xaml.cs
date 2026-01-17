@@ -46,6 +46,7 @@ namespace MacoApp
         private WindowAntipanic _secondWindow2;
         private BoxCalculation _secondWindow3;
         private CalculationWindow _secondWindow4;
+        private CalculationWindowAlu _secondWindow5;
 
         public EntryiWindow()
         {
@@ -360,7 +361,20 @@ namespace MacoApp
             windowPassword.Show();
             this.Close();
         }
-
+        private void ButtonCalculationAlu_Click(object sender, RoutedEventArgs e)
+        {
+            /*CalculationWindow calculationWindow = new CalculationWindow();
+            calculationWindow.Show();
+            this.Close();*/
+            ShowCalculationWindowAlu();
+        }
+        private void ShowCalculationWindowAlu()
+        {
+            _secondWindow5 = new CalculationWindowAlu();
+            _secondWindow5.Closed += Window_Closed;
+            _secondWindow5.Show();
+            this.Hide();
+        }
         private void ButtonCalculation_Click(object sender, RoutedEventArgs e)
         {
             /*CalculationWindow calculationWindow = new CalculationWindow();
