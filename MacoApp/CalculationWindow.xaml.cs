@@ -879,7 +879,7 @@ namespace MacoApp
             {
                 if (index == 0)
                 {
-                    TBShablonRama.Text = "21958";  //Щаблоны для каждого вида фурнитуры
+                    TBShablonRama.Text = "21958";  //Шаблоны для каждого вида фурнитуры
                     TBShablonStvorka.Text = "21564";
 
                     ButtonStulp.IsEnabled = false;
@@ -888,19 +888,19 @@ namespace MacoApp
                 {
                     TBShablonRama.Text = "21958";
                     TBShablonStvorka.Text = "21564";
-                    ButtonStulp.IsEnabled = true;
+                    ButtonStulp.IsEnabled = false;
                 }
                 if (index == 2)
                 {
-                    TBShablonRama.Text = "V50040714";
-                    TBShablonStvorka.Text = "V50030114N";
+                    TBShablonRama.Text = "21958";
+                    TBShablonStvorka.Text = "21564";
 
-                    ButtonStulp.IsEnabled = false;
+                    ButtonStulp.IsEnabled = true;
                 }
                 if (index == 3)
                 {
-                    TBShablonRama.Text = "Нет";
-                    TBShablonStvorka.Text = "Нет";
+                    TBShablonRama.Text = "V50040714";
+                    TBShablonStvorka.Text = "V50030114N";
 
                     ButtonStulp.IsEnabled = false;
                 }
@@ -913,12 +913,19 @@ namespace MacoApp
                 }
                 if (index == 5)
                 {
+                    TBShablonRama.Text = "Нет";
+                    TBShablonStvorka.Text = "Нет";
+
+                    ButtonStulp.IsEnabled = false;
+                }
+                if (index == 6)
+                {
                     TBShablonRama.Text = "1080391";
                     TBShablonStvorka.Text = "1080369";
 
                     ButtonStulp.IsEnabled = false;
                 }
-                if (index == 6)
+                if (index == 7)
                 {
                     TBShablonRama.Text = "ELM0030200";
                     TBShablonStvorka.Text = "ELM0030100";

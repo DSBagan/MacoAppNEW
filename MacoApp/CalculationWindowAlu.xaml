@@ -37,20 +37,11 @@
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
 
-        <ComboBox x:Name="ComboBoxColor" Grid.Column="2" Grid.Row="9" FontSize="12" Height="25" HorizontalAlignment="Left" Margin="164,0,0,0" 
-                  SelectionChanged="ComboBoxColor_SelectionChanged" Width="60">
-            <ComboBoxItem IsSelected="True" Content="Белый"/>
-            <ComboBoxItem Content="Коричневый"/>
-            <ComboBoxItem Content="Бронза"/>
-            <ComboBoxItem Content="Серебро"/>
-            <ComboBoxItem Content="Титан"/>
-            <ComboBoxItem Content="Черный"/>
-            <ComboBoxItem Content="Золото"/>
+        <ComboBox x:Name="ComboBoxColor" Grid.Column="2" Grid.Row="6" FontSize="12" Height="25" HorizontalAlignment="Right" Margin="0,0,10,0" 
+                  SelectionChanged="ComboBoxColor_SelectionChanged" Width="80">
+            <ComboBoxItem IsSelected="True" Content="Неокрас"/>
         </ComboBox>
-
-        <Button x:Name="ButtonColor" Content="Q" Grid.Row="9" Grid.Column="2" Width="20" Height="20"/>
-
-        <TextBlock x:Name="TextBlockColor" Text="Цвет накладок"  Grid.Column="2" Grid.Row="9" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
+        <TextBlock x:Name="TextBlockColor" Text="Цвет"  Grid.Column="2" Grid.Row="6" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
 
         <DataGrid x:Name="GridList"  Grid.Column="3" Margin="0,10,10,0" 
                     Grid.RowSpan="14" Grid.ColumnSpan="2"
@@ -59,7 +50,7 @@
                   materialDesign:DataGridAssist.ColumnHeaderPadding="40 2 2 2" Grid.Row="1">
 
             <DataGrid.Background>
-                <ImageBrush ImageSource="/MacoFon.png"/>
+                <ImageBrush ImageSource="/images/Hopo.png"/>
             </DataGrid.Background>
         </DataGrid>
 
@@ -68,15 +59,15 @@
 
         <TextBox x:Name="TextBoxFFB" Text="450"  PreviewTextInput="TextBox_PreviewTextInput" PreviewKeyDown="TextBox_PreviewKeyDown" Width="60"  FontSize="12" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="2" Grid.ColumnSpan="1" Margin="0,0,10,0"/>
         <TextBox x:Name="TextBoxFFH" Text="1300"  PreviewTextInput="TextBox_PreviewTextInput" PreviewKeyDown="TextBox_PreviewKeyDown" Grid.Row="3" Width="60" FontSize="12" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="2" Margin="0,0,10,0"/>
-        <ComboBox x:Name="ComboBoxSystem" Grid.Column="2" Grid.Row="4" Width="60" Height="24" FontSize="12" HorizontalAlignment="Right" SelectionChanged="ComboBoxSystem_SelectionChanged" Margin="0,0,10,0" VerticalAlignment="Center">
+        <ComboBox x:Name="ComboBoxSystem" Grid.Column="2" Grid.Row="4" Width="75" Height="24" FontSize="12" HorizontalAlignment="Right" SelectionChanged="ComboBoxSystem_SelectionChanged" Margin="0,0,10,0" VerticalAlignment="Center">
             <ComboBoxItem IsSelected="True" Content="V.01/V.02"/>
         </ComboBox>
-        <ComboBox x:Name="ComboBoxSide" Grid.Column="2" Grid.Row="5" Width="75" FontSize="12" Height="26" HorizontalAlignment="Right" Grid.ColumnSpan="1" SelectionChanged="ComboBoxSide_SelectionChanged" Margin="0,0,10,0" VerticalAlignment="Center">
+        <ComboBox x:Name="ComboBoxSide" Grid.Column="2" Grid.Row="5" Width="85" FontSize="12" Height="26" HorizontalAlignment="Right" Grid.ColumnSpan="1" SelectionChanged="ComboBoxSide_SelectionChanged" Margin="0,0,10,0" VerticalAlignment="Center">
             <ComboBoxItem Content="Левая"/>
             <ComboBoxItem IsSelected="True" Content="Правая"/>
         </ComboBox>
 
-        <TextBox x:Name="TextBoxColvo" Text="1" PreviewTextInput="TextBox_PreviewTextInput" MaxLength="3" PreviewKeyDown="TextBox_PreviewKeyDown" Grid.Row="11" Width="60" HorizontalAlignment="Right" FontSize="12" VerticalAlignment="Center" Grid.Column="2" Margin="0,0,10,0"/>
+        <TextBox x:Name="TextBoxColvo" Text="1" PreviewTextInput="TextBox_PreviewTextInput" MaxLength="3" PreviewKeyDown="TextBox_PreviewKeyDown" Grid.Row="7" Width="60" HorizontalAlignment="Right" FontSize="12" VerticalAlignment="Center" Grid.Column="2" Margin="0,0,10,0"/>
 
         <StackPanel/>
         <Button x:Name="ButtonCalc" Grid.Row="13" Height="30" HorizontalContentAlignment="Center" 
@@ -105,7 +96,7 @@
         <TextBlock Text="Система"  Grid.Column="2" Grid.Row="4" Width="70" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
         <TextBlock x:Name="TextBlockSide" Text="Сторона"  Grid.Column="2" Grid.Row="5" Width="70" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
        
-        <TextBlock Text="Колич. комплектов"  Grid.Column="2" Grid.Row="11" Width="110" HorizontalAlignment="Left" FontSize="12" VerticalAlignment="Center" Margin="10,0,0,0"/>
+        <TextBlock Text="Колич. комплектов"  Grid.Column="2" Grid.Row="7" Width="110" HorizontalAlignment="Left" FontSize="12" VerticalAlignment="Center" Margin="10,0,0,0"/>
 
         <ListBox x:Name="LBList"   Grid.Column="4" Margin="144,7,4,20" Grid.Row="5" Visibility="Hidden"/>
 
@@ -132,7 +123,7 @@
         </Button>
         <TextBlock x:Name="TBDate" Grid.Column="4" HorizontalAlignment="Left" Margin="150,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="12"/>
         <TextBlock Text="Фурнитура"  Grid.Column="2" Width="70" FontSize="12" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
-        <ComboBox x:Name="ComboBoxFurn" Grid.Row="1" Width="98" FontSize="12" HorizontalAlignment="Left" Grid.Column="2" Grid.ColumnSpan="1" SelectionChanged="ComboBoxFurn_SelectionChanged" Margin="126,0,0,0">
+        <ComboBox x:Name="ComboBoxFurn" Grid.Row="1" Width="140" FontSize="12" HorizontalAlignment="Right" Grid.Column="2" Grid.ColumnSpan="1" SelectionChanged="ComboBoxFurn_SelectionChanged" Margin="0,0,10,0">
             <ComboBoxItem IsSelected="True" Content="HOPO Horvik скрытая"/>
             <ComboBoxItem Content="XINGSANXING"/>
             <ComboBoxItem Content="STUBLINA"/>

@@ -134,14 +134,9 @@ namespace MacoApp
             table3.Columns.Add(new DataColumn("Название", typeof(string)));
             table3.Columns.Add(new DataColumn("Количество", typeof(int)));
 
-            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/MacoFon.png")));
-            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/MacoFon.png")));
-            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/MacoFonMM.png")));
-            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/vorneFon.png")));
-            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/RotoFon.png")));
-            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/RotoFonNX.png")));
-            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/internikaFon.png")));
-            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/AkpenFon.png")));
+            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/Hopo.png")));
+            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/Xingsanxing.png")));
+            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/Stublina.png")));
 
             backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/P_OL.png")));
             backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/PL.png")));
@@ -151,7 +146,7 @@ namespace MacoApp
             backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/Stulp_P.png")));
 
             LabelErrorСode.Visibility = Visibility.Hidden;
-            ButtonColor.Background = Brushes.White;
+            //ButtonColor.Background = Brushes.White;
             ButtonStulp.IsEnabled = false;
         }
 
@@ -896,7 +891,7 @@ namespace MacoApp
 
         private void ComboBoxColor_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            try
+            /*try
             {
                 if (ComboBoxColor.SelectedIndex >= 0)
                 {
@@ -933,7 +928,7 @@ namespace MacoApp
             catch (System.Exception)
             {
                 return;
-            }
+            }*/
 
 
         }
@@ -1007,11 +1002,12 @@ namespace MacoApp
                 string Rot = textBox14Value;
                 string Fr = textBox15Value;
                 string Konst = textBox8Value;
+                string color = ComboBoxColor.Text;
 
-                queryString = $"Select * from Elements where (Name_Furn like '" + Furn + "') and(System  = 'Не имеет значения' or System  = '" + System + "') and(Side like 'Не имеет значения' or Side like '" + side + "') " +
-                    "and(Lower_loop like '" + Lower_loop + "' or Lower_loop like 'Нет') and(Micro_ventilation like '" + Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +
-                    "and(Rotation like '" + Rot + "' or Rotation like '" + RotationTwoArg + "') and(FFH_before = 0 or '" + FFH + "'>=FFH_before) and(FFH_after = 0 or '" + FFH + "' <= FFH_after)" +
-                    " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after) and(Framuga like '" + Fr + "' or Framuga like '" + FramugaTwoArg + "') and(Wood  = 'Да/Нет' or Wood  = '" + Wood + "') and(Konst like '" + Konst + "' or Konst like '" + KonstTwoArg + "')";
+                queryString = $"Select * from ElementsAlu where (Name_Furn like '" + Furn + "') and(System  = 'Не имеет значения' or System  = '" + System + "') and(Side like 'Не имеет значения' or Side like '" + side + "') " +
+                    "and(Rotation like '" + rotation + "' or Rotation like '" + rotationTwoArg + "') and(Height_from = 0 or '" + FFH + "'>=Height_from) and(Height_up_to = 0 or '" + FFH + "' <= Height_up_to)" +
+                    " and(Width_from = 0 or '" + FFB + "'>=Width_from) and(Width_up_to = 0 or '" + FFB + "' <= Width_up_to) and(Framuga like '" + framuga + "' or Framuga like '" + framugaTwoArg + "')" +
+                    "and(Shtulp like '" + shtulpTwoArg + "' or Shtulp  like '" + shtulp + "' or Shtulp = '" + shtulpTreeArg + "') and(Color  = 'Не имеет значения' or Color  = '" + color + "')";
                 quantityBar = sqlRequests.Que(Rot, Fr, Furn, FFH, FFB); //Вытаскиваем из класса количество ответных планок               
                 quantitySrPr = sqlRequests.QueSrPr(Rot, Furn, FFH); //Количество средних прижимов на поворотной створке
 
