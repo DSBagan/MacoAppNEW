@@ -52,7 +52,7 @@ namespace MacoApp
         {
             InitializeComponent();
 
-            ButtonCalculationAlu.Visibility = Visibility.Collapsed;
+            //ButtonCalculationAlu.Visibility = Visibility.Collapsed;
 
             backgroundsLogo.Add(new BitmapImage(new Uri("pack://application:,,,/images/maco.png")));
             backgroundsLogo.Add(new BitmapImage(new Uri("pack://application:,,,/images/roto-transformed.png")));

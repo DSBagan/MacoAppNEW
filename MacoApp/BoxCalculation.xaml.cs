@@ -86,7 +86,6 @@ namespace TBMFurn
             ButtonSaveTxt.IsEnabled = false;
 
 
-
             table1.Columns.Add(new DataColumn("Артикул", typeof(string)));
             table1.Columns.Add(new DataColumn("Название", typeof(string)));
             table1.Columns.Add(new DataColumn("Количество", typeof(int)));
@@ -528,17 +527,34 @@ namespace TBMFurn
         private void StartTextAnimation()
         {
             _currentIndex = 0;
-
-            // Создаем таймер
             _textTimer = new System.Windows.Threading.DispatcherTimer
             {
-                Interval = TimeSpan.FromSeconds(30)
+                Interval = TimeSpan.FromMinutes(2) // Увеличить до 2 минут
             };
             _textTimer.Tick += OnTextTimerTick;
             _textTimer.Start();
 
-            // Подписываемся на событие закрытия окна, чтобы остановить таймер
             this.Closed += OnWindowClosed;
+            this.Deactivated += OnWindowDeactivated; // обработчик деактивации
+            this.Activated += OnWindowActivated; // обработчик активации
+        }
+
+        // Останавливать таймер, когда окно не активно
+        private void OnWindowDeactivated(object sender, EventArgs e)
+        {
+            if (_textTimer != null && _textTimer.IsEnabled)
+            {
+                _textTimer.Stop();
+            }
+        }
+
+        // Запускать таймер, когда окно становится активным
+        private void OnWindowActivated(object sender, EventArgs e)
+        {
+            if (_textTimer != null && !_textTimer.IsEnabled)
+            {
+                _textTimer.Start();
+            }
         }
 
         private void OnTextTimerTick(object sender, EventArgs e)
@@ -562,7 +578,10 @@ namespace TBMFurn
 
         private void OnWindowClosed(object sender, EventArgs e)
         {
-            // Останавливаем таймер при закрытии окна
+            // Останавливаем анимации
+            TextBlockFeedback.BeginAnimation(UIElement.OpacityProperty, null);
+
+            // Останавливаем таймер
             if (_textTimer != null)
             {
                 _textTimer.Stop();
@@ -570,8 +589,16 @@ namespace TBMFurn
                 _textTimer = null;
             }
 
-            // Отписываемся от события
+            // Отписываемся от всех событий
             this.Closed -= OnWindowClosed;
+            this.Deactivated -= OnWindowDeactivated;
+            this.Activated -= OnWindowActivated;
+
+            // Очищаем таблицы
+            if (table1 != null) table1.Clear();
+            if (table2 != null) table2.Clear();
+            if (table3 != null) table3.Clear();
+
         }
 
         public void SaveTable2() // Сохранение каждого нового расчета в таблицу 2 для дальнейшего сохранения

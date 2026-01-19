@@ -85,6 +85,7 @@
     <None Remove="images\ПО.png" />
     <None Remove="images\Стрелка вправо.png" />
     <None Remove="images\Стрелка.png" />
+    <None Remove="images\тест.png" />
     <None Remove="images\Ящик Лого.png" />
     <None Remove="images\Ящик под мойку Цвет.png" />
     <None Remove="maco.png" />
@@ -101,6 +102,12 @@
     <None Remove="Vorne-logo.png" />
     <None Remove="Внутренний ящик 135 Цвет.png" />
     <None Remove="Портал.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="images\тест.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
