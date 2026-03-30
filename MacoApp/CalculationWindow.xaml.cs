@@ -62,6 +62,7 @@ namespace MacoApp
 
         private ObservableCollection<BitmapImage> backgroundsFON = new ObservableCollection<BitmapImage>();
         private ObservableCollection<BitmapImage> backgroundsButtons = new ObservableCollection<BitmapImage>();
+
         //Список фрамужных артикулов
         List<string> ArticleFram1 = new List<string> { "52480","52486","52487","94491","42083","42084","V12010102",
             "V12020102","V13030102","V45010107","230177","227354","230252","230205","INT1003.07","1077266","1077266","52486","52486","52321",
@@ -78,9 +79,9 @@ namespace MacoApp
         "41340", "41343", "208602", "208604", "229858", "229863", "1092264", "1092265", "V44030108", "52389"};
         //Список штульповых дублирующихся артикулов
         List<string> ListStulp = new List<string> { "52480", "52486", "52487", "94491", "42083", "42084", "52483", "52478", "41742", "41743", "42087", "52479", "52484",
-        "42186", "42189", "42192", "42195", "42208", "42187", "42190", "42193", "42196", "42209", "43566", "43567", "43760", "43761", "43940", "42048", "42057", "42095", 
+        "42186", "42189", "42192", "42195", "42208", "42187", "42190", "42193", "42196", "42209", "43566", "43567", "43760", "43761", "43940", "42048", "42057", "42095",
             "42099", "42107", "41752", "41762", "42093", "42097", "42105", "41760", "41763", "42094", "42098", "42106", "42049", "42058", "42096", "42103", "42108"};
-        List<string> ListStulpOtv = new List<string> { "34610"};
+        List<string> ListStulpOtv = new List<string> { "34610" };
 
         int Count = 1;
         string rotation;
@@ -114,7 +115,11 @@ namespace MacoApp
 
         string CountSP;
 
-        
+        // Добавляем флаг для отслеживания состояния очистки
+        private bool _isCleaningUp = false;
+
+        // Сохраняем ссылки на созданные кнопки для корректной отписки
+        private List<Button> _deleteButtons = new List<Button>();
 
         public CalculationWindow()
         {
@@ -122,6 +127,15 @@ namespace MacoApp
             Loaded += CalculationWindow_Loaded;
             StartTextAnimation(); // Запускаем анимацию текстблока обратной связи
             SaveCalc.IsEnabled = false;
+
+            // Используем using для инициализации таблиц
+            InitializeDataTables();
+
+            LoadBackgrounds();
+        }
+
+        private void InitializeDataTables()
+        {
             table1.Columns.Add(new DataColumn("Артикул", typeof(string)));
             table1.Columns.Add(new DataColumn("Название", typeof(string)));
             table1.Columns.Add(new DataColumn("Количество", typeof(int)));
@@ -133,7 +147,10 @@ namespace MacoApp
             table3.Columns.Add(new DataColumn("Артикул", typeof(string)));
             table3.Columns.Add(new DataColumn("Название", typeof(string)));
             table3.Columns.Add(new DataColumn("Количество", typeof(int)));
+        }
 
+        private void LoadBackgrounds()
+        {
             backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/MacoFon.png")));
             backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/MacoFon.png")));
             backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/MacoFonMM.png")));
@@ -149,6 +166,29 @@ namespace MacoApp
             backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/PP.png")));
             backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/Stulp_L.png")));
             backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/Stulp_P.png")));
+        }
+
+        private void CalculationWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            ButtonSaveTxt.IsEnabled = false;
+            var timer = new System.Windows.Threading.DispatcherTimer();
+            timer.Interval = new TimeSpan(0, 0, 1);
+            timer.IsEnabled = true;
+            timer.Start();
+
+            // Сохраняем ссылку на таймер для очистки
+            this.Tag = timer;
+
+            ButtonP_O.BorderBrush = Brushes.Red;
+            rotation = "Нет";
+            rotationTwoArg = "Да/Нет";
+            framuga = "Нет";
+            framugaTwoArg = "Да/Нет";
+            konst = "Нет";
+            konstTwoArg = "Да/Нет";
+            shtulp = "Нет";
+            shtulpTwoArg = "Да/Нет";
+            shtulpTreeArg = "";
 
             LabelErrorСode.Visibility = Visibility.Hidden;
             ButtonColor.Background = Brushes.White;
@@ -160,26 +200,6 @@ namespace MacoApp
             TextBlockShtulp.Visibility = Visibility.Collapsed;
             ComboBoxShtulp.Visibility = Visibility.Collapsed;
             ButtonStulp.IsEnabled = false;
-        }
-
-        private void CalculationWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            ButtonSaveTxt.IsEnabled = false;
-            var timer = new System.Windows.Threading.DispatcherTimer();
-            timer.Interval = new TimeSpan(0, 0, 1);
-            timer.IsEnabled = true;
-            //timer.Tick += (o, t) => { TBDate.Text = DateTime.Now.ToString(); };
-            timer.Start();
-            ButtonP_O.BorderBrush = Brushes.Red;
-            rotation = "Нет";
-            rotationTwoArg = "Да/Нет";
-            framuga = "Нет";
-            framugaTwoArg = "Да/Нет";
-            konst = "Нет";
-            konstTwoArg = "Да/Нет";
-            shtulp = "Нет";
-            shtulpTwoArg = "Да/Нет";
-            shtulpTreeArg = "";
         }
 
         private void ButtonCalc_Click(object sender, RoutedEventArgs e)
@@ -206,7 +226,7 @@ namespace MacoApp
                 string Micro_ventilation = ComboBoxMv.Text;
                 string wood;
                 string color = ComboBoxColor.Text;
-                
+
                 if (ComboBoxSystem.Text == "Дерево")
                 {
                     wood = "Да";
@@ -225,7 +245,7 @@ namespace MacoApp
                     "and(Lower_loop like '" + Lower_loop + "' or Lower_loop like 'Нет') and(Micro_ventilation like '" + Micro_ventilation + "' or Micro_ventilation like 'Да/Нет')" +
                     "and(Rotation like '" + rotation + "' or Rotation like '" + rotationTwoArg + "') and(FFH_before = 0 or '" + FFH + "'>=FFH_before) and(FFH_after = 0 or '" + FFH + "' <= FFH_after)" +
                     " and(FFB_before = 0 or '" + FFB + "'>=FFB_before) and(FFB_after = 0 or '" + FFB + "' <= FFB_after) and(Framuga like '" + framuga + "' or Framuga like '" + framugaTwoArg + "') and(Wood  = 'Да/Нет' or Wood  = '" + wood + "') " +
-                    "and(Konst like '" + konst + "' or Konst like '" + konstTwoArg + "') and(Shtulp like '"+ shtulpTwoArg +"' or Shtulp  like '" + shtulp + "' or Shtulp = '"+ shtulpTreeArg +"') and(Color  = 'Не имеет значения' or Color  = '" + color + "')";
+                    "and(Konst like '" + konst + "' or Konst like '" + konstTwoArg + "') and(Shtulp like '" + shtulpTwoArg + "' or Shtulp  like '" + shtulp + "' or Shtulp = '" + shtulpTreeArg + "') and(Color  = 'Не имеет значения' or Color  = '" + color + "')";
                 quantityBar = sqlRequests.Que(rotation, framuga, Furn, FFH, FFB); //Вытаскиваем из класса количество ответных планок
                 quantitySrPr = sqlRequests.QueSrPr(rotation, Furn, FFH); //Количество средних прижимов на поворотной створке
                 quantityShtulp = sqlRequests.QueShtup(shtulp, Furn, FFH, shtulpTreeArg);  //Количество штульповых ответных планок 
@@ -274,9 +294,9 @@ namespace MacoApp
                                 {
                                     collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * 2 });
                                 }
-                                else if (shtulp=="Да" && ListStulp.Contains(reader.GetValue(3).ToString()))
+                                else if (shtulp == "Да" && ListStulp.Contains(reader.GetValue(3).ToString()))
                                 {
-                                    collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * 2});
+                                    collection.Add(new ClassList() { N = count, Артикул = "" + reader.GetValue(3).ToString(), Название = "" + reader.GetValue(2).ToString(), Шт = (int.Parse(reader.GetValue(4).ToString()) * quantity) * 2 });
                                 }
                                 else
                                 {
@@ -289,21 +309,19 @@ namespace MacoApp
                 }
                 SaveCalc.IsEnabled = true;
             }
-            catch
+            catch (System.Exception ex)
             {
-                //MaterialMessageBox.ShowDialog("Одно или несколько полей пустое");
+                System.Diagnostics.Debug.WriteLine($"Ошибка в ButtonCalc_Click: {ex.Message}");
                 return;
             }
         }
 
         private void SaveCalc_Click(object sender, RoutedEventArgs e)
         {
-
             try
             {
                 int count = 0;
                 string queryString;
-                string queryStringCreateTable;
                 string Furn = ComboBoxFurn.Text;
                 int quantity = Int32.Parse(TextBoxColvo.Text);
                 int quantitySrPr = Int32.Parse(TextBoxColvo.Text);
@@ -316,7 +334,7 @@ namespace MacoApp
                 string Lower_loop = ComboBoxLL.Text;
                 string Micro_ventilation = ComboBoxMv.Text;
                 string color = ComboBoxColor.Text;
-                
+
 
                 if (ComboBoxSystem.Text == "Дерево")
                 {
@@ -456,7 +474,6 @@ namespace MacoApp
                             textBlockkonstTwoArg.Height = 0;
 
                             Button deleteButton = new Button();
-                            //deleteButton.Width = 10;
                             deleteButton.Height = 15;
                             deleteButton.Click += DeleteButton_Click;
                             deleteButton.Content = " Удалить  ";
@@ -468,6 +485,9 @@ namespace MacoApp
                             deleteButton.FontSize = 10;
                             deleteButton.Padding = new Thickness(0);
                             deleteButton.Foreground = Brushes.Black;
+
+                            // Сохраняем ссылку на кнопку для корректной отписки
+                            _deleteButtons.Add(deleteButton);
 
                             // Задаем значения для TextBlock элементов
                             textBlockFurn.Text = Furn;
@@ -532,14 +552,15 @@ namespace MacoApp
                 }
                 SaveCalc.IsEnabled = true;
             }
-            catch
+            catch (System.Exception ex)
             {
-                //MaterialMessageBox.ShowDialog("Одно или несколько полей пустое");
+                System.Diagnostics.Debug.WriteLine($"Ошибка в SaveCalc_Click: {ex.Message}");
                 return;
             }
             ButtonSaveTxt.IsEnabled = true;
             SaveCalc.IsEnabled = false;
             TextBoxColvo.Text = "1";
+            Count++;
         }
 
         //Окрашиваем Текстбокс
@@ -565,6 +586,7 @@ namespace MacoApp
                 }
             }
         }
+
         public void SaveTable2() // Сохранение каждого нового расчета в таблицу 2 для дальнейшего сохранения
         {
             // Итерируем по строкам таблицы 1
@@ -593,19 +615,9 @@ namespace MacoApp
             }
         }
 
-        
-
         //Сохранение расчета в файл
-        //***************************************************************************************************************
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            /*if (Code.Text == "")
-            {
-                MaterialMessageBox.ShowDialog("Введите шифр фирмы");
-                return;
-
-            }*/
-
             if (LBList.Items == null)
             {
                 MaterialMessageBox.ShowDialog("Сначала произведите расчет, нечего сохранять.");
@@ -626,7 +638,7 @@ namespace MacoApp
                     MaterialMessageBox.ShowDialog("Нет доступа к диску X, файл ,будет сохранен в папку aTBMFURN на диске C");
                     SavePathTXT = @"C:\aTBMFURN\";
                 }
-                
+
                 String date = DateTime.Now.ToString(" dd.MM.yyyy HH-mm-ss");
                 int CTlangth = Code.Text.Length;
                 if (CTlangth == 0)
@@ -704,6 +716,14 @@ namespace MacoApp
                 LBListCalc.Items.Clear();
                 LBList.Items.Clear();
                 SPSF.Children.Clear();
+
+                // Очищаем список кнопок
+                foreach (var btn in _deleteButtons)
+                {
+                    btn.Click -= DeleteButton_Click;
+                }
+                _deleteButtons.Clear();
+
                 Count = 1;
             }
             ButtonSaveTxt.IsEnabled = false;
@@ -939,9 +959,6 @@ namespace MacoApp
             }
         }
 
-
-
-
         private void StartTextAnimation()
         {
             _currentIndex = 0;
@@ -996,54 +1013,121 @@ namespace MacoApp
 
         private void OnWindowClosed(object sender, EventArgs e)
         {
-            // Останавливаем анимации
-            TextBlockFeedback.BeginAnimation(UIElement.OpacityProperty, null);
+            if (_isCleaningUp) return;
+            _isCleaningUp = true;
 
-            // Останавливаем таймер
-            if (_textTimer != null)
+            try
             {
-                _textTimer.Stop();
-                _textTimer.Tick -= OnTextTimerTick;
-                _textTimer = null;
+                // Останавливаем анимации
+                TextBlockFeedback.BeginAnimation(UIElement.OpacityProperty, null);
+
+                // Останавливаем и очищаем таймер
+                if (_textTimer != null)
+                {
+                    _textTimer.Stop();
+                    _textTimer.Tick -= OnTextTimerTick;
+                    _textTimer = null;
+                }
+
+                // Останавливаем таймер из Loaded
+                if (this.Tag is System.Windows.Threading.DispatcherTimer loadedTimer)
+                {
+                    loadedTimer.Stop();
+                    this.Tag = null;
+                }
+
+                // Отписываемся от всех событий
+                this.Closed -= OnWindowClosed;
+                this.Deactivated -= OnWindowDeactivated;
+                this.Activated -= OnWindowActivated;
+                this.Loaded -= CalculationWindow_Loaded;
+
+                // Отписываемся от событий кнопок
+                foreach (var btn in _deleteButtons)
+                {
+                    btn.Click -= DeleteButton_Click;
+                }
+                _deleteButtons.Clear();
+
+                // Отписываемся от событий ComboBox
+                ComboBoxFurn.SelectionChanged -= ComboBoxFurn_SelectionChanged;
+                ComboBoxSide.SelectionChanged -= ComboBoxSide_SelectionChanged;
+                ComboBoxSystem.SelectionChanged -= ComboBoxSystem_SelectionChanged;
+                ComboBoxShtulp.SelectionChanged -= ComboBoxShtulp_SelectionChanged;
+                ComboBoxKonst.SelectionChanged -= ComboBoxKonst_SelectionChanged;
+                ComboBoxColor.SelectionChanged -= ComboBoxColor_SelectionChanged;
+
+                // Отписываемся от событий кнопок
+                ButtonP_O.Click -= ButtonP_O_Click;
+                ButtonP.Click -= ButtonP_Click;
+                ButtonFram.Click -= ButtonFram_Click;
+                ButtonStulp.Click -= ButtonStulp_Click;
+                SaveCalc.Click -= SaveCalc_Click;
+                ButtonSaveTxt.Click -= Button_Click;
+                ButtonSpisokName.Click -= ButtonSpisokName_Click;
+                ButtonExit.Click -= ButtonExit_Click;
+                ButtonFeedback.Click -= ButtonFeedback_Click;
+
+                // Очищаем коллекции
+                if (backgroundsFON != null)
+                {
+                    foreach (var bg in backgroundsFON)
+                    {
+                        bg.UriSource = null;
+                    }
+                    backgroundsFON.Clear();
+                }
+
+                if (backgroundsButtons != null)
+                {
+                    foreach (var btn in backgroundsButtons)
+                    {
+                        btn.UriSource = null;
+                    }
+                    backgroundsButtons.Clear();
+                }
+
+                // Очищаем таблицы
+                if (table1 != null)
+                {
+                    table1.Clear();
+                    table1.Dispose();
+                }
+                if (table2 != null)
+                {
+                    table2.Clear();
+                    table2.Dispose();
+                }
+                if (table3 != null)
+                {
+                    table3.Clear();
+                    table3.Dispose();
+                }
+
+                // Очищаем списки
+                ArticleFram1?.Clear();
+                ArticleFram2?.Clear();
+                response_bars?.Clear();
+                response_barsSthulp?.Clear();
+                SrPr?.Clear();
+                ListStulp?.Clear();
+                ListStulpOtv?.Clear();
+
+                // Очищаем GridList
+                GridList.ItemsSource = null;
+
+                // Очищаем StackPanel
+                SPSF.Children.Clear();
+
+                // Вызываем GC для принудительной сборки мусора
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
             }
-
-            // Отписываемся от всех событий
-            this.Closed -= OnWindowClosed;
-            this.Deactivated -= OnWindowDeactivated;
-            this.Activated -= OnWindowActivated;
-            this.Loaded -= CalculationWindow_Loaded;
-
-            // Очищаем коллекции
-            if (backgroundsFON != null)
+            catch (System.Exception ex)
             {
-                backgroundsFON.Clear();
-                backgroundsFON = null;
+                System.Diagnostics.Debug.WriteLine($"Ошибка при очистке ресурсов: {ex.Message}");
             }
-
-            if (backgroundsButtons != null)
-            {
-                backgroundsButtons.Clear();
-                backgroundsButtons = null;
-            }
-
-            // Очищаем таблицы
-            if (table1 != null) table1.Clear();
-            if (table2 != null) table2.Clear();
-            if (table3 != null) table3.Clear();
-
-            // Очищаем списки
-            ArticleFram1?.Clear();
-            ArticleFram2?.Clear();
-            response_bars?.Clear();
-            response_barsSthulp?.Clear();
-            SrPr?.Clear();
-            ListStulp?.Clear();
-            ListStulpOtv?.Clear();
         }
-
-
-
-
 
         //Фон для кнопок поворота************************************
         private void ComboBoxSide_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1121,6 +1205,7 @@ namespace MacoApp
                 konst = "Нет";
             }
         }
+
         private void ComboBoxColor_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
@@ -1161,10 +1246,7 @@ namespace MacoApp
             {
                 return;
             }
-            
-
         }
-
 
         //Изменение размера списка расчетов
         private void ButtonSpisokName_Click(object sender, RoutedEventArgs e)
@@ -1172,7 +1254,6 @@ namespace MacoApp
             if (isPanelExpanded)
             {
                 // если StackPanel уже раскрыт, то уменьшаем его размеры до исходных
-                //SPSF.Width = 500; // возвращает ширину элемента к исходному значению
                 SVSP.Height = 70;
                 isPanelExpanded = false;
                 ButtonSpisokName.Content = "▲";
@@ -1180,12 +1261,9 @@ namespace MacoApp
             else
             {
                 // если StackPanel свернут, то увеличиваем его размеры на определенную величину
-                //SPSF.Width = 600; // увеличиваем ширину
                 isPanelExpanded = true;
                 SVSP.Height = 400;
-
                 ButtonSpisokName.Content = "▼";
-  
             }
         }
 
@@ -1217,7 +1295,6 @@ namespace MacoApp
             try
             {
                 string queryString;
-                string queryStringCreateTable;
                 string Furn = textBox1Value;
                 int quantity = int.Parse(textBox9Value);
                 int quantitySrPr = int.Parse(textBox9Value);
@@ -1292,14 +1369,21 @@ namespace MacoApp
                 }
                 SaveCalc.IsEnabled = true;
             }
-            catch
+            catch (System.Exception ex)
             {
-                //MaterialMessageBox.ShowDialog("Одно или несколько полей пустое");
+                System.Diagnostics.Debug.WriteLine($"Ошибка в DeleteButton_Click: {ex.Message}");
                 return;
             }
 
             // Удаляем строку из StackPanel
             SPSF.Children.Remove(parentStackPanel);
+
+            // Удаляем кнопку из списка и отписываемся от события
+            if (_deleteButtons.Contains(deleteButton))
+            {
+                deleteButton.Click -= DeleteButton_Click;
+                _deleteButtons.Remove(deleteButton);
+            }
         }
 
         public void DeletedTable2() //Удаление расчета из таблицы 2 при удалении его из списка расчетов
@@ -1330,8 +1414,8 @@ namespace MacoApp
                     }
                 }
             }
-
         }
+
         //ввод только цифр в текстбоксы
         private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
@@ -1342,6 +1426,7 @@ namespace MacoApp
                 e.Handled = true; // отклоняем ввод
             }
         }
+
         //ввод только цифр в текстбоксы (пробел тоже нам не нужен)
         private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -1351,19 +1436,16 @@ namespace MacoApp
                 e.Handled = true; // если пробел, отклоняем ввод
             }
         }
+
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
-            
-            /*EntryiWindow entryiWindow = new EntryiWindow();
-            entryiWindow.Show();*/
             this.Close();
         }
+
         private void ButtonFeedback_Click(object sender, RoutedEventArgs e)
         {
             FeedbackWindow feedbackWindow = new FeedbackWindow();
             feedbackWindow.Show();
         }
-
-        
     }
 }

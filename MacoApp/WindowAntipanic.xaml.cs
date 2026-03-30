@@ -30,141 +30,164 @@ namespace TBMFurn
         DataTable table1 = new DataTable("Table1"); //Таблица для сохранения расчета
         string SavePathTXT = "";
 
+        // Добавляем флаг для отслеживания состояния очистки
+        private bool _isCleaningUp = false;
+
+        // Сохраняем ссылки на анимации для остановки
+        private DoubleAnimation _errorAnimation;
+
         public WindowAntipanic()
         {
-            InitializeComponent(); 
+            InitializeComponent();
+            InitializeDataTable();
+
+            LabelErrorСode.Visibility = Visibility.Hidden;
+            ButtonSaveTxt.IsEnabled = false;
+
+            // Подписываемся на событие закрытия окна
+            this.Closed += OnWindowClosed;
+        }
+
+        private void InitializeDataTable()
+        {
             table1.Columns.Add(new DataColumn("Артикул", typeof(string)));
             table1.Columns.Add(new DataColumn("Название", typeof(string)));
             table1.Columns.Add(new DataColumn("Шт", typeof(int)));
-            var collection = new ObservableCollection<ClassList>();
-            LabelErrorСode.Visibility = Visibility.Hidden;
-            ButtonSaveTxt.IsEnabled = false;
         }
 
         private void ButtonAntipanic()
         {
-            if (TextBoxQuantity != null)
-            {
-                Quantity = Int32.Parse(TextBoxQuantity.Text);
-            }
-            else 
-            {
-                Quantity = 1;
-            }
+            if (ComboboxDoor == null) return;
 
-            if (ComboboxDoor.SelectedIndex == 0)
+            try
             {
-                if (NumberButton == 1)
+                if (TextBoxQuantity != null && !string.IsNullOrEmpty(TextBoxQuantity.Text))
                 {
-                    ButtonSaveTxt.IsEnabled = true;
-                    table1.Rows.Clear();
-                    ObservableCollection<ClassList> collection = null; //Обнуляем коллекцию для нового расчета
-                    collection = new ObservableCollection<ClassList>();
-                    GridListAntipanic.ItemsSource = collection;
-                    collection.Add(new ClassList() { N = 1, Артикул = "ATP0500.06", Название = "Гарнитур нажимной, одна точка запирания по горизонту", Шт = (1 * Quantity) });
-                    collection.Add(new ClassList() { N = 2, Артикул = "ATP0501.6029", Название = "Перекладина для антипаниковой ручки 1150 мм, зелен.", Шт = 1 * Quantity });
-                    collection.Add(new ClassList() { N = 3, Артикул = "ATP0505.06", Название = "Ручка наружная для антипаники с профильным цилиндром", Шт = 1 * Quantity });
-                    CopyCollectionToDataTable(collection);
+                    Quantity = Int32.Parse(TextBoxQuantity.Text);
                 }
-                else if (NumberButton == 2)
+                else
                 {
-                    ButtonSaveTxt.IsEnabled = true;
-                    table1.Rows.Clear();
-                    ObservableCollection<ClassList> collection = null; //Обнуляем коллекцию для нового расчета
-                    collection = new ObservableCollection<ClassList>();
-                    GridListAntipanic.ItemsSource = collection;
-                    collection.Add(new ClassList() { N = 1, Артикул = "ATP0502.06", Название = "Гарнитур нажимной, две точки запирания по вертикали.", Шт = 1 * Quantity });
-                    collection.Add(new ClassList() { N = 2, Артикул = "ATP0501.6029", Название = "Перекладина для антипаниковой ручки 1150 мм, зелен.", Шт = 1 * Quantity });
-                    collection.Add(new ClassList() { N = 3, Артикул = "ATP0503.06", Название = "Запоры вертикальные 2 штуки, высотой до 2640 мм", Шт = 1 * Quantity });
-                    collection.Add(new ClassList() { N = 4, Артикул = "ATP0505.06", Название = "Ручка наружная для антипаники с профильным цилиндром, черн.", Шт = 1 * Quantity });
-                    CopyCollectionToDataTable(collection);
+                    Quantity = 1;
                 }
-                else if (NumberButton == 3)
+
+                if (ComboboxDoor.SelectedIndex == 0)
                 {
-                    ButtonSaveTxt.IsEnabled = true;
-                    table1.Rows.Clear();
-                    ObservableCollection<ClassList> collection = null; //Обнуляем коллекцию для нового расчета
-                    collection = new ObservableCollection<ClassList>();
-                    GridListAntipanic.ItemsSource = collection;
-                    collection.Add(new ClassList() { N = 1, Артикул = "ATP0504.06", Название = "Гарнитур нажимной, три точки запирания (горизонтальная и вертикальные)", Шт = 1 * Quantity });
-                    collection.Add(new ClassList() { N = 2, Артикул = "ATP0501.6029", Название = "Перекладина для антипаниковой ручки 1150 мм, зелен.", Шт = 1 * Quantity });
-                    collection.Add(new ClassList() { N = 3, Артикул = "ATP0503.06", Название = "Запоры вертикальные 2 штуки, высотой до 2640 мм", Шт = 1 * Quantity });
-                    collection.Add(new ClassList() { N = 4, Артикул = "ATP0505.06", Название = "Ручка наружная для антипаники с профильным цилиндром, черн.", Шт = 1 * Quantity });
-                    CopyCollectionToDataTable(collection);
+                    if (NumberButton == 1)
+                    {
+                        ButtonSaveTxt.IsEnabled = true;
+                        table1.Rows.Clear();
+                        ObservableCollection<ClassList> collection = null; //Обнуляем коллекцию для нового расчета
+                        collection = new ObservableCollection<ClassList>();
+                        GridListAntipanic.ItemsSource = collection;
+                        collection.Add(new ClassList() { N = 1, Артикул = "ATP0500.06", Название = "Гарнитур нажимной, одна точка запирания по горизонту", Шт = (1 * Quantity) });
+                        collection.Add(new ClassList() { N = 2, Артикул = "ATP0501.6029", Название = "Перекладина для антипаниковой ручки 1150 мм, зелен.", Шт = 1 * Quantity });
+                        collection.Add(new ClassList() { N = 3, Артикул = "ATP0505.06", Название = "Ручка наружная для антипаники с профильным цилиндром", Шт = 1 * Quantity });
+                        CopyCollectionToDataTable(collection);
+                    }
+                    else if (NumberButton == 2)
+                    {
+                        ButtonSaveTxt.IsEnabled = true;
+                        table1.Rows.Clear();
+                        ObservableCollection<ClassList> collection = null;
+                        collection = new ObservableCollection<ClassList>();
+                        GridListAntipanic.ItemsSource = collection;
+                        collection.Add(new ClassList() { N = 1, Артикул = "ATP0502.06", Название = "Гарнитур нажимной, две точки запирания по вертикали.", Шт = 1 * Quantity });
+                        collection.Add(new ClassList() { N = 2, Артикул = "ATP0501.6029", Название = "Перекладина для антипаниковой ручки 1150 мм, зелен.", Шт = 1 * Quantity });
+                        collection.Add(new ClassList() { N = 3, Артикул = "ATP0503.06", Название = "Запоры вертикальные 2 штуки, высотой до 2640 мм", Шт = 1 * Quantity });
+                        collection.Add(new ClassList() { N = 4, Артикул = "ATP0505.06", Название = "Ручка наружная для антипаники с профильным цилиндром, черн.", Шт = 1 * Quantity });
+                        CopyCollectionToDataTable(collection);
+                    }
+                    else if (NumberButton == 3)
+                    {
+                        ButtonSaveTxt.IsEnabled = true;
+                        table1.Rows.Clear();
+                        ObservableCollection<ClassList> collection = null;
+                        collection = new ObservableCollection<ClassList>();
+                        GridListAntipanic.ItemsSource = collection;
+                        collection.Add(new ClassList() { N = 1, Артикул = "ATP0504.06", Название = "Гарнитур нажимной, три точки запирания (горизонтальная и вертикальные)", Шт = 1 * Quantity });
+                        collection.Add(new ClassList() { N = 2, Артикул = "ATP0501.6029", Название = "Перекладина для антипаниковой ручки 1150 мм, зелен.", Шт = 1 * Quantity });
+                        collection.Add(new ClassList() { N = 3, Артикул = "ATP0503.06", Название = "Запоры вертикальные 2 штуки, высотой до 2640 мм", Шт = 1 * Quantity });
+                        collection.Add(new ClassList() { N = 4, Артикул = "ATP0505.06", Название = "Ручка наружная для антипаники с профильным цилиндром, черн.", Шт = 1 * Quantity });
+                        CopyCollectionToDataTable(collection);
+                    }
+                    else if (NumberButton == 4)
+                    {
+                        ButtonSaveTxt.IsEnabled = true;
+                        table1.Rows.Clear();
+                        ObservableCollection<ClassList> collection = null;
+                        collection = new ObservableCollection<ClassList>();
+                        GridListAntipanic.ItemsSource = collection;
+                        collection.Add(new ClassList() { N = 1, Артикул = "ATP0500.06", Название = "Гарнитур нажимной, одна точка запирания по горизонту", Шт = 1 * Quantity });
+                        collection.Add(new ClassList() { N = 2, Артикул = "ATP0501.6029", Название = "Перекладина для антипаниковой ручки 1150 мм, зелен.", Шт = 2 * Quantity });
+                        collection.Add(new ClassList() { N = 3, Артикул = "ATP0502.06", Название = "Гарнитур нажимной, две точки запирания по вертикали.", Шт = 1 * Quantity });
+                        collection.Add(new ClassList() { N = 4, Артикул = "ATP0503.06", Название = "Запоры вертикальные 2 штуки, высотой до 2640 мм", Шт = 1 * Quantity });
+                        collection.Add(new ClassList() { N = 5, Артикул = "ATP0505.06", Название = "Ручка наружная для антипаники с профильным цилиндром, черн.", Шт = 1 * Quantity });
+                        CopyCollectionToDataTable(collection);
+                    }
                 }
-                else if (NumberButton == 4)
+                else if (ComboboxDoor.SelectedIndex == 1)
                 {
-                    ButtonSaveTxt.IsEnabled = true;
-                    table1.Rows.Clear();
-                    ObservableCollection<ClassList> collection = null; //Обнуляем коллекцию для нового расчета
-                    collection = new ObservableCollection<ClassList>();
-                    GridListAntipanic.ItemsSource = collection;
-                    collection.Add(new ClassList() { N = 1, Артикул = "ATP0500.06", Название = "Гарнитур нажимной, одна точка запирания по горизонту", Шт = 1 * Quantity });
-                    collection.Add(new ClassList() { N = 2, Артикул = "ATP0501.6029", Название = "Перекладина для антипаниковой ручки 1150 мм, зелен.", Шт = 2 * Quantity });
-                    collection.Add(new ClassList() { N = 3, Артикул = "ATP0502.06", Название = "Гарнитур нажимной, две точки запирания по вертикали.", Шт = 1 * Quantity });
-                    collection.Add(new ClassList() { N = 4, Артикул = "ATP0503.06", Название = "Запоры вертикальные 2 штуки, высотой до 2640 мм", Шт = 1 * Quantity });
-                    collection.Add(new ClassList() { N = 5, Артикул = "ATP0505.06", Название = "Ручка наружная для антипаники с профильным цилиндром, черн.", Шт = 1 * Quantity });
-                    CopyCollectionToDataTable(collection);
+                    if (NumberButton == 1)
+                    {
+                        ButtonSaveTxt.IsEnabled = true;
+                        table1.Rows.Clear();
+                        ObservableCollection<ClassList> collection = null;
+                        collection = new ObservableCollection<ClassList>();
+                        GridListAntipanic.ItemsSource = collection;
+                        collection.Add(new ClassList() { N = 1, Артикул = "ATP0500.06", Название = "Гарнитур нажимной, одна точка запирания по горизонту", Шт = 1 * Quantity });
+                        collection.Add(new ClassList() { N = 2, Артикул = "ATP0501.6029", Название = "Перекладина для антипаниковой ручки 1150 мм, зелен.", Шт = 1 * Quantity });
+                        collection.Add(new ClassList() { N = 3, Артикул = "ATP0505.06", Название = "Ручка наружная для антипаники с профильным цилиндром", Шт = 1 * Quantity });
+                        collection.Add(new ClassList() { N = 4, Артикул = "ATP4718", Название = "Планка ответная для антипаники ПВХ и деревянных дверей", Шт = 1 * Quantity });
+                        CopyCollectionToDataTable(collection);
+                    }
+                    else if (NumberButton == 2)
+                    {
+                        ButtonSaveTxt.IsEnabled = true;
+                        table1.Rows.Clear();
+                        ObservableCollection<ClassList> collection = null;
+                        collection = new ObservableCollection<ClassList>();
+                        GridListAntipanic.ItemsSource = collection;
+                        collection.Add(new ClassList() { N = 1, Артикул = "ATP0502.06", Название = "Гарнитур нажимной, две точки запирания по вертикали.", Шт = 1 * Quantity });
+                        collection.Add(new ClassList() { N = 2, Артикул = "ATP0501.6029", Название = "Перекладина для антипаниковой ручки 1150 мм, зелен.", Шт = 1 * Quantity });
+                        collection.Add(new ClassList() { N = 3, Артикул = "ATP0503.06", Название = "Запоры вертикальные 2 штуки, высотой до 2640 мм", Шт = 1 * Quantity });
+                        collection.Add(new ClassList() { N = 4, Артикул = "ATP0505.06", Название = "Ручка наружная для антипаники с профильным цилиндром, черн.", Шт = 1 * Quantity });
+                        collection.Add(new ClassList() { N = 5, Артикул = "ATP4718", Название = "Планка ответная для антипаники ПВХ и деревянных дверей", Шт = 1 * Quantity });
+                        CopyCollectionToDataTable(collection);
+                    }
+                    else if (NumberButton == 3)
+                    {
+                        ButtonSaveTxt.IsEnabled = true;
+                        table1.Rows.Clear();
+                        ObservableCollection<ClassList> collection = null;
+                        collection = new ObservableCollection<ClassList>();
+                        GridListAntipanic.ItemsSource = collection;
+                        collection.Add(new ClassList() { N = 1, Артикул = "ATP0504.06", Название = "Гарнитур нажимной, три точки запирания (горизонтальная и вертикальные)", Шт = 1 * Quantity });
+                        collection.Add(new ClassList() { N = 2, Артикул = "ATP0501.6029", Название = "Перекладина для антипаниковой ручки 1150 мм, зелен.", Шт = 1 * Quantity });
+                        collection.Add(new ClassList() { N = 3, Артикул = "ATP0503.06", Название = "Запоры вертикальные 2 штуки, высотой до 2640 мм", Шт = 1 * Quantity });
+                        collection.Add(new ClassList() { N = 4, Артикул = "ATP0505.06", Название = "Ручка наружная для антипаники с профильным цилиндром, черн.", Шт = 1 * Quantity });
+                        collection.Add(new ClassList() { N = 5, Артикул = "ATP4718", Название = "Планка ответная для антипаники ПВХ и деревянных дверей", Шт = 1 * Quantity });
+                        CopyCollectionToDataTable(collection);
+                    }
+                    else if (NumberButton == 4)
+                    {
+                        ButtonSaveTxt.IsEnabled = true;
+                        table1.Rows.Clear();
+                        ObservableCollection<ClassList> collection = null;
+                        collection = new ObservableCollection<ClassList>();
+                        GridListAntipanic.ItemsSource = collection;
+                        collection.Add(new ClassList() { N = 1, Артикул = "ATP0500.06", Название = "Гарнитур нажимной, одна точка запирания по горизонту", Шт = 1 * Quantity });
+                        collection.Add(new ClassList() { N = 2, Артикул = "ATP0501.6029", Название = "Перекладина для антипаниковой ручки 1150 мм, зелен.", Шт = 2 * Quantity });
+                        collection.Add(new ClassList() { N = 3, Артикул = "ATP0502.06", Название = "Гарнитур нажимной, две точки запирания по вертикали.", Шт = 1 * Quantity });
+                        collection.Add(new ClassList() { N = 4, Артикул = "ATP0503.06", Название = "Запоры вертикальные 2 штуки, высотой до 2640 мм", Шт = 1 * Quantity });
+                        collection.Add(new ClassList() { N = 5, Артикул = "ATP0505.06", Название = "Ручка наружная для антипаники с профильным цилиндром, черн.", Шт = 1 * Quantity });
+                        collection.Add(new ClassList() { N = 6, Артикул = "ATP4718", Название = "Планка ответная для антипаники ПВХ и деревянных дверей", Шт = 1 * Quantity });
+                        CopyCollectionToDataTable(collection);
+                    }
                 }
             }
-            if (ComboboxDoor.SelectedIndex == 1)
+            catch (Exception ex)
             {
-                if (NumberButton == 1)
-                {
-                    ButtonSaveTxt.IsEnabled = true;
-                    table1.Rows.Clear();
-                    ObservableCollection<ClassList> collection = null; //Обнуляем коллекцию для нового расчета
-                    collection = new ObservableCollection<ClassList>();
-                    GridListAntipanic.ItemsSource = collection;
-                    collection.Add(new ClassList() { N = 1, Артикул = "ATP0500.06", Название = "Гарнитур нажимной, одна точка запирания по горизонту", Шт = 1 * Quantity });
-                    collection.Add(new ClassList() { N = 2, Артикул = "ATP0501.6029", Название = "Перекладина для антипаниковой ручки 1150 мм, зелен.", Шт = 1 * Quantity });
-                    collection.Add(new ClassList() { N = 3, Артикул = "ATP0505.06", Название = "Ручка наружная для антипаники с профильным цилиндром", Шт = 1 * Quantity });
-                    collection.Add(new ClassList() { N = 4, Артикул = "ATP4718", Название = "Планка ответная для антипаники ПВХ и деревянных дверей", Шт = 1 * Quantity });
-                    CopyCollectionToDataTable(collection);
-                }
-                else if (NumberButton == 2)
-                {
-                    ButtonSaveTxt.IsEnabled = true;
-                    table1.Rows.Clear();
-                    ObservableCollection<ClassList> collection = null; //Обнуляем коллекцию для нового расчета
-                    collection = new ObservableCollection<ClassList>();
-                    GridListAntipanic.ItemsSource = collection;
-                    collection.Add(new ClassList() { N = 1, Артикул = "ATP0502.06", Название = "Гарнитур нажимной, две точки запирания по вертикали.", Шт = 1 * Quantity });
-                    collection.Add(new ClassList() { N = 2, Артикул = "ATP0501.6029", Название = "Перекладина для антипаниковой ручки 1150 мм, зелен.", Шт = 1 * Quantity });
-                    collection.Add(new ClassList() { N = 3, Артикул = "ATP0503.06", Название = "Запоры вертикальные 2 штуки, высотой до 2640 мм", Шт = 1 * Quantity });
-                    collection.Add(new ClassList() { N = 4, Артикул = "ATP0505.06", Название = "Ручка наружная для антипаники с профильным цилиндром, черн.", Шт = 1 * Quantity });
-                    collection.Add(new ClassList() { N = 5, Артикул = "ATP4718", Название = "Планка ответная для антипаники ПВХ и деревянных дверей", Шт = 1 * Quantity });
-                    CopyCollectionToDataTable(collection);
-                }
-                else if (NumberButton == 3)
-                {
-                    ButtonSaveTxt.IsEnabled = true;
-                    table1.Rows.Clear();
-                    ObservableCollection<ClassList> collection = null; //Обнуляем коллекцию для нового расчета
-                    collection = new ObservableCollection<ClassList>();
-                    GridListAntipanic.ItemsSource = collection;
-                    collection.Add(new ClassList() { N = 1, Артикул = "ATP0504.06", Название = "Гарнитур нажимной, три точки запирания (горизонтальная и вертикальные)", Шт = 1 * Quantity });
-                    collection.Add(new ClassList() { N = 2, Артикул = "ATP0501.6029", Название = "Перекладина для антипаниковой ручки 1150 мм, зелен.", Шт = 1 * Quantity });
-                    collection.Add(new ClassList() { N = 3, Артикул = "ATP0503.06", Название = "Запоры вертикальные 2 штуки, высотой до 2640 мм", Шт = 1 * Quantity });
-                    collection.Add(new ClassList() { N = 4, Артикул = "ATP0505.06", Название = "Ручка наружная для антипаники с профильным цилиндром, черн.", Шт = 1 * Quantity });
-                    collection.Add(new ClassList() { N = 5, Артикул = "ATP4718", Название = "Планка ответная для антипаники ПВХ и деревянных дверей", Шт = 1 * Quantity });
-                    CopyCollectionToDataTable(collection);
-                }
-                else if (NumberButton == 4)
-                {
-                    ButtonSaveTxt.IsEnabled = true;
-                    table1.Rows.Clear();
-                    ObservableCollection<ClassList> collection = null; //Обнуляем коллекцию для нового расчета
-                    collection = new ObservableCollection<ClassList>();
-                    GridListAntipanic.ItemsSource = collection;
-                    collection.Add(new ClassList() { N = 1, Артикул = "ATP0500.06", Название = "Гарнитур нажимной, одна точка запирания по горизонту", Шт = 1 * Quantity });
-                    collection.Add(new ClassList() { N = 2, Артикул = "ATP0501.6029", Название = "Перекладина для антипаниковой ручки 1150 мм, зелен.", Шт = 2 * Quantity });
-                    collection.Add(new ClassList() { N = 3, Артикул = "ATP0502.06", Название = "Гарнитур нажимной, две точки запирания по вертикали.", Шт = 1 * Quantity });
-                    collection.Add(new ClassList() { N = 4, Артикул = "ATP0503.06", Название = "Запоры вертикальные 2 штуки, высотой до 2640 мм", Шт = 1 * Quantity });
-                    collection.Add(new ClassList() { N = 5, Артикул = "ATP0505.06", Название = "Ручка наружная для антипаники с профильным цилиндром, черн.", Шт = 1 * Quantity });
-                    collection.Add(new ClassList() { N = 6, Артикул = "ATP4718", Название = "Планка ответная для антипаники ПВХ и деревянных дверей", Шт = 1 * Quantity });
-                    CopyCollectionToDataTable(collection);
-                }
+                System.Diagnostics.Debug.WriteLine($"Ошибка в ButtonAntipanic: {ex.Message}");
             }
         }
 
@@ -199,6 +222,7 @@ namespace TBMFurn
                 MessageBox.Show("Нет доступа к диску X, файл будет сохранен в папку aTBMFURN на диске C");
                 SavePathTXT = @"C:\aTBMFURN\";
             }
+
             String date = DateTime.Now.ToString(" dd.MM.yyyy HH-mm-ss");
 
             int CTlangth = Code.Text.Length;
@@ -206,7 +230,7 @@ namespace TBMFurn
             {
                 // Показываем изображение стрелки и запускаем анимацию
                 LabelErrorСode.Visibility = Visibility.Visible;
-                DoubleAnimation animation = new DoubleAnimation
+                _errorAnimation = new DoubleAnimation
                 {
                     From = 1,
                     To = 0,
@@ -214,7 +238,7 @@ namespace TBMFurn
                     AutoReverse = true,
                     RepeatBehavior = RepeatBehavior.Forever
                 };
-                LabelErrorСode.BeginAnimation(UIElement.OpacityProperty, animation);
+                LabelErrorСode.BeginAnimation(UIElement.OpacityProperty, _errorAnimation);
                 return;
             }
             else if (CTlangth < 6)
@@ -224,6 +248,7 @@ namespace TBMFurn
                     Code.Text = "0" + Code.Text;
                 }
             }
+
             using (StreamWriter streamWriter = new StreamWriter(SavePathTXT + "Z" + Code.Text + " " + date + " Антипаника" + ".txt", false, Encoding.Default))
             {
                 streamWriter.WriteLine("                    Шифр фирмы " + Code.Text);
@@ -236,7 +261,6 @@ namespace TBMFurn
                 streamWriter.WriteLine("--------------------------------------------------------------------------------");
                 try
                 {
-                    
                     foreach (DataRow row in table1.Rows)
                     {
                         string art = Convert.ToString(row["Артикул"]);
@@ -252,28 +276,32 @@ namespace TBMFurn
                             }
                         }
                         string n = "                                                ";
-                        streamWriter.WriteLine(art + /*nam + "   " */n + qua);
+                        streamWriter.WriteLine(art + n + qua);
                     }
 
                     streamWriter.WriteLine("--------------------------------------------------------------------------------");
                     streamWriter.WriteLine();
                     streamWriter.WriteLine("                    Заявку составил________________________");
 
-
                     streamWriter.Close();
 
                     MaterialMessageBox.ShowDialog("Файл успешно сохранен");
-                    // если в TextBox есть символы
+
                     // Скрываем изображение стрелки
                     LabelErrorСode.Visibility = Visibility.Hidden;
-                    LabelErrorСode.BeginAnimation(UIElement.OpacityProperty, null); // Остановка анимации
+                    LabelErrorСode.BeginAnimation(UIElement.OpacityProperty, null);
+
+                    // Очищаем таблицу после сохранения
+                    table1.Rows.Clear();
+                    GridListAntipanic.ItemsSource = null;
+                    ButtonSaveTxt.IsEnabled = false;
                 }
-                catch
+                catch (Exception ex)
                 {
                     MaterialMessageBox.ShowDialog("Ошибка при сохранении файла!");
+                    System.Diagnostics.Debug.WriteLine($"Ошибка сохранения: {ex.Message}");
                 }
             }
-            //ButtonSaveTxt.IsEnabled = false;
         }
 
         public void ButtonAntipanic1_Click(object sender, RoutedEventArgs e)
@@ -333,8 +361,8 @@ namespace TBMFurn
             {
                 e.Handled = true; // отклоняем ввод
             }
-            
         }
+
         //ввод только цифр в текстбоксы (пробел тоже нам не нужен)
         private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -346,9 +374,64 @@ namespace TBMFurn
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
-            /*EntryiWindow entryiWindow = new EntryiWindow();
-            entryiWindow.Show();*/
             this.Close();
+        }
+
+        private void OnWindowClosed(object sender, EventArgs e)
+        {
+            if (_isCleaningUp) return;
+            _isCleaningUp = true;
+
+            try
+            {
+                // Останавливаем анимацию ошибки
+                if (_errorAnimation != null)
+                {
+                    LabelErrorСode.BeginAnimation(UIElement.OpacityProperty, null);
+                    _errorAnimation = null;
+                }
+
+                // Отписываемся от событий
+                this.Closed -= OnWindowClosed;
+
+                // Отписываемся от событий кнопок
+                ButtonAntipanic1.Click -= ButtonAntipanic1_Click;
+                ButtonAntipanic2.Click -= ButtonAntipanic2_Click;
+                ButtonAntipanic3.Click -= ButtonAntipanic3_Click;
+                ButtonAntipanic4.Click -= ButtonAntipanic4_Click;
+                ButtonSaveTxt.Click -= ButtonSaveTxt_Click;
+                ButtonExit.Click -= ButtonExit_Click;
+
+                // Отписываемся от событий ComboBox
+                ComboboxDoor.SelectionChanged -= ComboBoxDoor_SelectionChanged;
+
+                // Отписываемся от событий TextBox
+                if (TextBoxQuantity != null)
+                {
+                    TextBoxQuantity.PreviewTextInput -= TextBox_PreviewTextInput;
+                    TextBoxQuantity.PreviewKeyDown -= TextBox_PreviewKeyDown;
+                }
+                Code.PreviewTextInput -= TextBox_PreviewTextInput;
+                Code.PreviewKeyDown -= TextBox_PreviewKeyDown;
+
+                // Очищаем таблицу
+                if (table1 != null)
+                {
+                    table1.Clear();
+                    table1.Dispose();
+                }
+
+                // Очищаем GridList
+                GridListAntipanic.ItemsSource = null;
+
+                // Вызываем GC для принудительной сборки мусора
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Ошибка при очистке ресурсов WindowAntipanic: {ex.Message}");
+            }
         }
     }
 }

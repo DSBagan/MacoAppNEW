@@ -32,6 +32,7 @@ using ColorConverter = System.Windows.Media.ColorConverter;
 using System.Reflection.Emit;
 using TBMFurn;
 using MySql.Data.MySqlClient;
+using Exception = System.Exception;
 
 
 namespace MacoApp
@@ -46,6 +47,7 @@ namespace MacoApp
         public SerializationInfo BaseUri { get; private set; }
         private bool isExpanded = false;
         private System.Windows.Threading.DispatcherTimer _textTimer;
+        private System.Windows.Threading.DispatcherTimer _loadedTimer;
         private int _currentIndex;
         private readonly string[] _texts = new[]
         {    "Есть предложение по улучшению программы? Напиши \u2192",
@@ -62,6 +64,7 @@ namespace MacoApp
 
         private ObservableCollection<BitmapImage> backgroundsFON = new ObservableCollection<BitmapImage>();
         private ObservableCollection<BitmapImage> backgroundsButtons = new ObservableCollection<BitmapImage>();
+
         //Список фрамужных артикулов
         List<string> ArticleFram1 = new List<string> { "52480","52486","52487","94491","42083","42084","V12010102",
             "V12020102","V13030102","V45010107","230177","227354","230252","230205","INT1003.07","1077266","1077266","52486","52486","52321",
@@ -114,7 +117,11 @@ namespace MacoApp
 
         string CountSP;
 
+        // Добавляем флаг для отслеживания состояния очистки
+        private bool _isCleaningUp = false;
 
+        // Сохраняем ссылки на созданные кнопки для корректной отписки
+        private List<Button> _deleteButtons = new List<Button>();
 
         public CalculationWindowAlu()
         {
@@ -122,6 +129,16 @@ namespace MacoApp
             Loaded += CalculationWindowAlu_Loaded;
             StartTextAnimation(); // Запускаем анимацию текстблока обратной связи
             SaveCalc.IsEnabled = false;
+
+            InitializeDataTables();
+            LoadBackgrounds();
+
+            LabelErrorСode.Visibility = Visibility.Hidden;
+            ButtonStulp.IsEnabled = false;
+        }
+
+        private void InitializeDataTables()
+        {
             table1.Columns.Add(new DataColumn("Артикул", typeof(string)));
             table1.Columns.Add(new DataColumn("Название", typeof(string)));
             table1.Columns.Add(new DataColumn("Количество", typeof(int)));
@@ -133,7 +150,10 @@ namespace MacoApp
             table3.Columns.Add(new DataColumn("Артикул", typeof(string)));
             table3.Columns.Add(new DataColumn("Название", typeof(string)));
             table3.Columns.Add(new DataColumn("Количество", typeof(int)));
+        }
 
+        private void LoadBackgrounds()
+        {
             backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/Hopo.png")));
             backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/Xingsanxing.png")));
             backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/Stublina.png")));
@@ -144,20 +164,16 @@ namespace MacoApp
             backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/PP.png")));
             backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/Stulp_L.png")));
             backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/Stulp_P.png")));
-
-            LabelErrorСode.Visibility = Visibility.Hidden;
-            //ButtonColor.Background = Brushes.White;
-            ButtonStulp.IsEnabled = false;
         }
 
         private void CalculationWindowAlu_Loaded(object sender, RoutedEventArgs e)
         {
             ButtonSaveTxt.IsEnabled = false;
-            var timer = new System.Windows.Threading.DispatcherTimer();
-            timer.Interval = new TimeSpan(0, 0, 1);
-            timer.IsEnabled = true;
-            //timer.Tick += (o, t) => { TBDate.Text = DateTime.Now.ToString(); };
-            timer.Start();
+            _loadedTimer = new System.Windows.Threading.DispatcherTimer();
+            _loadedTimer.Interval = new TimeSpan(0, 0, 1);
+            _loadedTimer.IsEnabled = true;
+            _loadedTimer.Start();
+
             ButtonP_O.BorderBrush = Brushes.Red;
             rotation = "Нет";
             rotationTwoArg = "Да/Нет";
@@ -172,7 +188,6 @@ namespace MacoApp
 
         private void ButtonCalc_Click(object sender, RoutedEventArgs e)
         {
-
             try
             {
                 int count = 0;
@@ -260,21 +275,19 @@ namespace MacoApp
                 }
                 SaveCalc.IsEnabled = true;
             }
-            catch
+            catch (Exception ex)
             {
-                //MaterialMessageBox.ShowDialog("Одно или несколько полей пустое");
+                System.Diagnostics.Debug.WriteLine($"Ошибка в ButtonCalc_Click: {ex.Message}");
                 return;
             }
         }
 
         private void SaveCalc_Click(object sender, RoutedEventArgs e)
         {
-
             try
             {
                 int count = 0;
                 string queryString;
-                string queryStringCreateTable;
                 string Furn = ComboBoxFurn.Text;
                 int quantity = Int32.Parse(TextBoxColvo.Text);
                 int quantitySrPr = Int32.Parse(TextBoxColvo.Text);
@@ -414,7 +427,6 @@ namespace MacoApp
                             textBlockkonstTwoArg.Height = 0;
 
                             Button deleteButton = new Button();
-                            //deleteButton.Width = 10;
                             deleteButton.Height = 15;
                             deleteButton.Click += DeleteButton_Click;
                             deleteButton.Content = " Удалить  ";
@@ -426,6 +438,9 @@ namespace MacoApp
                             deleteButton.FontSize = 10;
                             deleteButton.Padding = new Thickness(0);
                             deleteButton.Foreground = Brushes.Black;
+
+                            // Сохраняем ссылку на кнопку для корректной отписки
+                            _deleteButtons.Add(deleteButton);
 
                             // Задаем значения для TextBlock элементов
                             textBlockFurn.Text = Furn;
@@ -488,14 +503,15 @@ namespace MacoApp
                 }
                 SaveCalc.IsEnabled = true;
             }
-            catch
+            catch (Exception ex)
             {
-                //MaterialMessageBox.ShowDialog("Одно или несколько полей пустое");
+                System.Diagnostics.Debug.WriteLine($"Ошибка в SaveCalc_Click: {ex.Message}");
                 return;
             }
             ButtonSaveTxt.IsEnabled = true;
             SaveCalc.IsEnabled = false;
             TextBoxColvo.Text = "1";
+            Count++;
         }
 
         //Окрашиваем Текстбокс
@@ -521,6 +537,7 @@ namespace MacoApp
                 }
             }
         }
+
         public void SaveTable2() // Сохранение каждого нового расчета в таблицу 2 для дальнейшего сохранения
         {
             // Итерируем по строкам таблицы 1
@@ -549,19 +566,9 @@ namespace MacoApp
             }
         }
 
-
-
         //Сохранение расчета в файл
-        //***************************************************************************************************************
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            /*if (Code.Text == "")
-            {
-                MaterialMessageBox.ShowDialog("Введите шифр фирмы");
-                return;
-
-            }*/
-
             if (LBList.Items == null)
             {
                 MaterialMessageBox.ShowDialog("Сначала произведите расчет, нечего сохранять.");
@@ -634,13 +641,12 @@ namespace MacoApp
                                 }
                             }
                             string n = "                                                ";
-                            streamWriter.WriteLine(art + /*nam + "   " */n + qua);
+                            streamWriter.WriteLine(art + n + qua);
                         }
 
                         streamWriter.WriteLine("--------------------------------------------------------------------------------");
                         streamWriter.WriteLine();
                         streamWriter.WriteLine("                    Заявку составил________________________");
-
 
                         streamWriter.Close();
                         table2.Rows.Clear();
@@ -660,6 +666,14 @@ namespace MacoApp
                 LBListCalc.Items.Clear();
                 LBList.Items.Clear();
                 SPSF.Children.Clear();
+
+                // Очищаем список кнопок
+                foreach (var btn in _deleteButtons)
+                {
+                    btn.Click -= DeleteButton_Click;
+                }
+                _deleteButtons.Clear();
+
                 Count = 1;
             }
             ButtonSaveTxt.IsEnabled = false;
@@ -706,13 +720,11 @@ namespace MacoApp
             shtulpTwoArg = "Да/Нет";
             shtulpTreeArg = "";
 
-            //konstTwoArg = "Да/Нет";
             ComboBoxSide.IsEnabled = true;
             TextBlockSide.IsEnabled = true;
 
             // Получаем доступ к объекту TextBox
             TextBox myTextBox = this.MainGrid.Children.OfType<TextBox>().ElementAt(2);
-            // Устанавливаем значение свойства Grid.Column
             Grid.SetRow(myTextBox, 3);
             TextBox myTextBox1 = this.MainGrid.Children.OfType<TextBox>().ElementAt(1);
             Grid.SetRow(myTextBox1, 2);
@@ -732,13 +744,12 @@ namespace MacoApp
             shtulp = "Нет";
             shtulpTwoArg = "Да/Нет";
             shtulpTreeArg = "";
-            //konstTwoArg = "Да/Нет";
+
             ComboBoxSide.IsEnabled = false;
             TextBlockSide.IsEnabled = false;
 
             // Получаем доступ к объекту TextBox
             TextBox myTextBox = this.MainGrid.Children.OfType<TextBox>().ElementAt(2);
-            // Устанавливаем значение свойства Grid.Column
             Grid.SetRow(myTextBox, 2);
             TextBox myTextBox1 = this.MainGrid.Children.OfType<TextBox>().ElementAt(1);
             Grid.SetRow(myTextBox1, 3);
@@ -758,20 +769,17 @@ namespace MacoApp
             shtulp = "Да";
             shtulpTwoArg = "Да/Нет";
 
-            //konstTwoArg = "Да/Нет";
             ComboBoxSide.IsEnabled = true;
             TextBlockSide.IsEnabled = true;
 
             // Получаем доступ к объекту TextBox
             TextBox myTextBox = this.MainGrid.Children.OfType<TextBox>().ElementAt(2);
-            // Устанавливаем значение свойства Grid.Column
             Grid.SetRow(myTextBox, 3);
             TextBox myTextBox1 = this.MainGrid.Children.OfType<TextBox>().ElementAt(1);
             Grid.SetRow(myTextBox1, 2);
         }
 
-
-        //Фон для GridList*******************************************
+        //Фон для GridList
         private void ComboBoxFurn_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int index = ComboBoxFurn.SelectedIndex;
@@ -783,25 +791,21 @@ namespace MacoApp
             }
         }
 
-
-
-
         private void StartTextAnimation()
         {
             _currentIndex = 0;
             _textTimer = new System.Windows.Threading.DispatcherTimer
             {
-                Interval = TimeSpan.FromMinutes(2) // Увеличить до 2 минут
+                Interval = TimeSpan.FromMinutes(2)
             };
             _textTimer.Tick += OnTextTimerTick;
             _textTimer.Start();
 
             this.Closed += OnWindowClosed;
-            this.Deactivated += OnWindowDeactivated; // обработчик деактивации
-            this.Activated += OnWindowActivated; // обработчик активации
+            this.Deactivated += OnWindowDeactivated;
+            this.Activated += OnWindowActivated;
         }
 
-        // Останавливать таймер, когда окно не активно
         private void OnWindowDeactivated(object sender, EventArgs e)
         {
             if (_textTimer != null && _textTimer.IsEnabled)
@@ -810,7 +814,6 @@ namespace MacoApp
             }
         }
 
-        // Запускать таймер, когда окно становится активным
         private void OnWindowActivated(object sender, EventArgs e)
         {
             if (_textTimer != null && !_textTimer.IsEnabled)
@@ -821,7 +824,6 @@ namespace MacoApp
 
         private void OnTextTimerTick(object sender, EventArgs e)
         {
-            // Анимация исчезновения текста
             var fadeOut = new DoubleAnimation(0, TimeSpan.FromSeconds(1));
             fadeOut.Completed += OnFadeOutCompleted;
             TextBlockFeedback.BeginAnimation(UIElement.OpacityProperty, fadeOut);
@@ -829,67 +831,130 @@ namespace MacoApp
 
         private void OnFadeOutCompleted(object sender, EventArgs e)
         {
-            // Обновляем текст
             TextBlockFeedback.Text = _texts[_currentIndex];
             _currentIndex = (_currentIndex + 1) % _texts.Length;
 
-            // Анимация появления текста
             var fadeIn = new DoubleAnimation(1, TimeSpan.FromSeconds(1));
             TextBlockFeedback.BeginAnimation(UIElement.OpacityProperty, fadeIn);
         }
 
         private void OnWindowClosed(object sender, EventArgs e)
         {
-            // Останавливаем анимации
-            TextBlockFeedback.BeginAnimation(UIElement.OpacityProperty, null);
+            if (_isCleaningUp) return;
+            _isCleaningUp = true;
 
-            // Останавливаем таймер
-            if (_textTimer != null)
+            try
             {
-                _textTimer.Stop();
-                _textTimer.Tick -= OnTextTimerTick;
-                _textTimer = null;
+                // Останавливаем анимации
+                TextBlockFeedback.BeginAnimation(UIElement.OpacityProperty, null);
+
+                // Останавливаем и очищаем таймер анимации текста
+                if (_textTimer != null)
+                {
+                    _textTimer.Stop();
+                    _textTimer.Tick -= OnTextTimerTick;
+                    _textTimer = null;
+                }
+
+                // Останавливаем таймер из Loaded
+                if (_loadedTimer != null)
+                {
+                    _loadedTimer.Stop();
+                    _loadedTimer = null;
+                }
+
+                // Отписываемся от всех событий
+                this.Closed -= OnWindowClosed;
+                this.Deactivated -= OnWindowDeactivated;
+                this.Activated -= OnWindowActivated;
+                this.Loaded -= CalculationWindowAlu_Loaded;
+
+                // Отписываемся от событий кнопок
+                foreach (var btn in _deleteButtons)
+                {
+                    btn.Click -= DeleteButton_Click;
+                }
+                _deleteButtons.Clear();
+
+                // Отписываемся от событий ComboBox
+                ComboBoxFurn.SelectionChanged -= ComboBoxFurn_SelectionChanged;
+                ComboBoxSide.SelectionChanged -= ComboBoxSide_SelectionChanged;
+                ComboBoxSystem.SelectionChanged -= ComboBoxSystem_SelectionChanged;
+                ComboBoxColor.SelectionChanged -= ComboBoxColor_SelectionChanged;
+
+                // Отписываемся от событий кнопок
+                ButtonP_O.Click -= ButtonP_O_Click;
+                ButtonP.Click -= ButtonP_Click;
+                ButtonFram.Click -= ButtonFram_Click;
+                ButtonStulp.Click -= ButtonStulp_Click;
+                SaveCalc.Click -= SaveCalc_Click;
+                ButtonSaveTxt.Click -= Button_Click;
+                ButtonSpisokName.Click -= ButtonSpisokName_Click;
+                ButtonExit.Click -= ButtonExit_Click;
+                ButtonFeedback.Click -= ButtonFeedback_Click;
+
+                // Очищаем коллекции
+                if (backgroundsFON != null)
+                {
+                    foreach (var bg in backgroundsFON)
+                    {
+                        bg.UriSource = null;
+                    }
+                    backgroundsFON.Clear();
+                }
+
+                if (backgroundsButtons != null)
+                {
+                    foreach (var btn in backgroundsButtons)
+                    {
+                        btn.UriSource = null;
+                    }
+                    backgroundsButtons.Clear();
+                }
+
+                // Очищаем таблицы
+                if (table1 != null)
+                {
+                    table1.Clear();
+                    table1.Dispose();
+                }
+                if (table2 != null)
+                {
+                    table2.Clear();
+                    table2.Dispose();
+                }
+                if (table3 != null)
+                {
+                    table3.Clear();
+                    table3.Dispose();
+                }
+
+                // Очищаем списки
+                ArticleFram1?.Clear();
+                ArticleFram2?.Clear();
+                response_bars?.Clear();
+                response_barsSthulp?.Clear();
+                SrPr?.Clear();
+                ListStulp?.Clear();
+                ListStulpOtv?.Clear();
+
+                // Очищаем GridList
+                GridList.ItemsSource = null;
+
+                // Очищаем StackPanel
+                SPSF.Children.Clear();
+
+                // Вызываем GC для принудительной сборки мусора
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
             }
-
-            // Отписываемся от всех событий
-            this.Closed -= OnWindowClosed;
-            this.Deactivated -= OnWindowDeactivated;
-            this.Activated -= OnWindowActivated;
-            this.Loaded -= CalculationWindowAlu_Loaded;
-
-            // Очищаем коллекции
-            if (backgroundsFON != null)
+            catch (Exception ex)
             {
-                backgroundsFON.Clear();
-                backgroundsFON = null;
+                System.Diagnostics.Debug.WriteLine($"Ошибка при очистке ресурсов: {ex.Message}");
             }
-
-            if (backgroundsButtons != null)
-            {
-                backgroundsButtons.Clear();
-                backgroundsButtons = null;
-            }
-
-            // Очищаем таблицы
-            if (table1 != null) table1.Clear();
-            if (table2 != null) table2.Clear();
-            if (table3 != null) table3.Clear();
-
-            // Очищаем списки
-            ArticleFram1?.Clear();
-            ArticleFram2?.Clear();
-            response_bars?.Clear();
-            response_barsSthulp?.Clear();
-            SrPr?.Clear();
-            ListStulp?.Clear();
-            ListStulpOtv?.Clear();
         }
 
-
-
-
-
-        //Фон для кнопок поворота************************************
+        //Фон для кнопок поворота
         private void ComboBoxSide_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (ButtonP_O != null && ButtonP != null)
@@ -907,7 +972,6 @@ namespace MacoApp
                     BitmapImage image2 = backgroundsButtons[4];
                     ImageBrush brush2 = new ImageBrush(image2);
                     ButtonStulp.Background = brush2;
-
                 }
                 if (ComboBoxSide.SelectedIndex == 1)
                 {
@@ -936,82 +1000,33 @@ namespace MacoApp
                     return;
                 }
             }
-
         }
 
         private void ComboBoxColor_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            /*try
-            {
-                if (ComboBoxColor.SelectedIndex >= 0)
-                {
-                    if (ComboBoxColor.SelectedIndex == 0)
-                    {
-                        ButtonColor.Background = Brushes.White;
-                    }
-                    else if (ComboBoxColor.SelectedIndex == 1)
-                    {
-                        ButtonColor.Background = Brushes.Brown;
-                    }
-                    else if (ComboBoxColor.SelectedIndex == 2)
-                    {
-                        ButtonColor.Background = Brushes.Orange;
-                    }
-                    else if (ComboBoxColor.SelectedIndex == 3)
-                    {
-                        ButtonColor.Background = Brushes.Silver;
-                    }
-                    else if (ComboBoxColor.SelectedIndex == 4)
-                    {
-                        ButtonColor.Background = Brushes.Gray;
-                    }
-                    else if (ComboBoxColor.SelectedIndex == 5)
-                    {
-                        ButtonColor.Background = Brushes.Black;
-                    }
-                    else if (ComboBoxColor.SelectedIndex == 6)
-                    {
-                        ButtonColor.Background = Brushes.Gold;
-                    }
-                }
-            }
-            catch (System.Exception)
-            {
-                return;
-            }*/
-
-
+            // Метод оставлен для возможного использования в будущем
         }
-
 
         //Изменение размера списка расчетов
         private void ButtonSpisokName_Click(object sender, RoutedEventArgs e)
         {
             if (isPanelExpanded)
             {
-                // если StackPanel уже раскрыт, то уменьшаем его размеры до исходных
-                //SPSF.Width = 500; // возвращает ширину элемента к исходному значению
                 SVSP.Height = 70;
                 isPanelExpanded = false;
                 ButtonSpisokName.Content = "▲";
             }
             else
             {
-                // если StackPanel свернут, то увеличиваем его размеры на определенную величину
-                //SPSF.Width = 600; // увеличиваем ширину
                 isPanelExpanded = true;
                 SVSP.Height = 400;
-
                 ButtonSpisokName.Content = "▼";
-
             }
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            // Получаем кнопку, на которую было нажато
             Button deleteButton = (Button)sender;
-            // Получаем родительский StackPanel
             StackPanel parentStackPanel = (StackPanel)deleteButton.Parent;
 
             textBox1Value = ((TextBlock)parentStackPanel.Children[0]).Text;
@@ -1030,12 +1045,9 @@ namespace MacoApp
             textBox14Value = ((TextBlock)parentStackPanel.Children[22]).Text;
             textBox15Value = ((TextBlock)parentStackPanel.Children[23]).Text;
 
-            // Получаем значения TextBlock элементов в строке
-
             try
             {
                 string queryString;
-                string queryStringCreateTable;
                 string Furn = textBox1Value;
                 int quantity = int.Parse(textBox9Value);
                 int quantitySrPr = int.Parse(textBox9Value);
@@ -1058,12 +1070,12 @@ namespace MacoApp
                     "and(Rotation like '" + rotation + "' or Rotation like '" + rotationTwoArg + "') and(Height_from = 0 or '" + FFH + "'>=Height_from) and(Height_up_to = 0 or '" + FFH + "' <= Height_up_to)" +
                     " and(Width_from = 0 or '" + FFB + "'>=Width_from) and(Width_up_to = 0 or '" + FFB + "' <= Width_up_to) and(Framuga like '" + framuga + "' or Framuga like '" + framugaTwoArg + "')" +
                     "and(Shtulp like '" + shtulpTwoArg + "' or Shtulp  like '" + shtulp + "' or Shtulp = '" + shtulpTreeArg + "') and(Color  = 'Не имеет значения' or Color  = '" + color + "')";
-                quantityBar = sqlRequests.Que(Rot, Fr, Furn, FFH, FFB); //Вытаскиваем из класса количество ответных планок               
-                quantitySrPr = sqlRequests.QueSrPr(Rot, Furn, FFH); //Количество средних прижимов на поворотной створке
+                quantityBar = sqlRequests.Que(Rot, Fr, Furn, FFH, FFB);
+                quantitySrPr = sqlRequests.QueSrPr(Rot, Furn, FFH);
 
                 using (var connection = new SqliteConnection("Data Source=Furnapp.db"))
                 {
-                    ObservableCollection<ClassList> collection = null; //Обнуляем коллекцию для нового расчета
+                    ObservableCollection<ClassList> collection = null;
                     table1.Rows.Clear();
                     collection = new ObservableCollection<ClassList>();
                     GridList.ItemsSource = collection;
@@ -1072,11 +1084,10 @@ namespace MacoApp
 
                     using (SqliteDataReader reader = command.ExecuteReader())
                     {
-                        if (reader.HasRows) // если есть данные
+                        if (reader.HasRows)
                         {
-                            while (reader.Read())   // построчно считываем данные
+                            while (reader.Read())
                             {
-                                //Записываем данные в объект класса и ,тем самым, передаём в таблицу
                                 if (response_bars.Contains(reader.GetValue(3).ToString()))
                                 {
                                     table3.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity * quantityBar);
@@ -1102,7 +1113,6 @@ namespace MacoApp
                                     table3.Rows.Add(reader.GetValue(3).ToString(), reader.GetValue(2).ToString(), int.Parse(reader.GetValue(4).ToString()) * quantity);
                                 }
                             }
-                            //Удаляем из таблицы
                             DeletedTable2();
                             table3.Clear();
                         }
@@ -1111,78 +1121,73 @@ namespace MacoApp
                 }
                 SaveCalc.IsEnabled = true;
             }
-            catch
+            catch (Exception ex)
             {
-                //MaterialMessageBox.ShowDialog("Одно или несколько полей пустое");
+                System.Diagnostics.Debug.WriteLine($"Ошибка в DeleteButton_Click: {ex.Message}");
                 return;
             }
 
-            // Удаляем строку из StackPanel
             SPSF.Children.Remove(parentStackPanel);
+
+            // Удаляем кнопку из списка и отписываемся от события
+            if (_deleteButtons.Contains(deleteButton))
+            {
+                deleteButton.Click -= DeleteButton_Click;
+                _deleteButtons.Remove(deleteButton);
+            }
         }
 
-        public void DeletedTable2() //Удаление расчета из таблицы 2 при удалении его из списка расчетов
+        public void DeletedTable2()
         {
             foreach (DataRow row3 in table3.Rows)
             {
-                // Получаем значение первой колонки текущей строки
                 string value1 = row3[0].ToString();
-
-                // Итерируем по строкам таблицы 2
                 DataRow row2 = table2.Rows.Cast<DataRow>().FirstOrDefault(r => r[0].ToString() == value1);
 
-                // Если есть строка в таблице 2 с таким же значением первой колонки
                 if (row2 != null)
                 {
-                    // Отнимаем от второй таблицы значения количества третьей
                     int sum = Convert.ToInt32(row2[2]) - Convert.ToInt32(row3[2]);
 
-                    // Если значение sum равно нулю, то удаляем строку из таблицы 2
                     if (sum == 0)
                     {
                         table2.Rows.Remove(row2);
                     }
                     else
                     {
-                        // Присваиваем второй таблице значение суммы 
                         row2[2] = sum;
                     }
                 }
             }
-
         }
-        //ввод только цифр в текстбоксы
+
         private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             SaveCalc.IsEnabled = false;
             int val;
             if (!Int32.TryParse(e.Text, out val) && e.Text != "-")
             {
-                e.Handled = true; // отклоняем ввод
+                e.Handled = true;
             }
         }
-        //ввод только цифр в текстбоксы (пробел тоже нам не нужен)
+
         private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             SaveCalc.IsEnabled = false;
             if (e.Key == Key.Space)
             {
-                e.Handled = true; // если пробел, отклоняем ввод
+                e.Handled = true;
             }
         }
+
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
-
-            /*EntryiWindow entryiWindow = new EntryiWindow();
-            entryiWindow.Show();*/
             this.Close();
         }
+
         private void ButtonFeedback_Click(object sender, RoutedEventArgs e)
         {
             FeedbackWindow feedbackWindow = new FeedbackWindow();
             feedbackWindow.Show();
         }
-
-
     }
 }

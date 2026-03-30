@@ -52,20 +52,18 @@ namespace TBMFurn
         private bool _isPaused = false;
         private int _pauseCounter = 0;
 
-        List<string> response_bars = new List<string> { "34283", "34943", "V25010102", "V25020102", "V26010102", "V25040102", "V25070102", "260367", "332438", "338019", "332439", "338070", "260360"};
+        List<string> response_bars = new List<string> { "34283", "34943", "V25010102", "V25020102", "V26010102", "V25040102", "V25070102", "260367", "332438", "338019", "332439", "338070", "260360" };
+
+        // Добавляем флаг для отслеживания состояния очистки
+        private bool _isCleaningUp = false;
 
         public PortalWindow()
         {
             InitializeComponent();
             StartTextAnimation(); // Запускаем анимацию текстблока обратной связи
 
-            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/MacoFonPortal.png")));
-            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/vorneFon.png")));
-            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/RotoFonPortal.png")));
-
-            table1.Columns.Add(new DataColumn("Артикул", typeof(string)));
-            table1.Columns.Add(new DataColumn("Название", typeof(string)));
-            table1.Columns.Add(new DataColumn("Шт", typeof(int)));
+            LoadBackgrounds();
+            InitializeDataTable();
 
             _originalMargin = LabelStvorka.Margin;
             _timer = new DispatcherTimer
@@ -80,12 +78,30 @@ namespace TBMFurn
             LabelErrorR.Visibility = Visibility.Hidden;
             LabelErrorL.Visibility = Visibility.Hidden;
             ButtonSaveCalc.IsEnabled = false;
+
+            // Подписываемся на событие закрытия окна
+            this.Closed += OnWindowClosed;
+        }
+
+        private void LoadBackgrounds()
+        {
+            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/MacoFonPortal.png")));
+            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/vorneFon.png")));
+            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/RotoFonPortal.png")));
+        }
+
+        private void InitializeDataTable()
+        {
+            table1.Columns.Add(new DataColumn("Артикул", typeof(string)));
+            table1.Columns.Add(new DataColumn("Название", typeof(string)));
+            table1.Columns.Add(new DataColumn("Шт", typeof(int)));
         }
 
         private void ButtonCalculation_Click(object sender, RoutedEventArgs e)
         {
             table1.Rows.Clear();
             GridList.ItemsSource = null;
+
             if (Side == "")
             {
                 // Показываем изображение стрелки и запускаем анимацию
@@ -103,11 +119,12 @@ namespace TBMFurn
                 LabelErrorL.BeginAnimation(UIElement.OpacityProperty, animation);
                 return;
             }
-            else 
+            else
             {
                 LabelErrorR.Visibility = Visibility.Hidden;
                 LabelErrorL.Visibility = Visibility.Hidden;
             }
+
             if (TextBoxFFB.Text == "" || TextBoxFFH.Text == "")
             {
                 if (TextBoxFFB.Text == "")
@@ -148,13 +165,11 @@ namespace TBMFurn
                 }
                 return;
             }
-            else 
+            else
             {
                 LabelErrorFFB.Visibility = Visibility.Hidden;
                 LabelErrorFFH.Visibility = Visibility.Hidden;
             }
-            
-            
 
             try
             {
@@ -167,18 +182,11 @@ namespace TBMFurn
                 int FFB = Int32.Parse(TextBoxFFB.Text);
                 string color = ComboBoxColor.Text;
 
-
-
-                /*if (classError.Err(Furn, FFH, FFB, quantity, rotation, framuga, konst, shtulp, shtulpTreeArg) == 1)
-                {
-                    return;
-                }*/
-
                 queryString = $"Select * from Portal where (Furn like '" + Furn + "') and(Profil  = 'Не имеет значения' or Profil  = '" + System + "') and(Side like 'Не имеет значения' or Side like '" + Side + "') " +
                     "and(FFH_before = 0 or '" + FFH + "'<=FFH_before) and(FFH_from = 0 or '" + FFH + "' >= FFH_from)" +
                     " and(FFB_before = 0 or '" + FFB + "'<=FFB_before) and(FFB_from = 0 or '" + FFB + "' >= FFB_from) " +
                     " and(Color  = 'Не имеет значения' or Color  = '" + color + "')";
-                //quantityBar = sqlRequests.PortalQue( Furn, FFH, FFB); //Вытаскиваем из класса количество ответных планок
+
                 if (classError.ErrorPortal(Furn, FFB, FFH, quantity) == 1)
                 {
                     return;
@@ -215,8 +223,9 @@ namespace TBMFurn
                 }
                 ButtonSaveCalc.IsEnabled = true;
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Ошибка в ButtonCalculation_Click: {ex.Message}");
                 return;
             }
         }
@@ -280,7 +289,6 @@ namespace TBMFurn
             }
         }
 
-
         private void SaveMetod()
         {
             String date = DateTime.Now.ToString(" dd.MM.yyyy HH-mm-ss");
@@ -297,7 +305,6 @@ namespace TBMFurn
                 streamWriter.WriteLine("--------------------------------------------------------------------------------");
                 try
                 {
-
                     foreach (DataRow row in table1.Rows)
                     {
                         string art = Convert.ToString(row["Артикул"]);
@@ -336,12 +343,7 @@ namespace TBMFurn
                 table1.Rows.Clear();
                 GridList.ItemsSource = null;
             }
-            //ButtonSaveTxt.IsEnabled = false;
         }
-
-
-
-
 
         //Обработчик комбобокс
         private void ComboBoxFurn_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -395,7 +397,7 @@ namespace TBMFurn
                     ComboBoxColor.Items.Add("Коричневый");
                     ComboBoxColor.SelectedIndex = 0;
                 }
-                    
+
             }
             else if (ComboBoxFurn != null && ComboBoxFurn.SelectedIndex == 2)
             {
@@ -417,10 +419,8 @@ namespace TBMFurn
                     ComboBoxColor.Items.Add("Серебро");
                     ComboBoxColor.SelectedIndex = 0;
                 }
-                    
             }
         }
-
 
         //ввод только цифр в текстбоксы
         private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -432,6 +432,7 @@ namespace TBMFurn
                 e.Handled = true; // отклоняем ввод
             }
         }
+
         //ввод только цифр в текстбоксы (пробел тоже нам не нужен)
         private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -489,20 +490,12 @@ namespace TBMFurn
                     {
                         LabelStvorka.Margin = new Thickness(LabelStvorka.Margin.Left - 1, LabelStvorka.Margin.Top, LabelStvorka.Margin.Right + 1, LabelStvorka.Margin.Bottom);
                     }
-                    else
-                    {
-                        //Side = "Вправо"; // Переключение направления движения
-                    }
                 }
                 else if (Side == "Вправо")
                 {
                     if (LabelStvorka.Margin.Right > 30)
                     {
                         LabelStvorka.Margin = new Thickness(LabelStvorka.Margin.Left + 1, LabelStvorka.Margin.Top, LabelStvorka.Margin.Right - 1, LabelStvorka.Margin.Bottom);
-                    }
-                    else
-                    {
-                        //Side = "Влево"; // Переключение направления движения
                     }
                 }
             }
@@ -513,9 +506,6 @@ namespace TBMFurn
             FeedbackWindow feedbackWindow = new FeedbackWindow();
             feedbackWindow.Show();
         }
-
-
-
 
         private void StartTextAnimation()
         {
@@ -528,9 +518,6 @@ namespace TBMFurn
             };
             _textTimer.Tick += OnTextTimerTick;
             _textTimer.Start();
-
-            // Подписываемся на событие закрытия окна, чтобы остановить таймер
-            this.Closed += OnWindowClosed;
         }
 
         private void OnTextTimerTick(object sender, EventArgs e)
@@ -554,26 +541,91 @@ namespace TBMFurn
 
         private void OnWindowClosed(object sender, EventArgs e)
         {
-            // Останавливаем таймер при закрытии окна
-            if (_textTimer != null)
+            if (_isCleaningUp) return;
+            _isCleaningUp = true;
+
+            try
             {
-                _textTimer.Stop();
-                _textTimer.Tick -= OnTextTimerTick;
-                _textTimer = null;
+                // Останавливаем и очищаем таймер анимации текста
+                if (_textTimer != null)
+                {
+                    _textTimer.Stop();
+                    _textTimer.Tick -= OnTextTimerTick;
+                    _textTimer = null;
+                }
+
+                // Останавливаем и очищаем таймер движения
+                if (_timer != null)
+                {
+                    _timer.Stop();
+                    _timer.Tick -= Timer_Tick;
+                    _timer = null;
+                }
+
+                // Отписываемся от событий
+                this.Closed -= OnWindowClosed;
+
+                // Отписываемся от событий кнопок
+                ButtonLeft.Click -= ButtonLeft_Click;
+                ButtonRight.Click -= ButtonRight_Click;
+                ButtonSaveCalc.Click -= ButtonSaveCalc_Click;
+                ButtonFeedback.Click -= ButtonFeedback_Click;
+                ButtonExit.Click -= ButtonExit_Click;
+
+                // Отписываемся от событий ComboBox
+                ComboBoxFurn.SelectionChanged -= ComboBoxFurn_SelectionChanged;
+                ComboBoxColor.SelectionChanged -= ComboBoxColor_SelectionChanged;
+
+                // Отписываемся от событий TextBox
+                TextBoxFFB.PreviewTextInput -= TextBox_PreviewTextInput;
+                TextBoxFFB.PreviewKeyDown -= TextBox_PreviewKeyDown;
+                TextBoxFFH.PreviewTextInput -= TextBox_PreviewTextInput;
+                TextBoxFFH.PreviewKeyDown -= TextBox_PreviewKeyDown;
+                TextBoxColvo.PreviewTextInput -= TextBox_PreviewTextInput;
+                TextBoxColvo.PreviewKeyDown -= TextBox_PreviewKeyDown;
+                TextBoxCode.PreviewTextInput -= TextBox_PreviewTextInput;
+                TextBoxCode.PreviewKeyDown -= TextBox_PreviewKeyDown;
+
+                // Останавливаем анимации
+                TextBlockFeedback.BeginAnimation(UIElement.OpacityProperty, null);
+                LabelErrorR.BeginAnimation(UIElement.OpacityProperty, null);
+                LabelErrorL.BeginAnimation(UIElement.OpacityProperty, null);
+                LabelErrorFFB.BeginAnimation(UIElement.OpacityProperty, null);
+                LabelErrorFFH.BeginAnimation(UIElement.OpacityProperty, null);
+                LabelErrorСode.BeginAnimation(UIElement.OpacityProperty, null);
+
+                // Очищаем коллекцию фонов
+                if (backgroundsFON != null)
+                {
+                    foreach (var bg in backgroundsFON)
+                    {
+                        bg.UriSource = null;
+                    }
+                    backgroundsFON.Clear();
+                }
+
+                // Очищаем таблицу
+                if (table1 != null)
+                {
+                    table1.Clear();
+                    table1.Dispose();
+                }
+
+                // Очищаем список ответных планок
+                response_bars?.Clear();
+
+                // Очищаем GridList
+                GridList.ItemsSource = null;
+
+                // Вызываем GC для принудительной сборки мусора
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
             }
-
-            // Отписываемся от события
-            this.Closed -= OnWindowClosed;
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Ошибка при очистке ресурсов PortalWindow: {ex.Message}");
+            }
         }
-
-
-
-
-
-
-
-
-
 
         private void ComboBoxColor_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -633,8 +685,6 @@ namespace TBMFurn
 
         private void ButtonExit_Click(object sender, RoutedEventArgs e)
         {
-            /*EntryiWindow entryiWindow = new EntryiWindow();
-            entryiWindow.Show();*/
             this.Close();
         }
     }
