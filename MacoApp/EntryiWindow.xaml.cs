@@ -47,6 +47,7 @@ namespace MacoApp
         private BoxCalculation _secondWindow3;
         private CalculationWindow _secondWindow4;
         private CalculationWindowAlu _secondWindow5;
+        private ExcelReplacer _secondWindow6;
 
         public EntryiWindow()
         {
@@ -449,5 +450,12 @@ namespace MacoApp
             this.Hide();
         }
 
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            _secondWindow6 = new ExcelReplacer();
+            _secondWindow6.Closed += Window_Closed;
+            _secondWindow6.Show();
+            this.Hide();
+        }
     }
 }

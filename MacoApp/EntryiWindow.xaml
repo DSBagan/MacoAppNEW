@@ -83,7 +83,7 @@
                     <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">системы ПВХ</TextBlock>
                 </StackPanel>
             </Button>
-            <Button x:Name="ButtonPortalCalculationALU" Grid.Row="1" Cursor="Hand"
+            <!--<Button x:Name="ButtonPortalCalculationALU" Grid.Row="1" Cursor="Hand"
 IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
 Style="{StaticResource MaterialDesignPaperLightButton}" Grid.Column="0" FontSize="16" Grid.ColumnSpan="3" VerticalAlignment="Center" Padding="5,0,5,0" HorizontalAlignment="Center" Margin="0,0,10,0" Click="ButtonPortalCalculation_Click" Height="150" Width="110">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -95,7 +95,7 @@ Style="{StaticResource MaterialDesignPaperLightButton}" Grid.Column="0" FontSize
                     <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Портальные</TextBlock>
                     <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">системы ALU</TextBlock>
                 </StackPanel>
-            </Button>
+            </Button>-->
 
 
             <!--<Button x:Name="ButtonBoxCalculation" Grid.Row="2" Cursor="Hand"
@@ -130,7 +130,8 @@ Style="{StaticResource MaterialDesignPaperLightButton}" Grid.Column="0" FontSize
                 </StackPanel>
             </Button>
         </StackPanel>
-        <materialDesign:PackIcon Kind="AccessPointCheck" x:Name="IntOn" Width="30" Height="30" HorizontalAlignment="Right"
+
+            <materialDesign:PackIcon Kind="AccessPointCheck" x:Name="IntOn" Width="30" Height="30" HorizontalAlignment="Right"
                                  Foreground="Green" Grid.Column="2" Margin="0,15,15,0" />
         <materialDesign:PackIcon Kind="AccessPointOff" x:Name="IntOff" Width="30" Height="30" HorizontalAlignment="Right"
                                  Foreground="Red" Grid.Column="2" Margin="0,15,15,0" />
@@ -155,6 +156,8 @@ Style="{StaticResource MaterialDesignPaperLightButton}" Grid.Column="0" FontSize
                 ToolTip="MaterialDesignFloatingActionMiniLightButton" Background="#FFEDD7AF" Grid.Column="4" Grid.RowSpan="2" Width="30" Height="30" HorizontalAlignment="Right" Margin="0,5,5,0" VerticalAlignment="Top" Click="ButtonFeedback_Click">
             <materialDesign:PackIcon Kind="EmailOpenOutline" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Button>
+        <Button Grid.Column="1" Content="Подгрузка в КП" HorizontalAlignment="Center" Grid.Row="4" 
+                Style="{StaticResource MaterialDesignPaperLightButton}" VerticalAlignment="Center" Click="Button_Click"/>
 
     </Grid>
 </Window>

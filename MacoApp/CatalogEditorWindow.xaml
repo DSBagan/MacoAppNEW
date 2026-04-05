@@ -1,0 +1,45 @@
+﻿<Window x:Class="TBMFurn.CatalogEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Редактор каталога замен" Height="500" Width="700"
+        WindowStartupLocation="CenterOwner">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Кнопки управления -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
+            <Button x:Name="BtnPasteFromClipboard" Content="📋 Вставить из буфера" 
+                    Click="BtnPasteFromClipboard_Click" Height="30" Margin="5" Width="180"/>
+            <Button x:Name="BtnDeleteSelected" Content="🗑 Удалить выбранные" 
+                    Click="BtnDeleteSelected_Click" Height="30" Margin="5" Width="180" Background="LightCoral"/>
+            <Button x:Name="BtnRefreshFromDB" Content="🔄 Обновить из БД" 
+                    Click="BtnRefreshFromDB_Click" Height="30" Margin="5" Width="180"/>
+            
+        </StackPanel>
+
+        <!-- Индикатор статуса -->
+        <TextBlock Grid.Row="1" x:Name="TxtStatus" Text="Статус: Подключение к Supabase..." 
+                   Margin="5" FontSize="11" Foreground="Blue"/>
+
+        <!-- Таблица каталога -->
+        <DataGrid x:Name="CatalogGrid" Grid.Row="2" AutoGenerateColumns="False" 
+                  CanUserAddRows="True" Margin="5" SelectionMode="Extended">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Старый артикул" Binding="{Binding OldArticle}" Width="2*"/>
+                <DataGridTextColumn Header="Артикул замена" Binding="{Binding NewArticle}" Width="2*"/>
+                <DataGridTextColumn Header="Коэффициент количества" Binding="{Binding Factor}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Кнопки сохранения/отмены -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
+            <Button x:Name="BtnSave" Content="Сохранить в БД" Click="BtnSave_Click" Width="150" Height="30" Margin="5" Background="LightGreen"/>
+            <Button x:Name="BtnCancel" Content="Отмена" Click="BtnCancel_Click" Width="100" Height="30" Margin="5"/>
+        </StackPanel>
+    </Grid>
+</Window>
