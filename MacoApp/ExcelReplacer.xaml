@@ -22,14 +22,14 @@
         <!-- Кнопки управления -->
         <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Vertical" VerticalAlignment="Top" Margin="10">
             <!--<Button x:Name="BtnLoadExcel" Content="📂 Загрузить из Excel" Click="BtnLoadExcel_Click" Height="35" Margin="5"
-                    Style="{StaticResource MaterialDesignPaperLightButton}"/>--> 
+                    Style="{StaticResource MaterialDesignPaperLightButton}"/>-->
             <Button x:Name="BtnPasteFromClipboard" Content="📋 Вставить из буфера" Click="BtnPasteFromClipboard_Click" Height="35" Margin="5"
                     Style="{StaticResource MaterialDesignPaperLightButton}"/>
             <Button x:Name="BtnSaveExcel" Content="💾 Сохранить в Excel" Click="BtnSaveExcel_Click" Height="35" Margin="5"
                     Style="{StaticResource MaterialDesignPaperLightButton}"/>
             <Button x:Name="BtnEditCatalog" Content="⚙ Редактировать каталог" Click="BtnEditCatalog_Click" Height="35" Margin="5"
                     Style="{StaticResource MaterialDesignPaperLightButton}"/>
-            <Button x:Name="BtnProcess" Content="🔄 Обработать" Click="BtnProcess_Click" Height="35" Margin="5" Background="LightGreen" 
+            <Button x:Name="BtnProcess" Content="🔄 Обработать" Click="BtnProcess_Click" Height="35" Margin="5" Background="LightGreen"
                     Style="{StaticResource MaterialDesignPaperLightButton}"/>
         </StackPanel>
 
@@ -37,7 +37,7 @@
         <DataGrid x:Name="UserDataGrid" Grid.Row="1" Grid.Column="0" AutoGenerateColumns="False" 
                   CanUserAddRows="True" Margin="5" IsReadOnly="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Количество" Binding="{Binding Quantity}" Width="*"/>
+                <DataGridTextColumn Header="Количество" Binding="{Binding Quantity, StringFormat=N0}" Width="*"/>
                 <DataGridTextColumn Header="Артикул" Binding="{Binding Article}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
@@ -45,19 +45,28 @@
         <!-- Финальная таблица -->
         <DataGrid x:Name="FinalDataGrid" Grid.Row="1" Grid.Column="2" AutoGenerateColumns="False" Margin="5" IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Количество" Binding="{Binding Quantity}" Width="*"/>
+                <DataGridTextColumn Header="Количество" Binding="{Binding Quantity, StringFormat=N0}" Width="*"/>
                 <DataGridTextColumn Header="Артикул" Binding="{Binding Article}" Width="*"/>
-                <DataGridTextColumn Header="Заменен?" Binding="{Binding IsReplaced}" Width="*">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="TextBlock">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsReplaced}" Value="True">
-                                    <Setter Property="Background" Value="LightGreen"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
+                <DataGridTemplateColumn Header="Заменен?" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock TextAlignment="Center">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Text" Value="Нет"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsReplaced}" Value="True">
+                                                <Setter Property="Text" Value="Да"/>
+                                                <Setter Property="Background" Value="LightGreen"/>
+                                                <Setter Property="Padding" Value="5"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

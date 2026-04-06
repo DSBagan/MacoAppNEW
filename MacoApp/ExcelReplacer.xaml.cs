@@ -12,10 +12,29 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using TBMFurn;
 
 namespace TBMFurn
 {
+    // Конвертер для преобразования bool в "Да"/"Нет"
+    public class BoolToYesNoConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value is bool boolValue)
+            {
+                return boolValue ? "Да" : "Нет";
+            }
+            return "Нет";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public partial class ExcelReplacer : Window
     {
         private ObservableCollection<UserItem> UserItems { get; set; }
@@ -47,7 +66,7 @@ namespace TBMFurn
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка подключения к Supabase: {ex.Message}\nИспользую локальный каталог",
+                MessageBox.Show($"Ошибка подключения к БД: {ex.Message}\nИспользую локальный каталог",
                     "Предупреждение", MessageBoxButton.OK, MessageBoxImage.Warning);
                 LoadLocalCatalog();
             }
@@ -81,8 +100,8 @@ namespace TBMFurn
                         }
                     }
 
-                    System.Diagnostics.Debug.WriteLine($"Загружено {Catalog.Count} записей из Supabase");
-                    MessageBox.Show($"Загружено {Catalog.Count} записей из Supabase", "Информация",
+                    System.Diagnostics.Debug.WriteLine($"Загружено {Catalog.Count} записей из БД");
+                    MessageBox.Show($"Загружено {Catalog.Count} записей из БД", "Просто нажми OK",
                         MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
@@ -273,11 +292,13 @@ namespace TBMFurn
                 return;
             }
 
+            // Сначала суммируем дубликаты из пользовательского списка
             var summedItems = UserItems
                 .GroupBy(x => x.Article)
                 .Select(g => new UserItem { Article = g.Key, Quantity = g.Sum(x => x.Quantity) })
                 .ToList();
 
+            // Применяем замены из каталога
             var processedItems = new Dictionary<string, FinalItem>();
 
             foreach (var item in summedItems)
@@ -293,6 +314,9 @@ namespace TBMFurn
                     finalQuantity = item.Quantity * catalogItem.QuantityFactor;
                     isReplaced = true;
                 }
+
+                // Округляем до целого числа
+                finalQuantity = Math.Round(finalQuantity, 0);
 
                 if (processedItems.ContainsKey(finalArticle))
                 {
@@ -361,27 +385,36 @@ namespace TBMFurn
         {
             try
             {
+                // Создаем новую книгу Excel в формате .xls
                 IWorkbook workbook = new HSSFWorkbook();
                 ISheet sheet = workbook.CreateSheet("Результат");
 
+                // Данные - без заголовков, только артикул и количество
                 for (int i = 0; i < FinalItems.Count; i++)
                 {
                     IRow dataRow = sheet.CreateRow(i);
+
+                    // Колонка A: Артикул
                     dataRow.CreateCell(0).SetCellValue(FinalItems[i].Article);
-                    dataRow.CreateCell(1).SetCellValue((double)FinalItems[i].Quantity);
+
+                    // Колонка B: Количество (округляем до целого)
+                    long roundedQuantity = (long)Math.Round(FinalItems[i].Quantity, 0);
+                    dataRow.CreateCell(1).SetCellValue(roundedQuantity);
                 }
 
+                // Автоматически подгоняем ширину колонок
                 for (int i = 0; i < 2; i++)
                 {
                     sheet.AutoSizeColumn(i);
                 }
 
+                // Сохраняем файл
                 using (FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
                 {
                     workbook.Write(fs);
                 }
 
-                MessageBox.Show($"Файл успешно сохранен: {filePath}\nФормат: Артикул в колонке A, Количество в колонке B",
+                MessageBox.Show($"Файл успешно сохранен: {filePath}",
                     "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)

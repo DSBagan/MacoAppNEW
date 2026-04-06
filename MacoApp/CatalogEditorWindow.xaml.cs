@@ -9,6 +9,8 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using TBMFurn;
 
 namespace TBMFurn
@@ -20,6 +22,7 @@ namespace TBMFurn
         private string supabaseUrl;
         private string supabaseKey;
         private static readonly HttpClient httpClient = new HttpClient();
+        private ICollectionView view;
 
         public CatalogEditorWindow(Dictionary<string, CatalogItem> catalog, string url, string key)
         {
@@ -39,7 +42,77 @@ namespace TBMFurn
                 });
             }
 
+            // Настраиваем привязку для поиска
             CatalogGrid.ItemsSource = CatalogEntries;
+            view = CollectionViewSource.GetDefaultView(CatalogEntries);
+            view.Filter = FilterPredicate;
+
+            UpdateSearchResultCount();
+        }
+
+        private bool FilterPredicate(object item)
+        {
+            // Пропускаем null
+            if (item == null)
+                return false;
+
+            // Проверяем тип объекта - это ключевое исправление!
+            if (item.GetType().Name == "NamedObject")
+                return false;
+
+            // Проверяем, что это наш тип
+            if (!(item is CatalogEntry))
+                return false;
+
+            var catalogItem = item as CatalogEntry;
+            string searchText = TxtSearch.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(searchText))
+                return true;
+
+            // Поиск по старому артикулу и артикулу замене (без учета регистра)
+            return (catalogItem.OldArticle != null && catalogItem.OldArticle.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0) ||
+                   (catalogItem.NewArticle != null && catalogItem.NewArticle.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0);
+        }
+
+        private void TxtSearch_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            // Обновляем фильтр при изменении текста поиска
+            view?.Refresh();
+            UpdateSearchResultCount();
+        }
+
+        private void BtnClearSearch_Click(object sender, RoutedEventArgs e)
+        {
+            TxtSearch.Text = "";
+            TxtSearch.Focus();
+        }
+
+        private void UpdateSearchResultCount()
+        {
+            int totalCount = CatalogEntries.Count;
+            int filteredCount = 0;
+
+            if (view != null)
+            {
+                try
+                {
+                    filteredCount = view.Cast<object>().Count(x => x is CatalogEntry);
+                }
+                catch
+                {
+                    filteredCount = totalCount;
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(TxtSearch.Text))
+            {
+                TxtSearchResult.Text = $"Всего записей: {totalCount}";
+            }
+            else
+            {
+                TxtSearchResult.Text = $"Найдено: {filteredCount} из {totalCount}";
+            }
         }
 
         private void BtnPasteFromClipboard_Click(object sender, RoutedEventArgs e)
@@ -92,7 +165,9 @@ namespace TBMFurn
                 if (addedCount > 0)
                 {
                     MessageBox.Show($"Добавлено/обновлено {addedCount} записей");
-                    CatalogGrid.Items.Refresh();
+                    view?.Refresh();
+                    UpdateSearchResultCount();
+                    TxtStatus.Text = $"Статус: Добавлено {addedCount} записей (не сохранено в БД)";
                 }
                 else
                 {
@@ -114,14 +189,28 @@ namespace TBMFurn
                 return;
             }
 
-            if (MessageBox.Show($"Удалить {selectedItems.Count} записей?", "Подтверждение",
+            // Фильтруем только реальные CatalogEntry объекты
+            var itemsToDelete = selectedItems.Cast<object>()
+                .Where(x => x is CatalogEntry)
+                .Cast<CatalogEntry>()
+                .ToList();
+
+            if (itemsToDelete.Count == 0)
+            {
+                MessageBox.Show("Выберите существующие записи для удаления");
+                return;
+            }
+
+            if (MessageBox.Show($"Удалить {itemsToDelete.Count} записей?", "Подтверждение",
                 MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                var itemsToDelete = selectedItems.Cast<CatalogEntry>().ToList();
                 foreach (var item in itemsToDelete)
                 {
                     CatalogEntries.Remove(item);
                 }
+                view?.Refresh();
+                UpdateSearchResultCount();
+                TxtStatus.Text = $"Статус: Удалено {itemsToDelete.Count} записей (не сохранено в БД)";
             }
         }
 
@@ -161,6 +250,8 @@ namespace TBMFurn
                         }
                     }
 
+                    view?.Refresh();
+                    UpdateSearchResultCount();
                     TxtStatus.Text = $"Статус: Загружено {CatalogEntries.Count} записей";
                     MessageBox.Show($"Загружено {CatalogEntries.Count} записей из Supabase");
                 }
@@ -188,7 +279,7 @@ namespace TBMFurn
                 httpClient.DefaultRequestHeaders.Add("apikey", supabaseKey);
                 httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {supabaseKey}");
 
-                // 1. Сначала удаляем ВСЕ существующие записи
+                // Удаляем все существующие записи
                 TxtStatus.Text = "Статус: Удаление старых записей...";
                 var deleteResponse = await httpClient.DeleteAsync($"{supabaseUrl}/rest/v1/catalog_replacements?old_article=not.is.null");
 
@@ -200,7 +291,7 @@ namespace TBMFurn
                     return;
                 }
 
-                // 2. Добавляем новые записи по одной
+                // Добавляем новые записи
                 int savedCount = 0;
                 foreach (var entry in CatalogEntries.Where(x => !string.IsNullOrWhiteSpace(x.OldArticle) && !string.IsNullOrWhiteSpace(x.NewArticle)))
                 {
@@ -229,15 +320,18 @@ namespace TBMFurn
                     }
                 }
 
-                // 3. Обновляем локальный каталог
+                // Обновляем локальный каталог
                 OriginalCatalog.Clear();
                 foreach (var entry in CatalogEntries)
                 {
-                    OriginalCatalog[entry.OldArticle] = new CatalogItem
+                    if (!string.IsNullOrWhiteSpace(entry.OldArticle) && !string.IsNullOrWhiteSpace(entry.NewArticle))
                     {
-                        ReplacementArticle = entry.NewArticle,
-                        QuantityFactor = entry.Factor
-                    };
+                        OriginalCatalog[entry.OldArticle] = new CatalogItem
+                        {
+                            ReplacementArticle = entry.NewArticle,
+                            QuantityFactor = entry.Factor
+                        };
+                    }
                 }
 
                 TxtStatus.Text = $"Статус: Сохранено {savedCount} записей";

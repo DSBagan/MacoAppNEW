@@ -7,27 +7,44 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Кнопки управления -->
+        <!-- Верхняя панель с кнопками -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
             <Button x:Name="BtnPasteFromClipboard" Content="📋 Вставить из буфера" 
-                    Click="BtnPasteFromClipboard_Click" Height="30" Margin="5" Width="180"/>
+                    Click="BtnPasteFromClipboard_Click" Height="30" Margin="5" Width="180"
+                    Style="{StaticResource MaterialDesignPaperLightButton}"/>
             <Button x:Name="BtnDeleteSelected" Content="🗑 Удалить выбранные" 
-                    Click="BtnDeleteSelected_Click" Height="30" Margin="5" Width="180" Background="LightCoral"/>
+                    Click="BtnDeleteSelected_Click" Height="30" Margin="5" Width="180" Background="LightCoral"
+                    Style="{StaticResource MaterialDesignPaperLightButton}"/>
             <Button x:Name="BtnRefreshFromDB" Content="🔄 Обновить из БД" 
-                    Click="BtnRefreshFromDB_Click" Height="30" Margin="5" Width="180"/>
-            
+                    Click="BtnRefreshFromDB_Click" Height="30" Margin="5" Width="180"
+                    Style="{StaticResource MaterialDesignPaperLightButton}"/>
         </StackPanel>
 
+        <!-- Панель поиска -->
+        <Border Grid.Row="1" Margin="5" Padding="5" Background="#F0F0F0" CornerRadius="5">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="🔍 Поиск:" VerticalAlignment="Center" Margin="5,0,10,0" FontWeight="Bold"/>
+                <TextBox x:Name="TxtSearch" Width="250" Height="30" TextChanged="TxtSearch_TextChanged" 
+                         ToolTip="Введите артикул для поиска"/>
+                <Button x:Name="BtnClearSearch" Content="✖ Очистить" Click="BtnClearSearch_Click" 
+                        Width="120" Height="30" Margin="10,0,0,0"
+                        Style="{StaticResource MaterialDesignPaperLightButton}"/>
+                <TextBlock x:Name="TxtSearchResult" Text="Найдено: 0" VerticalAlignment="Center" 
+                           Margin="15,0,0,0" Foreground="Gray"/>
+            </StackPanel>
+        </Border>
+
         <!-- Индикатор статуса -->
-        <TextBlock Grid.Row="1" x:Name="TxtStatus" Text="Статус: Подключение к Supabase..." 
+        <TextBlock Grid.Row="2" x:Name="TxtStatus" Text="Статус: Готов" 
                    Margin="5" FontSize="11" Foreground="Blue"/>
 
         <!-- Таблица каталога -->
-        <DataGrid x:Name="CatalogGrid" Grid.Row="2" AutoGenerateColumns="False" 
+        <DataGrid x:Name="CatalogGrid" Grid.Row="3" AutoGenerateColumns="False" 
                   CanUserAddRows="True" Margin="5" SelectionMode="Extended">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Старый артикул" Binding="{Binding OldArticle}" Width="2*"/>
@@ -37,9 +54,11 @@
         </DataGrid>
 
         <!-- Кнопки сохранения/отмены -->
-        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
-            <Button x:Name="BtnSave" Content="Сохранить в БД" Click="BtnSave_Click" Width="150" Height="30" Margin="5" Background="LightGreen"/>
-            <Button x:Name="BtnCancel" Content="Отмена" Click="BtnCancel_Click" Width="100" Height="30" Margin="5"/>
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
+            <Button x:Name="BtnSave" Content="Сохранить в БД" Click="BtnSave_Click" Width="150" Height="30" Margin="5" Background="LightGreen"
+                    Style="{StaticResource MaterialDesignPaperLightButton}"/>
+            <Button x:Name="BtnCancel" Content="Отмена" Click="BtnCancel_Click" Width="100" Height="30" Margin="5"
+                    Style="{StaticResource MaterialDesignPaperLightButton}"/>
         </StackPanel>
     </Grid>
 </Window>
