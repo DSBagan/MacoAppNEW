@@ -41,7 +41,9 @@ namespace TBMFurn
         private ObservableCollection<FinalItem> FinalItems { get; set; }
         private Dictionary<string, CatalogItem> Catalog { get; set; }
 
-        // Настройки Supabase - ЗАМЕНИТЕ НА СВОИ!
+        private SupabaseHelper _supabaseHelper;
+
+
         private const string SUPABASE_URL = "https://kajvthlrnayyimrwnyqp.supabase.co";
         private const string SUPABASE_API_KEY = "sb_publishable_NZcAD8vZMM-j0QX-IQbusA_QlB3BRLF";
 
@@ -55,7 +57,93 @@ namespace TBMFurn
             UserDataGrid.ItemsSource = UserItems;
             FinalDataGrid.ItemsSource = FinalItems;
 
-            InitializeSupabase();
+            // Инициализируем Catalog пустым словарем, чтобы избежать null
+            Catalog = new Dictionary<string, CatalogItem>();
+
+            _supabaseHelper = new SupabaseHelper();
+
+            // Подписываемся на событие загрузки окна
+            this.Loaded += async (s, e) => await InitializeAsync();
+        }
+
+
+        /*private async Task TestSupabaseConnection()
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("=== ТЕСТ ПОДКЛЮЧЕНИЯ К SUPABASE ===");
+
+                using (var client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Add("apikey", SUPABASE_API_KEY);
+                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {SUPABASE_API_KEY}");
+
+                    // Тест 1: Проверка подключения к API
+                    var url = $"{SUPABASE_URL}/rest/v1/catalog_replacements?select=*&limit=5";
+                    System.Diagnostics.Debug.WriteLine($"Запрос: {url}");
+
+                    var response = await client.GetAsync(url);
+                    var content = await response.Content.ReadAsStringAsync();
+
+                    System.Diagnostics.Debug.WriteLine($"Статус: {response.StatusCode}");
+                    System.Diagnostics.Debug.WriteLine($"Содержимое: {content}");
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // Пробуем десериализовать
+                        var items = JsonSerializer.Deserialize<List<SupabaseCatalogItem>>(content);
+                        System.Diagnostics.Debug.WriteLine($"Десериализовано: {items?.Count ?? 0} записей");
+
+                        if (items != null && items.Any())
+                        {
+                            foreach (var item in items)
+                            {
+                                System.Diagnostics.Debug.WriteLine($"  {item.old_article} -> {item.replacement_article} (x{item.quantity_factor})");
+                            }
+                        }
+
+                        await Dispatcher.InvokeAsync(() =>
+                        {
+                            MessageBox.Show($"Успешно! Получено {items?.Count ?? 0} записей",
+                                "Тест", MessageBoxButton.OK, MessageBoxImage.Information);
+                        });
+                    }
+                    else
+                    {
+                        await Dispatcher.InvokeAsync(() =>
+                        {
+                            MessageBox.Show($"Ошибка: {response.StatusCode}\n{content}",
+                                "Тест", MessageBoxButton.OK, MessageBoxImage.Error);
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Исключение: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack: {ex.StackTrace}");
+
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    MessageBox.Show($"Исключение: {ex.Message}",
+                        "Тест", MessageBoxButton.OK, MessageBoxImage.Error);
+                });
+            }
+        }*/
+
+
+        private async Task InitializeAsync()
+        {
+            try
+            {
+                await _supabaseHelper.Initialize();
+                await LoadCatalogFromSupabase();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"InitializeAsync error: {ex.Message}");
+                LoadLocalCatalog();
+            }
         }
 
         private async void InitializeSupabase()
@@ -76,45 +164,41 @@ namespace TBMFurn
         {
             try
             {
-                httpClient.DefaultRequestHeaders.Clear();
-                httpClient.DefaultRequestHeaders.Add("apikey", SUPABASE_API_KEY);
-                httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {SUPABASE_API_KEY}");
+                System.Diagnostics.Debug.WriteLine("=== LoadCatalogFromSupabase START ===");
 
-                var response = await httpClient.GetAsync($"{SUPABASE_URL}/rest/v1/catalog_replacements?select=*");
+                var loadedCatalog = await _supabaseHelper.GetCatalogAsync();
 
-                if (response.IsSuccessStatusCode)
+                // ВАЖНО: присваиваем результат полю Catalog
+                Catalog = loadedCatalog;
+
+                System.Diagnostics.Debug.WriteLine($"Catalog after assignment: {(Catalog == null ? "NULL" : $"{Catalog.Count} items")}");
+
+                if (Catalog == null)
                 {
-                    var json = await response.Content.ReadAsStringAsync();
-                    var items = JsonSerializer.Deserialize<List<SupabaseCatalogItem>>(json);
-
+                    System.Diagnostics.Debug.WriteLine("Catalog is still null, creating new dictionary");
                     Catalog = new Dictionary<string, CatalogItem>();
-                    if (items != null)
-                    {
-                        foreach (var item in items)
-                        {
-                            Catalog[item.old_article] = new CatalogItem
-                            {
-                                ReplacementArticle = item.replacement_article,
-                                QuantityFactor = item.quantity_factor
-                            };
-                        }
-                    }
+                }
 
-                    System.Diagnostics.Debug.WriteLine($"Загружено {Catalog.Count} записей из БД");
-                    MessageBox.Show($"Загружено {Catalog.Count} записей из БД", "Просто нажми OK",
-                        MessageBoxButton.OK, MessageBoxImage.Information);
+                if (Catalog.Count > 0)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Successfully loaded {Catalog.Count} items from database");
+
+                    await Dispatcher.InvokeAsync(() =>
+                    {
+                        MessageBox.Show($"Загружено {Catalog.Count} записей из БД", "Информация",
+                            MessageBoxButton.OK, MessageBoxImage.Information);
+                    });
                 }
                 else
                 {
-                    var error = await response.Content.ReadAsStringAsync();
-                    System.Diagnostics.Debug.WriteLine($"Ошибка загрузки: {response.StatusCode} - {error}");
-                    throw new Exception($"HTTP Error: {response.StatusCode} - {error}");
+                    System.Diagnostics.Debug.WriteLine("Catalog is empty, loading local catalog");
+                    LoadLocalCatalog();
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Ошибка загрузки каталога: {ex.Message}");
-                throw;
+                System.Diagnostics.Debug.WriteLine($"Exception in LoadCatalogFromSupabase: {ex.Message}");
+                LoadLocalCatalog();
             }
         }
 
@@ -504,5 +588,7 @@ namespace TBMFurn
         public string old_article { get; set; }
         public string replacement_article { get; set; }
         public decimal quantity_factor { get; set; }
+        public DateTime? created_at { get; set; }
+        public DateTime? updated_at { get; set; }
     }
 }

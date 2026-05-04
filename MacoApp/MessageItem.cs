@@ -431,5 +431,85 @@ namespace TBMFurn
                 return null;
             }
         }
+        public async Task<Dictionary<string, CatalogItem>> GetCatalogAsync()
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("=== GetCatalogAsync START ===");
+
+                // Создаем НОВЫЙ HttpClient для этого запроса
+                using (var client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Clear();
+                    client.DefaultRequestHeaders.Add("apikey", _supabaseKey);
+                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {_supabaseKey}");
+                    client.Timeout = TimeSpan.FromSeconds(30);
+
+                    var url = $"{_supabaseUrl}/rest/v1/catalog_replacements?select=*";
+                    System.Diagnostics.Debug.WriteLine($"URL: {url}");
+
+                    var response = await client.GetAsync(url);
+                    var content = await response.Content.ReadAsStringAsync();
+
+                    System.Diagnostics.Debug.WriteLine($"Status: {response.StatusCode}");
+                    System.Diagnostics.Debug.WriteLine($"Content length: {content.Length}");
+                    System.Diagnostics.Debug.WriteLine($"First 200 chars: {(content.Length > 200 ? content.Substring(0, 200) : content)}");
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Error: {content}");
+                        return new Dictionary<string, CatalogItem>();
+                    }
+
+                    if (string.IsNullOrWhiteSpace(content) || content == "[]")
+                    {
+                        System.Diagnostics.Debug.WriteLine("Empty catalog");
+                        return new Dictionary<string, CatalogItem>();
+                    }
+
+                    // ВАЖНО: используем Newtonsoft.Json, но с правильными настройками
+                    var settings = new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore,
+                        MissingMemberHandling = MissingMemberHandling.Ignore
+                    };
+
+                    var items = JsonConvert.DeserializeObject<List<SupabaseCatalogItem>>(content, settings);
+
+                    if (items == null)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Deserialization returned null");
+                        return new Dictionary<string, CatalogItem>();
+                    }
+
+                    System.Diagnostics.Debug.WriteLine($"Deserialized {items.Count} items");
+
+                    var catalog = new Dictionary<string, CatalogItem>();
+
+                    foreach (var item in items)
+                    {
+                        if (!string.IsNullOrEmpty(item.old_article))
+                        {
+                            catalog[item.old_article] = new CatalogItem
+                            {
+                                ReplacementArticle = item.replacement_article ?? "",
+                                QuantityFactor = item.quantity_factor
+                            };
+                            System.Diagnostics.Debug.WriteLine($"Added: {item.old_article} -> {item.replacement_article} (x{item.quantity_factor})");
+                        }
+                    }
+
+                    System.Diagnostics.Debug.WriteLine($"Returning catalog with {catalog.Count} items");
+                    return catalog;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"EXCEPTION in GetCatalogAsync: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
+                return new Dictionary<string, CatalogItem>();
+            }
+        }
+
     }
 }
