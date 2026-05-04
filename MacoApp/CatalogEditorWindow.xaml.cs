@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -269,6 +270,56 @@ namespace TBMFurn
             }
         }
 
+        private async void BtnRestoreFromBackup_Click(object sender, RoutedEventArgs e)
+        {
+            var openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            openFileDialog.Title = "Выберите файл бэкапа";
+            openFileDialog.Filter = "JSON files (*.json)|*.json";
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    string json = File.ReadAllText(openFileDialog.FileName);
+                    var backupData = JsonSerializer.Deserialize<BackupData>(json);
+
+                    if (backupData?.Entries != null && backupData.Entries.Any())
+                    {
+                        if (MessageBox.Show($"Восстановить {backupData.Entries.Count} записей из бэкапа от {backupData.BackupDate:dd.MM.yyyy HH:mm}?\nТекущие данные будут заменены!",
+                            "Подтверждение", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                        {
+                            CatalogEntries.Clear();
+                            foreach (var entry in backupData.Entries)
+                            {
+                                CatalogEntries.Add(new CatalogEntry
+                                {
+                                    OldArticle = entry.OldArticle,
+                                    NewArticle = entry.NewArticle,
+                                    Factor = entry.Factor
+                                });
+                            }
+
+                            view?.Refresh();
+                            UpdateSearchResultCount();
+                            TxtStatus.Text = $"Статус: Восстановлено {CatalogEntries.Count} записей (не сохранено в БД)";
+                            MessageBox.Show($"Восстановлено {CatalogEntries.Count} записей!\nНе забудьте сохранить изменения в БД.",
+                                "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Файл бэкапа не содержит данных или имеет неверный формат.",
+                            "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка восстановления: {ex.Message}", "Ошибка",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
         private async void BtnSave_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -348,6 +399,80 @@ namespace TBMFurn
             }
         }
 
+        private void BtnBackup_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                CreateBackup();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка создания бэкапа: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void CreateBackup()
+        {
+            // Определяем путь для бэкапа
+            string backupFolder;
+            bool isDriveXAvailable = false;
+
+            try
+            {
+                isDriveXAvailable = Directory.Exists("X:\\");
+            }
+            catch { }
+
+            if (isDriveXAvailable)
+            {
+                backupFolder = @"X:\Резерв БД FurnApp";
+            }
+            else
+            {
+                backupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Резерв БД FurnApp");
+                // Или на диск C:
+                // backupFolder = @"C:\Резерв БД FurnApp";
+            }
+
+            // Создаем папку если не существует
+            if (!Directory.Exists(backupFolder))
+            {
+                Directory.CreateDirectory(backupFolder);
+            }
+
+            // Формируем имя файла с датой и временем
+            string fileName = $"catalog_backup_{DateTime.Now:yyyyMMdd_HHmmss}.json";
+            string backupPath = Path.Combine(backupFolder, fileName);
+
+            // Создаем объект для бэкапа
+            var backupData = new BackupData
+            {
+                BackupDate = DateTime.Now,
+                Version = "1.0",
+                Entries = CatalogEntries.Select(entry => new BackupEntry
+                {
+                    OldArticle = entry.OldArticle,
+                    NewArticle = entry.NewArticle,
+                    Factor = entry.Factor
+                }).ToList()
+            };
+
+            // Сохраняем в JSON
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            };
+
+            string json = JsonSerializer.Serialize(backupData, options);
+            File.WriteAllText(backupPath, json, Encoding.UTF8);
+
+            TxtStatus.Text = $"Статус: Бэкап создан - {fileName}";
+            MessageBox.Show($"Бэкап успешно создан!\n\nПуть: {backupPath}\n\nЗаписей: {CatalogEntries.Count}",
+                "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
@@ -381,5 +506,18 @@ namespace TBMFurn
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    }
+    public class BackupData
+    {
+        public DateTime BackupDate { get; set; }
+        public string Version { get; set; }
+        public List<BackupEntry> Entries { get; set; }
+    }
+
+    public class BackupEntry
+    {
+        public string OldArticle { get; set; }
+        public string NewArticle { get; set; }
+        public decimal Factor { get; set; }
     }
 }

@@ -21,8 +21,6 @@
 
         <!-- Кнопки управления -->
         <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Vertical" VerticalAlignment="Top" Margin="10">
-            <!--<Button x:Name="BtnLoadExcel" Content="📂 Загрузить из Excel" Click="BtnLoadExcel_Click" Height="35" Margin="5"
-                    Style="{StaticResource MaterialDesignPaperLightButton}"/>-->
             <Button x:Name="BtnPasteFromClipboard" Content="📋 Вставить из буфера" Click="BtnPasteFromClipboard_Click" Height="35" Margin="5"
                     Style="{StaticResource MaterialDesignPaperLightButton}"/>
             <Button x:Name="BtnSaveExcel" Content="💾 Сохранить в Excel" Click="BtnSaveExcel_Click" Height="35" Margin="5"
@@ -37,6 +35,16 @@
         <DataGrid x:Name="UserDataGrid" Grid.Row="1" Grid.Column="0" AutoGenerateColumns="False" 
                   CanUserAddRows="True" Margin="5" IsReadOnly="False">
             <DataGrid.Columns>
+                <!-- Колонка с номером строки -->
+                <DataGridTextColumn Header="№" Binding="{Binding RowNumber}" Width="50" IsReadOnly="True">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="Foreground" Value="Gray"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
                 <DataGridTextColumn Header="Количество" Binding="{Binding Quantity, StringFormat=N0}" Width="*"/>
                 <DataGridTextColumn Header="Артикул" Binding="{Binding Article}" Width="*"/>
             </DataGrid.Columns>
@@ -45,6 +53,16 @@
         <!-- Финальная таблица -->
         <DataGrid x:Name="FinalDataGrid" Grid.Row="1" Grid.Column="2" AutoGenerateColumns="False" Margin="5" IsReadOnly="True">
             <DataGrid.Columns>
+                <!-- Колонка с номером строки -->
+                <DataGridTextColumn Header="№" Binding="{Binding RowNumber}" Width="50" IsReadOnly="True">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="Foreground" Value="Gray"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
                 <DataGridTextColumn Header="Количество" Binding="{Binding Quantity, StringFormat=N0}" Width="*"/>
                 <DataGridTextColumn Header="Артикул" Binding="{Binding Article}" Width="*"/>
                 <DataGridTemplateColumn Header="Заменен?" Width="*">

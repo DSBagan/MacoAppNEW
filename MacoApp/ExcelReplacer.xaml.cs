@@ -54,6 +54,10 @@ namespace TBMFurn
             InitializeComponent();
             UserItems = new ObservableCollection<UserItem>();
             FinalItems = new ObservableCollection<FinalItem>();
+            // Подписываемся на события изменения коллекций
+            UserItems.CollectionChanged += OnUserItemsCollectionChanged;
+            FinalItems.CollectionChanged += (s, e) => UpdateRowNumbers();
+
             UserDataGrid.ItemsSource = UserItems;
             FinalDataGrid.ItemsSource = FinalItems;
 
@@ -290,6 +294,7 @@ namespace TBMFurn
 
                 if (UserItems.Count > 0)
                 {
+                    UpdateRowNumbers(); // Обновляем номера
                     ProcessData();
                     MessageBox.Show($"Загружено {UserItems.Count} строк из буфера обмена");
                 }
@@ -353,6 +358,7 @@ namespace TBMFurn
                         }
                     }
 
+                    UpdateRowNumbers(); // Обновляем номера
                     ProcessData();
                     MessageBox.Show($"Загружено {UserItems.Count} строк из Excel");
                 }
@@ -424,7 +430,15 @@ namespace TBMFurn
                 FinalItems.Add(item);
             }
 
+            UpdateRowNumbers(); // Обновляем номера для финального списка
+
             MessageBox.Show($"Обработано {UserItems.Count} строк. Получено {FinalItems.Count} уникальных артикулов.");
+        }
+
+        // Также добавьте обработчик для события CollectionChanged, если строки добавляются вручную
+        private void OnUserItemsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            UpdateRowNumbers();
         }
 
         private void BtnSaveExcel_Click(object sender, RoutedEventArgs e)
@@ -451,39 +465,59 @@ namespace TBMFurn
             }
             catch { }
 
+            string savePath;
             if (isDriveXAvailable)
             {
                 if (!Directory.Exists(driveXPath))
                     Directory.CreateDirectory(driveXPath);
-                return Path.Combine(driveXPath, $"export_{DateTime.Now:yyyyMMdd_HHmmss}.xls");
+                savePath = Path.Combine(driveXPath, $"export_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx");
             }
             else
             {
                 if (!Directory.Exists(driveCPath))
                     Directory.CreateDirectory(driveCPath);
-                return Path.Combine(driveCPath, $"export_{DateTime.Now:yyyyMMdd_HHmmss}.xls");
+                savePath = Path.Combine(driveCPath, $"export_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx");
             }
+
+            return savePath;
         }
 
         private void SaveToExcel(string filePath)
         {
             try
             {
-                // Создаем новую книгу Excel в формате .xls
-                IWorkbook workbook = new HSSFWorkbook();
+                // Убеждаемся, что расширение .xlsx
+                if (!filePath.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
+                {
+                    filePath = Path.ChangeExtension(filePath, ".xlsx");
+                }
+
+                // Создаем новую книгу Excel в формате .xlsx
+                IWorkbook workbook = new XSSFWorkbook(); // Используем XSSFWorkbook для xlsx
                 ISheet sheet = workbook.CreateSheet("Результат");
 
-                // Данные - без заголовков, только артикул и количество
+                // Опционально: добавим заголовок с датой создания
+                IRow headerRow = sheet.CreateRow(0);
+                headerRow.CreateCell(0).SetCellValue($"Отчет создан: {DateTime.Now:dd.MM.yyyy HH:mm:ss}");
+
+                // Объединяем ячейки для заголовка
+                // sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(0, 0, 0, 1));
+
+                // Данные - начиная со строки 2 (если добавили заголовок)
+                int startRow = 1; // Если добавили заголовок, иначе 0
                 for (int i = 0; i < FinalItems.Count; i++)
                 {
-                    IRow dataRow = sheet.CreateRow(i);
+                    IRow dataRow = sheet.CreateRow(startRow + i);
 
-                    // Колонка A: Артикул
-                    dataRow.CreateCell(0).SetCellValue(FinalItems[i].Article);
-
-                    // Колонка B: Количество (округляем до целого)
+                    // Колонка A: Количество
                     long roundedQuantity = (long)Math.Round(FinalItems[i].Quantity, 0);
-                    dataRow.CreateCell(1).SetCellValue(roundedQuantity);
+                    dataRow.CreateCell(0).SetCellValue(roundedQuantity);
+
+                    // Колонка B: Артикул
+                    dataRow.CreateCell(1).SetCellValue(FinalItems[i].Article);
+
+                    // Опционально: Колонка C: Заменен?
+                    // dataRow.CreateCell(2).SetCellValue(FinalItems[i].IsReplaced ? "Да" : "Нет");
                 }
 
                 // Автоматически подгоняем ширину колонок
@@ -498,12 +532,13 @@ namespace TBMFurn
                     workbook.Write(fs);
                 }
 
-                MessageBox.Show($"Файл успешно сохранен: {filePath}",
+                MessageBox.Show($"Файл успешно сохранен: {filePath}\n\nЗаписей: {FinalItems.Count}",
                     "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка сохранения Excel: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Ошибка сохранения Excel: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -523,6 +558,20 @@ namespace TBMFurn
                 }
             }
         }
+        private void UpdateRowNumbers()
+        {
+            // Обновляем номера для пользовательского списка
+            for (int i = 0; i < UserItems.Count; i++)
+            {
+                UserItems[i].RowNumber = i + 1;
+            }
+
+            // Обновляем номера для финального списка
+            for (int i = 0; i < FinalItems.Count; i++)
+            {
+                FinalItems[i].RowNumber = i + 1;
+            }
+        }
     }
 
     // Модели данных
@@ -530,6 +579,13 @@ namespace TBMFurn
     {
         private decimal _quantity;
         private string _article;
+        private int _rowNumber;
+
+        public int RowNumber
+        {
+            get => _rowNumber;
+            set { _rowNumber = value; OnPropertyChanged(nameof(RowNumber)); }
+        }
 
         public decimal Quantity
         {
@@ -552,6 +608,13 @@ namespace TBMFurn
         private decimal _quantity;
         private string _article;
         private bool _isReplaced;
+        private int _rowNumber;
+
+        public int RowNumber
+        {
+            get => _rowNumber;
+            set { _rowNumber = value; OnPropertyChanged(nameof(RowNumber)); }
+        }
 
         public decimal Quantity
         {
@@ -574,6 +637,8 @@ namespace TBMFurn
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
+
+    
 
     public class CatalogItem
     {
