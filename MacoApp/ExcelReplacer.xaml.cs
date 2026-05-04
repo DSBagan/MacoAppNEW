@@ -496,35 +496,22 @@ namespace TBMFurn
                 IWorkbook workbook = new XSSFWorkbook(); // Используем XSSFWorkbook для xlsx
                 ISheet sheet = workbook.CreateSheet("Результат");
 
-                // Опционально: добавим заголовок с датой создания
-                IRow headerRow = sheet.CreateRow(0);
-                headerRow.CreateCell(0).SetCellValue($"Отчет создан: {DateTime.Now:dd.MM.yyyy HH:mm:ss}");
-
-                // Объединяем ячейки для заголовка
-                // sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(0, 0, 0, 1));
-
-                // Данные - начиная со строки 2 (если добавили заголовок)
-                int startRow = 1; // Если добавили заголовок, иначе 0
+                // Данные - артикул в колонке A, количество в колонке B
                 for (int i = 0; i < FinalItems.Count; i++)
                 {
-                    IRow dataRow = sheet.CreateRow(startRow + i);
+                    IRow dataRow = sheet.CreateRow(i);
 
-                    // Колонка A: Количество
+                    // Колонка A: Артикул (первый столбец)
+                    dataRow.CreateCell(0).SetCellValue(FinalItems[i].Article);
+
+                    // Колонка B: Количество (второй столбец)
                     long roundedQuantity = (long)Math.Round(FinalItems[i].Quantity, 0);
-                    dataRow.CreateCell(0).SetCellValue(roundedQuantity);
-
-                    // Колонка B: Артикул
-                    dataRow.CreateCell(1).SetCellValue(FinalItems[i].Article);
-
-                    // Опционально: Колонка C: Заменен?
-                    // dataRow.CreateCell(2).SetCellValue(FinalItems[i].IsReplaced ? "Да" : "Нет");
+                    dataRow.CreateCell(1).SetCellValue(roundedQuantity);
                 }
 
                 // Автоматически подгоняем ширину колонок
-                for (int i = 0; i < 2; i++)
-                {
-                    sheet.AutoSizeColumn(i);
-                }
+                sheet.AutoSizeColumn(0); // Артикул
+                sheet.AutoSizeColumn(1); // Количество
 
                 // Сохраняем файл
                 using (FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
