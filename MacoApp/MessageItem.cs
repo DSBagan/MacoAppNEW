@@ -431,7 +431,7 @@ namespace TBMFurn
                 return null;
             }
         }
-        public async Task<Dictionary<string, CatalogItem>> GetCatalogAsync()
+        /*public async Task<Dictionary<string, CatalogItem>> GetCatalogAsync()
         {
             try
             {
@@ -509,7 +509,7 @@ namespace TBMFurn
                 System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
                 return new Dictionary<string, CatalogItem>();
             }
-        }
+        }*/
 
     }
 }

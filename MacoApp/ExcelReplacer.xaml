@@ -87,5 +87,11 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
+        <Border Grid.Row="3" Grid.ColumnSpan="3" Margin="5" Padding="5" CornerRadius="3" Background="#F5F5F5" BorderBrush="#DDD" BorderThickness="1">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock x:Name="TxtStatus" Text="✅ Готов" FontSize="12" Foreground="Green"/>
+            </StackPanel>
+        </Border>
     </Grid>
+    
 </Window>

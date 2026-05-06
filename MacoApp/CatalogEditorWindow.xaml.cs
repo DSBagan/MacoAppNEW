@@ -1,17 +1,16 @@
-﻿using ICSharpCode.SharpZipLib.Zip;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using Microsoft.Win32;
 using TBMFurn;
 
 namespace TBMFurn
@@ -20,17 +19,14 @@ namespace TBMFurn
     {
         private ObservableCollection<CatalogEntry> CatalogEntries { get; set; }
         private Dictionary<string, CatalogItem> OriginalCatalog { get; set; }
-        private string supabaseUrl;
-        private string supabaseKey;
-        private static readonly HttpClient httpClient = new HttpClient();
+        private LocalCatalogDatabase _localDb;
         private ICollectionView view;
 
-        public CatalogEditorWindow(Dictionary<string, CatalogItem> catalog, string url, string key)
+        public CatalogEditorWindow(Dictionary<string, CatalogItem> catalog)
         {
             InitializeComponent();
             OriginalCatalog = catalog;
-            supabaseUrl = url;
-            supabaseKey = key;
+            _localDb = new LocalCatalogDatabase();
             CatalogEntries = new ObservableCollection<CatalogEntry>();
 
             foreach (var item in catalog)
@@ -39,11 +35,12 @@ namespace TBMFurn
                 {
                     OldArticle = item.Key,
                     NewArticle = item.Value.ReplacementArticle,
-                    Factor = item.Value.QuantityFactor
+                    Factor = item.Value.QuantityFactor,
+                    IsSeal = item.Value.IsSeal,
+                    ShippingStandard = item.Value.ShippingStandard
                 });
             }
 
-            // Настраиваем привязку для поиска
             CatalogGrid.ItemsSource = CatalogEntries;
             view = CollectionViewSource.GetDefaultView(CatalogEntries);
             view.Filter = FilterPredicate;
@@ -53,15 +50,12 @@ namespace TBMFurn
 
         private bool FilterPredicate(object item)
         {
-            // Пропускаем null
             if (item == null)
                 return false;
 
-            // Проверяем тип объекта - это ключевое исправление!
             if (item.GetType().Name == "NamedObject")
                 return false;
 
-            // Проверяем, что это наш тип
             if (!(item is CatalogEntry))
                 return false;
 
@@ -71,14 +65,12 @@ namespace TBMFurn
             if (string.IsNullOrWhiteSpace(searchText))
                 return true;
 
-            // Поиск по старому артикулу и артикулу замене (без учета регистра)
             return (catalogItem.OldArticle != null && catalogItem.OldArticle.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0) ||
                    (catalogItem.NewArticle != null && catalogItem.NewArticle.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0);
         }
 
         private void TxtSearch_TextChanged(object sender, TextChangedEventArgs e)
         {
-            // Обновляем фильтр при изменении текста поиска
             view?.Refresh();
             UpdateSearchResultCount();
         }
@@ -138,10 +130,20 @@ namespace TBMFurn
                         string oldArticle = parts[0].Trim();
                         string newArticle = parts[1].Trim();
                         decimal factor = 1;
+                        bool isSeal = false;
+                        decimal shippingStandard = 0;
 
                         if (parts.Length >= 3)
                         {
                             decimal.TryParse(parts[2].Trim(), out factor);
+                        }
+                        if (parts.Length >= 4)
+                        {
+                            bool.TryParse(parts[3].Trim(), out isSeal);
+                        }
+                        if (parts.Length >= 5)
+                        {
+                            decimal.TryParse(parts[4].Trim(), out shippingStandard);
                         }
 
                         var existing = CatalogEntries.FirstOrDefault(x => x.OldArticle == oldArticle);
@@ -149,6 +151,8 @@ namespace TBMFurn
                         {
                             existing.NewArticle = newArticle;
                             existing.Factor = factor;
+                            existing.IsSeal = isSeal;
+                            existing.ShippingStandard = shippingStandard;
                         }
                         else
                         {
@@ -156,7 +160,9 @@ namespace TBMFurn
                             {
                                 OldArticle = oldArticle,
                                 NewArticle = newArticle,
-                                Factor = factor
+                                Factor = factor,
+                                IsSeal = isSeal,
+                                ShippingStandard = shippingStandard
                             });
                         }
                         addedCount++;
@@ -190,7 +196,6 @@ namespace TBMFurn
                 return;
             }
 
-            // Фильтруем только реальные CatalogEntry объекты
             var itemsToDelete = selectedItems.Cast<object>()
                 .Where(x => x is CatalogEntry)
                 .Cast<CatalogEntry>()
@@ -215,64 +220,9 @@ namespace TBMFurn
             }
         }
 
-        private async void BtnRefreshFromDB_Click(object sender, RoutedEventArgs e)
-        {
-            await LoadDataFromSupabase();
-        }
-
-        private async Task LoadDataFromSupabase()
-        {
-            try
-            {
-                TxtStatus.Text = "Статус: Загрузка из Supabase...";
-
-                httpClient.DefaultRequestHeaders.Clear();
-                httpClient.DefaultRequestHeaders.Add("apikey", supabaseKey);
-                httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {supabaseKey}");
-
-                var response = await httpClient.GetAsync($"{supabaseUrl}/rest/v1/catalog_replacements?select=*");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var json = await response.Content.ReadAsStringAsync();
-                    var items = JsonSerializer.Deserialize<System.Collections.Generic.List<SupabaseCatalogItem>>(json);
-
-                    CatalogEntries.Clear();
-                    if (items != null)
-                    {
-                        foreach (var item in items)
-                        {
-                            CatalogEntries.Add(new CatalogEntry
-                            {
-                                OldArticle = item.old_article,
-                                NewArticle = item.replacement_article,
-                                Factor = item.quantity_factor
-                            });
-                        }
-                    }
-
-                    view?.Refresh();
-                    UpdateSearchResultCount();
-                    TxtStatus.Text = $"Статус: Загружено {CatalogEntries.Count} записей";
-                    MessageBox.Show($"Загружено {CatalogEntries.Count} записей из Supabase");
-                }
-                else
-                {
-                    var error = await response.Content.ReadAsStringAsync();
-                    TxtStatus.Text = $"Статус: Ошибка - {response.StatusCode}";
-                    MessageBox.Show($"Ошибка загрузки: {response.StatusCode}\n{error}");
-                }
-            }
-            catch (Exception ex)
-            {
-                TxtStatus.Text = $"Статус: Ошибка - {ex.Message}";
-                MessageBox.Show($"Ошибка загрузки: {ex.Message}");
-            }
-        }
-
         private async void BtnRestoreFromBackup_Click(object sender, RoutedEventArgs e)
         {
-            var openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            var openFileDialog = new OpenFileDialog();
             openFileDialog.Title = "Выберите файл бэкапа";
             openFileDialog.Filter = "JSON files (*.json)|*.json";
 
@@ -295,7 +245,9 @@ namespace TBMFurn
                                 {
                                     OldArticle = entry.OldArticle,
                                     NewArticle = entry.NewArticle,
-                                    Factor = entry.Factor
+                                    Factor = entry.Factor,
+                                    IsSeal = entry.IsSeal,
+                                    ShippingStandard = entry.ShippingStandard
                                 });
                             }
 
@@ -324,69 +276,34 @@ namespace TBMFurn
         {
             try
             {
-                TxtStatus.Text = "Статус: Сохранение в Supabase...";
+                TxtStatus.Text = "Сохранение...";
+                BtnSave.IsEnabled = false;
 
-                httpClient.DefaultRequestHeaders.Clear();
-                httpClient.DefaultRequestHeaders.Add("apikey", supabaseKey);
-                httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {supabaseKey}");
-
-                // Удаляем все существующие записи
-                TxtStatus.Text = "Статус: Удаление старых записей...";
-                var deleteResponse = await httpClient.DeleteAsync($"{supabaseUrl}/rest/v1/catalog_replacements?old_article=not.is.null");
-
-                if (!deleteResponse.IsSuccessStatusCode)
-                {
-                    var deleteError = await deleteResponse.Content.ReadAsStringAsync();
-                    TxtStatus.Text = $"Статус: Ошибка удаления - {deleteResponse.StatusCode}";
-                    MessageBox.Show($"Ошибка при удалении старых записей: {deleteResponse.StatusCode}\n{deleteError}");
-                    return;
-                }
-
-                // Добавляем новые записи
-                int savedCount = 0;
-                foreach (var entry in CatalogEntries.Where(x => !string.IsNullOrWhiteSpace(x.OldArticle) && !string.IsNullOrWhiteSpace(x.NewArticle)))
-                {
-                    var newItem = new
-                    {
-                        old_article = entry.OldArticle,
-                        replacement_article = entry.NewArticle,
-                        quantity_factor = entry.Factor
-                    };
-
-                    var json = JsonSerializer.Serialize(newItem);
-                    var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                    var insertResponse = await httpClient.PostAsync($"{supabaseUrl}/rest/v1/catalog_replacements", content);
-
-                    if (insertResponse.IsSuccessStatusCode)
-                    {
-                        savedCount++;
-                    }
-                    else
-                    {
-                        var error = await insertResponse.Content.ReadAsStringAsync();
-                        TxtStatus.Text = $"Статус: Ошибка при сохранении {entry.OldArticle}";
-                        MessageBox.Show($"Ошибка при сохранении {entry.OldArticle}: {insertResponse.StatusCode}\n{error}");
-                        return;
-                    }
-                }
-
-                // Обновляем локальный каталог
-                OriginalCatalog.Clear();
+                var catalogToSave = new Dictionary<string, CatalogItem>();
                 foreach (var entry in CatalogEntries)
                 {
                     if (!string.IsNullOrWhiteSpace(entry.OldArticle) && !string.IsNullOrWhiteSpace(entry.NewArticle))
                     {
-                        OriginalCatalog[entry.OldArticle] = new CatalogItem
+                        catalogToSave[entry.OldArticle] = new CatalogItem
                         {
                             ReplacementArticle = entry.NewArticle,
-                            QuantityFactor = entry.Factor
+                            QuantityFactor = entry.Factor,
+                            IsSeal = entry.IsSeal,
+                            ShippingStandard = entry.ShippingStandard
                         };
                     }
                 }
 
-                TxtStatus.Text = $"Статус: Сохранено {savedCount} записей";
-                MessageBox.Show($"Каталог успешно сохранен в Supabase!\nСохранено записей: {savedCount}",
+                await _localDb.SaveAllCatalogAsync(catalogToSave);
+
+                OriginalCatalog.Clear();
+                foreach (var item in catalogToSave)
+                {
+                    OriginalCatalog[item.Key] = item.Value;
+                }
+
+                TxtStatus.Text = $"Сохранено {catalogToSave.Count} записей";
+                MessageBox.Show($"Каталог сохранен!\nСохранено: {catalogToSave.Count} записей",
                     "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 DialogResult = true;
@@ -394,8 +311,13 @@ namespace TBMFurn
             }
             catch (Exception ex)
             {
-                TxtStatus.Text = $"Статус: Ошибка - {ex.Message}";
-                MessageBox.Show($"Ошибка сохранения: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                TxtStatus.Text = $"Ошибка: {ex.Message}";
+                MessageBox.Show($"Ошибка сохранения: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                BtnSave.IsEnabled = true;
             }
         }
 
@@ -414,7 +336,6 @@ namespace TBMFurn
 
         private void CreateBackup()
         {
-            // Определяем путь для бэкапа
             string backupFolder;
             bool isDriveXAvailable = false;
 
@@ -431,21 +352,16 @@ namespace TBMFurn
             else
             {
                 backupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Резерв БД FurnApp");
-                // Или на диск C:
-                // backupFolder = @"C:\Резерв БД FurnApp";
             }
 
-            // Создаем папку если не существует
             if (!Directory.Exists(backupFolder))
             {
                 Directory.CreateDirectory(backupFolder);
             }
 
-            // Формируем имя файла с датой и временем
             string fileName = $"catalog_backup_{DateTime.Now:yyyyMMdd_HHmmss}.json";
             string backupPath = Path.Combine(backupFolder, fileName);
 
-            // Создаем объект для бэкапа
             var backupData = new BackupData
             {
                 BackupDate = DateTime.Now,
@@ -454,11 +370,12 @@ namespace TBMFurn
                 {
                     OldArticle = entry.OldArticle,
                     NewArticle = entry.NewArticle,
-                    Factor = entry.Factor
+                    Factor = entry.Factor,
+                    IsSeal = entry.IsSeal,
+                    ShippingStandard = entry.ShippingStandard
                 }).ToList()
             };
 
-            // Сохраняем в JSON
             var options = new JsonSerializerOptions
             {
                 WriteIndented = true,
@@ -485,6 +402,8 @@ namespace TBMFurn
         private string _oldArticle;
         private string _newArticle;
         private decimal _factor = 1;
+        private bool _isSeal = false;
+        private decimal _shippingStandard = 0;
 
         public string OldArticle
         {
@@ -504,9 +423,22 @@ namespace TBMFurn
             set { _factor = value; OnPropertyChanged(nameof(Factor)); }
         }
 
+        public bool IsSeal
+        {
+            get => _isSeal;
+            set { _isSeal = value; OnPropertyChanged(nameof(IsSeal)); }
+        }
+
+        public decimal ShippingStandard
+        {
+            get => _shippingStandard;
+            set { _shippingStandard = value; OnPropertyChanged(nameof(ShippingStandard)); }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
+
     public class BackupData
     {
         public DateTime BackupDate { get; set; }
@@ -519,5 +451,7 @@ namespace TBMFurn
         public string OldArticle { get; set; }
         public string NewArticle { get; set; }
         public decimal Factor { get; set; }
+        public bool IsSeal { get; set; }
+        public decimal ShippingStandard { get; set; }
     }
 }

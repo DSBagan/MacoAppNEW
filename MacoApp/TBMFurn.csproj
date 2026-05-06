@@ -25,6 +25,8 @@
 
   <ItemGroup>
     <None Remove="28.png" />
+    <None Remove="appsettings.json" />
+    <None Remove="credentials.json" />
     <None Remove="FRAM.PNG" />
     <None Remove="images\28.png" />
     <None Remove="images\akpen-logo.png" />
@@ -147,6 +149,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="credentials.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="favicon.ico" />
   </ItemGroup>
 
@@ -155,7 +163,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Apis.Drive.v3" Version="1.57.0.2859" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.74.0" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.74.0.4135" />
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.0.5" />
     <PackageReference Include="MailKit" Version="4.4.0" />
     <PackageReference Include="MaterialDesignColors" Version="2.0.9" />

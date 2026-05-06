@@ -20,10 +20,7 @@
             <Button x:Name="BtnDeleteSelected" Content="🗑 Удалить выбранные" 
             Click="BtnDeleteSelected_Click" Height="30" Margin="5" Width="180" Background="LightCoral"
             Style="{StaticResource MaterialDesignPaperLightButton}"/>
-            <Button x:Name="BtnRefreshFromDB" Content="🔄 Обновить из БД" 
-            Click="BtnRefreshFromDB_Click" Height="30" Margin="5" Width="180"
-            Style="{StaticResource MaterialDesignPaperLightButton}"/>
-            
+
         </StackPanel>
 
         <!-- Панель поиска -->

@@ -7,12 +7,11 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using Microsoft.Win32;
 using TBMFurn;
 
 namespace TBMFurn
@@ -40,226 +39,61 @@ namespace TBMFurn
         private ObservableCollection<UserItem> UserItems { get; set; }
         private ObservableCollection<FinalItem> FinalItems { get; set; }
         private Dictionary<string, CatalogItem> Catalog { get; set; }
-
-        private SupabaseHelper _supabaseHelper;
-
-
-        private const string SUPABASE_URL = "https://kajvthlrnayyimrwnyqp.supabase.co";
-        private const string SUPABASE_API_KEY = "sb_publishable_NZcAD8vZMM-j0QX-IQbusA_QlB3BRLF";
-
-        private static readonly HttpClient httpClient = new HttpClient();
+        private LocalCatalogDatabase _localDb;
 
         public ExcelReplacer()
         {
             InitializeComponent();
             UserItems = new ObservableCollection<UserItem>();
             FinalItems = new ObservableCollection<FinalItem>();
-            // Подписываемся на события изменения коллекций
-            UserItems.CollectionChanged += OnUserItemsCollectionChanged;
-            FinalItems.CollectionChanged += (s, e) => UpdateRowNumbers();
-
             UserDataGrid.ItemsSource = UserItems;
             FinalDataGrid.ItemsSource = FinalItems;
 
-            // Инициализируем Catalog пустым словарем, чтобы избежать null
             Catalog = new Dictionary<string, CatalogItem>();
+            _localDb = new LocalCatalogDatabase();
 
-            _supabaseHelper = new SupabaseHelper();
+            // Подписываемся на событие изменения коллекций
+            UserItems.CollectionChanged += OnUserItemsCollectionChanged;
+            FinalItems.CollectionChanged += (s, e) => UpdateRowNumbers();
 
-            // Подписываемся на событие загрузки окна
-            this.Loaded += async (s, e) => await InitializeAsync();
+            this.Loaded += async (s, e) => await LoadCatalogAsync();
         }
 
-
-        /*private async Task TestSupabaseConnection()
+        private async Task LoadCatalogAsync()
         {
             try
             {
-                System.Diagnostics.Debug.WriteLine("=== ТЕСТ ПОДКЛЮЧЕНИЯ К SUPABASE ===");
+                if (TxtStatus != null)
+                    TxtStatus.Text = "Загрузка каталога из локальной БД...";
 
-                using (var client = new HttpClient())
+                Catalog = await _localDb.GetAllCatalogAsync();
+
+                if (TxtStatus != null)
+                    TxtStatus.Text = $"Загружено {Catalog.Count} записей из каталога";
+
+                if (Catalog.Count == 0)
                 {
-                    client.DefaultRequestHeaders.Add("apikey", SUPABASE_API_KEY);
-                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {SUPABASE_API_KEY}");
-
-                    // Тест 1: Проверка подключения к API
-                    var url = $"{SUPABASE_URL}/rest/v1/catalog_replacements?select=*&limit=5";
-                    System.Diagnostics.Debug.WriteLine($"Запрос: {url}");
-
-                    var response = await client.GetAsync(url);
-                    var content = await response.Content.ReadAsStringAsync();
-
-                    System.Diagnostics.Debug.WriteLine($"Статус: {response.StatusCode}");
-                    System.Diagnostics.Debug.WriteLine($"Содержимое: {content}");
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        // Пробуем десериализовать
-                        var items = JsonSerializer.Deserialize<List<SupabaseCatalogItem>>(content);
-                        System.Diagnostics.Debug.WriteLine($"Десериализовано: {items?.Count ?? 0} записей");
-
-                        if (items != null && items.Any())
-                        {
-                            foreach (var item in items)
-                            {
-                                System.Diagnostics.Debug.WriteLine($"  {item.old_article} -> {item.replacement_article} (x{item.quantity_factor})");
-                            }
-                        }
-
-                        await Dispatcher.InvokeAsync(() =>
-                        {
-                            MessageBox.Show($"Успешно! Получено {items?.Count ?? 0} записей",
-                                "Тест", MessageBoxButton.OK, MessageBoxImage.Information);
-                        });
-                    }
-                    else
-                    {
-                        await Dispatcher.InvokeAsync(() =>
-                        {
-                            MessageBox.Show($"Ошибка: {response.StatusCode}\n{content}",
-                                "Тест", MessageBoxButton.OK, MessageBoxImage.Error);
-                        });
-                    }
+                    LoadTestData();
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Исключение: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"Stack: {ex.StackTrace}");
-
-                await Dispatcher.InvokeAsync(() =>
-                {
-                    MessageBox.Show($"Исключение: {ex.Message}",
-                        "Тест", MessageBoxButton.OK, MessageBoxImage.Error);
-                });
-            }
-        }*/
-
-
-        private async Task InitializeAsync()
-        {
-            try
-            {
-                await _supabaseHelper.Initialize();
-                await LoadCatalogFromSupabase();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"InitializeAsync error: {ex.Message}");
-                LoadLocalCatalog();
+                if (TxtStatus != null)
+                    TxtStatus.Text = $"Ошибка загрузки: {ex.Message}";
+                MessageBox.Show($"Ошибка загрузки каталога: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        private async void InitializeSupabase()
+        private async void LoadTestData()
         {
-            try
-            {
-                await LoadCatalogFromSupabase();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка подключения к БД: {ex.Message}\nИспользую локальный каталог",
-                    "Предупреждение", MessageBoxButton.OK, MessageBoxImage.Warning);
-                LoadLocalCatalog();
-            }
-        }
+            Catalog["641125"] = new CatalogItem { ReplacementArticle = "641125NEW", QuantityFactor = 1.0m };
+            Catalog["770425"] = new CatalogItem { ReplacementArticle = "ALM770425", QuantityFactor = 1.0m };
 
-        private async Task LoadCatalogFromSupabase()
-        {
-            try
-            {
-                System.Diagnostics.Debug.WriteLine("=== LoadCatalogFromSupabase START ===");
+            await _localDb.SaveAllCatalogAsync(Catalog);
 
-                var loadedCatalog = await _supabaseHelper.GetCatalogAsync();
-
-                // ВАЖНО: присваиваем результат полю Catalog
-                Catalog = loadedCatalog;
-
-                System.Diagnostics.Debug.WriteLine($"Catalog after assignment: {(Catalog == null ? "NULL" : $"{Catalog.Count} items")}");
-
-                if (Catalog == null)
-                {
-                    System.Diagnostics.Debug.WriteLine("Catalog is still null, creating new dictionary");
-                    Catalog = new Dictionary<string, CatalogItem>();
-                }
-
-                if (Catalog.Count > 0)
-                {
-                    System.Diagnostics.Debug.WriteLine($"Successfully loaded {Catalog.Count} items from database");
-
-                    await Dispatcher.InvokeAsync(() =>
-                    {
-                        MessageBox.Show($"Загружено {Catalog.Count} записей из БД", "Информация",
-                            MessageBoxButton.OK, MessageBoxImage.Information);
-                    });
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine("Catalog is empty, loading local catalog");
-                    LoadLocalCatalog();
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Exception in LoadCatalogFromSupabase: {ex.Message}");
-                LoadLocalCatalog();
-            }
-        }
-
-        private void LoadLocalCatalog()
-        {
-            string catalogPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ExcelComparer", "catalog.json");
-
-            try
-            {
-                if (File.Exists(catalogPath))
-                {
-                    string json = File.ReadAllText(catalogPath);
-                    Catalog = JsonSerializer.Deserialize<Dictionary<string, CatalogItem>>(json) ?? new Dictionary<string, CatalogItem>();
-                }
-                else
-                {
-                    Catalog = new Dictionary<string, CatalogItem>();
-                    // Пример для демонстрации
-                    Catalog["OLD001"] = new CatalogItem { ReplacementArticle = "NEW001", QuantityFactor = 1.5m };
-                    Catalog["OLD002"] = new CatalogItem { ReplacementArticle = "NEW002", QuantityFactor = 2.0m };
-                    Catalog["641125"] = new CatalogItem { ReplacementArticle = "641125NEW", QuantityFactor = 1.0m };
-                    SaveLocalCatalog();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка загрузки локального каталога: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                Catalog = new Dictionary<string, CatalogItem>();
-            }
-        }
-
-        private void SaveLocalCatalog()
-        {
-            try
-            {
-                string catalogPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ExcelComparer", "catalog.json");
-                string directory = Path.GetDirectoryName(catalogPath);
-                if (!Directory.Exists(directory))
-                    Directory.CreateDirectory(directory);
-
-                string json = JsonSerializer.Serialize(Catalog, new JsonSerializerOptions { WriteIndented = true });
-                File.WriteAllText(catalogPath, json);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Ошибка сохранения локального каталога: {ex.Message}");
-            }
-        }
-
-        private void BtnLoadExcel_Click(object sender, RoutedEventArgs e)
-        {
-            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
-            openFileDialog.Filter = "Excel Files|*.xls;*.xlsx";
-            if (openFileDialog.ShowDialog() == true)
-            {
-                LoadFromExcel(openFileDialog.FileName);
-            }
+            if (TxtStatus != null)
+                TxtStatus.Text = $"Создан тестовый каталог ({Catalog.Count} записей)";
         }
 
         private void BtnPasteFromClipboard_Click(object sender, RoutedEventArgs e)
@@ -294,7 +128,7 @@ namespace TBMFurn
 
                 if (UserItems.Count > 0)
                 {
-                    UpdateRowNumbers(); // Обновляем номера
+                    UpdateRowNumbers();
                     ProcessData();
                     MessageBox.Show($"Загружено {UserItems.Count} строк из буфера обмена");
                 }
@@ -306,6 +140,68 @@ namespace TBMFurn
             catch (Exception ex)
             {
                 MessageBox.Show($"Ошибка вставки из буфера: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Расчет количества для уплотнителя по заданным правилам
+        /// </summary>
+        /// <param name="originalQuantity">Исходное количество</param>
+        /// <param name="shippingStandard">Норма отгрузки</param>
+        /// <returns>Рассчитанное количество после применения правил</returns>
+        private decimal CalculateSealQuantity(decimal originalQuantity, decimal shippingStandard)
+        {
+            if (shippingStandard <= 0)
+                return originalQuantity; // Если норма не задана, возвращаем как есть
+
+            decimal remainder = originalQuantity % shippingStandard;
+
+            // Условие 1: Остаток более 2/3 нормы отгрузки
+            if (remainder > (shippingStandard * 2 / 3))
+            {
+                decimal result = originalQuantity + (shippingStandard - remainder);
+                System.Diagnostics.Debug.WriteLine($"Уплотнитель: остаток {remainder} > 2/3 нормы ({shippingStandard * 2 / 3}), округляем до {result}");
+                return result;
+            }
+            // Условие 2: Остаток от 10% до 2/3 нормы
+            else if (remainder > (shippingStandard * 0.1m))
+            {
+                decimal increase = originalQuantity * 0.1m;
+                decimal result = originalQuantity + increase;
+
+                // Округляем до 5, если исходное количество >= 20
+                if (originalQuantity >= 20)
+                {
+                    decimal oldResult = result;
+                    result = Math.Ceiling(result / 5) * 5;
+                    System.Diagnostics.Debug.WriteLine($"Уплотнитель: остаток {remainder} между 10% и 2/3 нормы, увеличили на 10%: {oldResult} → округлили до 5: {result}");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"Уплотнитель: остаток {remainder} между 10% и 2/3 нормы, увеличили на 10%: {result} (округление до 5 не применяется, т.к. количество < 20)");
+                }
+
+                return result;
+            }
+            // Условие 3: Остаток менее 10% нормы
+            else
+            {
+                decimal increase = originalQuantity * 0.1m;
+                decimal result = originalQuantity + increase;
+
+                // Округляем до 5, если исходное количество >= 20
+                if (originalQuantity >= 20)
+                {
+                    decimal oldResult = result;
+                    result = Math.Ceiling(result / 5) * 5;
+                    System.Diagnostics.Debug.WriteLine($"Уплотнитель: остаток {remainder} < 10% нормы, увеличили на 10%: {oldResult} → округлили до 5: {result}");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"Уплотнитель: остаток {remainder} < 10% нормы, увеличили на 10%: {result} (округление до 5 не применяется, т.к. количество < 20)");
+                }
+
+                return result;
             }
         }
 
@@ -358,7 +254,7 @@ namespace TBMFurn
                         }
                     }
 
-                    UpdateRowNumbers(); // Обновляем номера
+                    UpdateRowNumbers();
                     ProcessData();
                     MessageBox.Show($"Загружено {UserItems.Count} строк из Excel");
                 }
@@ -396,6 +292,8 @@ namespace TBMFurn
                 string finalArticle = item.Article;
                 decimal finalQuantity = item.Quantity;
                 bool isReplaced = false;
+                bool isSeal = false;
+                decimal shippingStandard = 0;
 
                 if (Catalog.ContainsKey(item.Article))
                 {
@@ -403,6 +301,21 @@ namespace TBMFurn
                     finalArticle = catalogItem.ReplacementArticle;
                     finalQuantity = item.Quantity * catalogItem.QuantityFactor;
                     isReplaced = true;
+                    isSeal = catalogItem.IsSeal;
+                    shippingStandard = catalogItem.ShippingStandard;
+
+                    // Если это уплотнитель и есть норма отгрузки, применяем специальный расчет
+                    if (isSeal && shippingStandard > 0)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"=== ОБРАБОТКА УПЛОТНИТЕЛЯ ===");
+                        System.Diagnostics.Debug.WriteLine($"Артикул: {item.Article}");
+                        System.Diagnostics.Debug.WriteLine($"Исходное количество: {finalQuantity}");
+                        System.Diagnostics.Debug.WriteLine($"Норма отгрузки: {shippingStandard}");
+
+                        finalQuantity = CalculateSealQuantity(finalQuantity, shippingStandard);
+
+                        System.Diagnostics.Debug.WriteLine($"Итоговое количество: {finalQuantity}");
+                    }
                 }
 
                 // Округляем до целого числа
@@ -430,12 +343,11 @@ namespace TBMFurn
                 FinalItems.Add(item);
             }
 
-            UpdateRowNumbers(); // Обновляем номера для финального списка
+            UpdateRowNumbers();
 
             MessageBox.Show($"Обработано {UserItems.Count} строк. Получено {FinalItems.Count} уникальных артикулов.");
         }
 
-        // Также добавьте обработчик для события CollectionChanged, если строки добавляются вручную
         private void OnUserItemsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             UpdateRowNumbers();
@@ -465,55 +377,43 @@ namespace TBMFurn
             }
             catch { }
 
-            string savePath;
             if (isDriveXAvailable)
             {
                 if (!Directory.Exists(driveXPath))
                     Directory.CreateDirectory(driveXPath);
-                savePath = Path.Combine(driveXPath, $"export_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx");
+                return Path.Combine(driveXPath, $"export_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx");
             }
             else
             {
                 if (!Directory.Exists(driveCPath))
                     Directory.CreateDirectory(driveCPath);
-                savePath = Path.Combine(driveCPath, $"export_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx");
+                return Path.Combine(driveCPath, $"export_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx");
             }
-
-            return savePath;
         }
 
         private void SaveToExcel(string filePath)
         {
             try
             {
-                // Убеждаемся, что расширение .xlsx
                 if (!filePath.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
                 {
                     filePath = Path.ChangeExtension(filePath, ".xlsx");
                 }
 
-                // Создаем новую книгу Excel в формате .xlsx
-                IWorkbook workbook = new XSSFWorkbook(); // Используем XSSFWorkbook для xlsx
+                IWorkbook workbook = new XSSFWorkbook();
                 ISheet sheet = workbook.CreateSheet("Результат");
 
-                // Данные - артикул в колонке A, количество в колонке B
                 for (int i = 0; i < FinalItems.Count; i++)
                 {
                     IRow dataRow = sheet.CreateRow(i);
-
-                    // Колонка A: Артикул (первый столбец)
                     dataRow.CreateCell(0).SetCellValue(FinalItems[i].Article);
-
-                    // Колонка B: Количество (второй столбец)
                     long roundedQuantity = (long)Math.Round(FinalItems[i].Quantity, 0);
                     dataRow.CreateCell(1).SetCellValue(roundedQuantity);
                 }
 
-                // Автоматически подгоняем ширину колонок
-                sheet.AutoSizeColumn(0); // Артикул
-                sheet.AutoSizeColumn(1); // Количество
+                sheet.AutoSizeColumn(0);
+                sheet.AutoSizeColumn(1);
 
-                // Сохраняем файл
                 using (FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
                 {
                     workbook.Write(fs);
@@ -536,24 +436,23 @@ namespace TBMFurn
 
             if (passwordDialog.ShowDialog() == true && passwordDialog.IsPasswordCorrect)
             {
-                CatalogEditorWindow editor = new CatalogEditorWindow(Catalog, SUPABASE_URL, SUPABASE_API_KEY);
+                CatalogEditorWindow editor = new CatalogEditorWindow(Catalog);
                 editor.Owner = this;
                 if (editor.ShowDialog() == true)
                 {
-                    _ = LoadCatalogFromSupabase();
+                    _ = LoadCatalogAsync();
                     ProcessData();
                 }
             }
         }
+
         private void UpdateRowNumbers()
         {
-            // Обновляем номера для пользовательского списка
             for (int i = 0; i < UserItems.Count; i++)
             {
                 UserItems[i].RowNumber = i + 1;
             }
 
-            // Обновляем номера для финального списка
             for (int i = 0; i < FinalItems.Count; i++)
             {
                 FinalItems[i].RowNumber = i + 1;
@@ -625,22 +524,11 @@ namespace TBMFurn
         protected void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 
-    
-
     public class CatalogItem
     {
         public string ReplacementArticle { get; set; }
         public decimal QuantityFactor { get; set; }
-    }
-
-    // Модель для Supabase
-    public class SupabaseCatalogItem
-    {
-        public int id { get; set; }
-        public string old_article { get; set; }
-        public string replacement_article { get; set; }
-        public decimal quantity_factor { get; set; }
-        public DateTime? created_at { get; set; }
-        public DateTime? updated_at { get; set; }
+        public bool IsSeal { get; set; } = false;
+        public decimal ShippingStandard { get; set; } = 0;
     }
 }
