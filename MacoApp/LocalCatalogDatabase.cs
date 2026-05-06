@@ -8,21 +8,91 @@ namespace TBMFurn
 {
     public class LocalCatalogDatabase
     {
-        private readonly string _connectionString;
+        private readonly string _localDbPath;
+        private GoogleDriveSync _driveSync;
+        private readonly string _folderId;
+        private readonly string _fileName;
+
+        public event Action<string> StatusChanged;
+        public bool IsGoogleDriveAvailable => _driveSync?.IsConnected ?? false;
 
         public LocalCatalogDatabase()
         {
-            // Используем существующий Furnapp.db
-            string dbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Furnapp.db");
-            _connectionString = $"Data Source={dbPath}";
+            _localDbPath = GetLocalDatabasePath();
+            Directory.CreateDirectory(Path.GetDirectoryName(_localDbPath));
 
-            // Создаем таблицу если её нет
-            InitializeDatabase();
+            // Читаем настройки из конфигурации (если есть)
+            var folderId = GetGoogleDriveFolderId();
+            _fileName = "Furnapp.db";
+
+            if (!string.IsNullOrEmpty(folderId))
+            {
+                _folderId = folderId;
+                _driveSync = new GoogleDriveSync(_folderId, _fileName);
+                _driveSync.StatusChanged += (msg) => StatusChanged?.Invoke(msg);
+
+                // Запускаем синхронизацию при создании
+                Task.Run(async () => await InitializeAndSyncAsync());
+            }
+            else
+            {
+                StatusChanged?.Invoke("Google Drive не настроен. Использую локальную БД.");
+                InitializeDatabase();
+            }
+        }
+
+        private string GetLocalDatabasePath()
+        {
+            // Путь к базе данных в папке приложения
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Furnapp.db");
+        }
+
+        private string GetGoogleDriveFolderId()
+        {
+            try
+            {
+                var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
+
+                if (File.Exists(configPath))
+                {
+                    string jsonContent = File.ReadAllText(configPath);
+                    using (var doc = System.Text.Json.JsonDocument.Parse(jsonContent))
+                    {
+                        var root = doc.RootElement;
+                        if (root.TryGetProperty("GoogleDrive", out var googleDrive))
+                        {
+                            if (googleDrive.TryGetProperty("FolderId", out var folderId))
+                            {
+                                return folderId.GetString() ?? "";
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Ошибка чтения конфигурации: {ex.Message}");
+            }
+
+            return "";
+        }
+
+        private async Task InitializeAndSyncAsync()
+        {
+            var connected = await _driveSync.InitializeAsync();
+            if (connected)
+            {
+                await SyncFromCloudAsync();
+            }
+            else
+            {
+                InitializeDatabase();
+            }
         }
 
         private void InitializeDatabase()
         {
-            using (var connection = new SqliteConnection(_connectionString))
+            using (var connection = new SqliteConnection($"Data Source={_localDbPath}"))
             {
                 connection.Open();
 
@@ -41,13 +111,93 @@ namespace TBMFurn
                     
                     CREATE INDEX IF NOT EXISTS idx_old_article ON catalog_replacements(old_article);
                 ";
-
                 command.ExecuteNonQuery();
             }
         }
 
         /// <summary>
-        /// Получение всего каталога
+        /// Синхронизация из Google Drive
+        /// </summary>
+        public async Task<bool> SyncFromCloudAsync()
+        {
+            if (_driveSync == null || !_driveSync.IsConnected) return false;
+
+            try
+            {
+                var cloudFileExists = await _driveSync.FileExistsAsync();
+
+                if (!cloudFileExists)
+                {
+                    StatusChanged?.Invoke("Файл в Google Drive не найден. Использую локальную версию.");
+                    return false;
+                }
+
+                var cloudFileInfo = await _driveSync.GetFileInfoAsync();
+
+                StatusChanged?.Invoke($"Скачивание файла из Google Drive (от {cloudFileInfo.ModifiedTime:dd.MM.yyyy HH:mm})...");
+
+                var success = await _driveSync.DownloadFileAsync(_localDbPath);
+
+                if (success)
+                {
+                    StatusChanged?.Invoke("База данных обновлена из Google Drive");
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                StatusChanged?.Invoke($"Ошибка синхронизации: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Сохранение каталога
+        /// </summary>
+        public async Task SaveAllCatalogAsync(Dictionary<string, CatalogItem> catalog)
+        {
+            await Task.Run(() =>
+            {
+                using (var connection = new SqliteConnection($"Data Source={_localDbPath}"))
+                {
+                    connection.Open();
+
+                    using (var transaction = connection.BeginTransaction())
+                    {
+                        var deleteCmd = connection.CreateCommand();
+                        deleteCmd.CommandText = "DELETE FROM catalog_replacements";
+                        deleteCmd.ExecuteNonQuery();
+
+                        foreach (var item in catalog)
+                        {
+                            var insertCmd = connection.CreateCommand();
+                            insertCmd.CommandText = @"
+                                INSERT INTO catalog_replacements 
+                                (old_article, replacement_article, quantity_factor, is_seal, shipping_standard, created_at, updated_at)
+                                VALUES ($old_article, $replacement_article, $quantity_factor, $is_seal, $shipping_standard, $created_at, $updated_at)
+                            ";
+                            insertCmd.Parameters.AddWithValue("$old_article", item.Key);
+                            insertCmd.Parameters.AddWithValue("$replacement_article", item.Value.ReplacementArticle);
+                            insertCmd.Parameters.AddWithValue("$quantity_factor", item.Value.QuantityFactor);
+                            insertCmd.Parameters.AddWithValue("$is_seal", item.Value.IsSeal ? 1 : 0);
+                            insertCmd.Parameters.AddWithValue("$shipping_standard", item.Value.ShippingStandard);
+                            insertCmd.Parameters.AddWithValue("$created_at", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                            insertCmd.Parameters.AddWithValue("$updated_at", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                            insertCmd.ExecuteNonQuery();
+                        }
+
+                        transaction.Commit();
+                    }
+                }
+            });
+
+            StatusChanged?.Invoke($"Сохранено {catalog.Count} записей");
+        }
+
+        /// <summary>
+        /// Загрузка каталога
         /// </summary>
         public async Task<Dictionary<string, CatalogItem>> GetAllCatalogAsync()
         {
@@ -55,7 +205,7 @@ namespace TBMFurn
 
             await Task.Run(() =>
             {
-                using (var connection = new SqliteConnection(_connectionString))
+                using (var connection = new SqliteConnection($"Data Source={_localDbPath}"))
                 {
                     connection.Open();
 
@@ -83,56 +233,13 @@ namespace TBMFurn
         }
 
         /// <summary>
-        /// Сохранение всего каталога (заменяет все существующие записи)
-        /// </summary>
-        public async Task SaveAllCatalogAsync(Dictionary<string, CatalogItem> catalog)
-        {
-            await Task.Run(() =>
-            {
-                using (var connection = new SqliteConnection(_connectionString))
-                {
-                    connection.Open();
-
-                    using (var transaction = connection.BeginTransaction())
-                    {
-                        // Очищаем таблицу
-                        var deleteCmd = connection.CreateCommand();
-                        deleteCmd.CommandText = "DELETE FROM catalog_replacements";
-                        deleteCmd.ExecuteNonQuery();
-
-                        // Вставляем новые данные
-                        foreach (var item in catalog)
-                        {
-                            var insertCmd = connection.CreateCommand();
-                            insertCmd.CommandText = @"
-                                INSERT INTO catalog_replacements 
-                                (old_article, replacement_article, quantity_factor, is_seal, shipping_standard, created_at, updated_at)
-                                VALUES ($old_article, $replacement_article, $quantity_factor, $is_seal, $shipping_standard, $created_at, $updated_at)
-                            ";
-                            insertCmd.Parameters.AddWithValue("$old_article", item.Key);
-                            insertCmd.Parameters.AddWithValue("$replacement_article", item.Value.ReplacementArticle);
-                            insertCmd.Parameters.AddWithValue("$quantity_factor", item.Value.QuantityFactor);
-                            insertCmd.Parameters.AddWithValue("$is_seal", item.Value.IsSeal ? 1 : 0);
-                            insertCmd.Parameters.AddWithValue("$shipping_standard", item.Value.ShippingStandard);
-                            insertCmd.Parameters.AddWithValue("$created_at", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-                            insertCmd.Parameters.AddWithValue("$updated_at", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-                            insertCmd.ExecuteNonQuery();
-                        }
-
-                        transaction.Commit();
-                    }
-                }
-            });
-        }
-
-        /// <summary>
         /// Добавление или обновление одной записи
         /// </summary>
         public async Task UpsertCatalogEntryAsync(string oldArticle, string newArticle, decimal quantityFactor, bool isSeal = false, decimal shippingStandard = 0)
         {
             await Task.Run(() =>
             {
-                using (var connection = new SqliteConnection(_connectionString))
+                using (var connection = new SqliteConnection($"Data Source={_localDbPath}"))
                 {
                     connection.Open();
 
@@ -162,61 +269,6 @@ namespace TBMFurn
         }
 
         /// <summary>
-        /// Удаление записи
-        /// </summary>
-        public async Task DeleteCatalogEntryAsync(string oldArticle)
-        {
-            await Task.Run(() =>
-            {
-                using (var connection = new SqliteConnection(_connectionString))
-                {
-                    connection.Open();
-
-                    var command = connection.CreateCommand();
-                    command.CommandText = "DELETE FROM catalog_replacements WHERE old_article = $old_article";
-                    command.Parameters.AddWithValue("$old_article", oldArticle);
-                    command.ExecuteNonQuery();
-                }
-            });
-        }
-
-        /// <summary>
-        /// Поиск по старому артикулу
-        /// </summary>
-        public async Task<CatalogItem> FindByOldArticleAsync(string oldArticle)
-        {
-            CatalogItem result = null;
-
-            await Task.Run(() =>
-            {
-                using (var connection = new SqliteConnection(_connectionString))
-                {
-                    connection.Open();
-
-                    var command = connection.CreateCommand();
-                    command.CommandText = "SELECT replacement_article, quantity_factor, is_seal, shipping_standard FROM catalog_replacements WHERE old_article = $old_article";
-                    command.Parameters.AddWithValue("$old_article", oldArticle);
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            result = new CatalogItem
-                            {
-                                ReplacementArticle = reader.GetString(0),
-                                QuantityFactor = (decimal)reader.GetDouble(1),
-                                IsSeal = reader.GetInt32(2) == 1,
-                                ShippingStandard = (decimal)reader.GetDouble(3)
-                            };
-                        }
-                    }
-                }
-            });
-
-            return result;
-        }
-
-        /// <summary>
         /// Проверка, существует ли запись
         /// </summary>
         public async Task<bool> ExistsAsync(string oldArticle)
@@ -225,7 +277,7 @@ namespace TBMFurn
 
             await Task.Run(() =>
             {
-                using (var connection = new SqliteConnection(_connectionString))
+                using (var connection = new SqliteConnection($"Data Source={_localDbPath}"))
                 {
                     connection.Open();
 
@@ -249,7 +301,7 @@ namespace TBMFurn
 
             await Task.Run(() =>
             {
-                using (var connection = new SqliteConnection(_connectionString))
+                using (var connection = new SqliteConnection($"Data Source={_localDbPath}"))
                 {
                     connection.Open();
 
@@ -261,6 +313,18 @@ namespace TBMFurn
             });
 
             return count;
+        }
+
+        /// <summary>
+        /// Принудительная синхронизация
+        /// </summary>
+        public async Task ForceSyncAsync()
+        {
+            if (_driveSync != null)
+            {
+                await _driveSync.InitializeAsync();
+                await SyncFromCloudAsync();
+            }
         }
     }
 }
