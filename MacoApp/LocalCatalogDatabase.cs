@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace TBMFurn
@@ -10,20 +9,16 @@ namespace TBMFurn
     public class LocalCatalogDatabase
     {
         private readonly string _localDbPath;
-        private GoogleDriveSync _driveSync;
-        private readonly string _folderId;
-        private readonly string _fileName = "catalog.db";
         private readonly string _networkDbPath;
+        private readonly string _resourcesDbPath;
 
         public event Action<string> StatusChanged;
-        public bool IsGoogleDriveAvailable => _driveSync?.IsConnected ?? false;
 
         // Источник, откуда была загружена БД
         public enum DbSource
         {
             NetworkDrive,
-            GoogleDrive,
-            EmbeddedResources,
+            Resources,
             Local,
             Created
         }
@@ -37,6 +32,9 @@ namespace TBMFurn
 
             // Путь к БД на сетевом диске
             _networkDbPath = @"R:\NOVOSIBIRSK\Обмен-филиалы\НСК расчет фурнитуры\БД\catalog.db";
+
+            // Путь к БД в папке Resources
+            _resourcesDbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "catalog.db");
 
             // Запускаем синхронизацию
             Task.Run(async () => await InitializeSyncAsync());
@@ -59,19 +57,13 @@ namespace TBMFurn
                 return;
             }
 
-            // 2. Если сетевой диск недоступен, пробуем Google Drive
-            if (await TryLoadFromGoogleDriveAsync())
+            // 2. Если сетевой диск недоступен, пробуем из Resources
+            if (await TryLoadFromResourcesAsync())
             {
                 return;
             }
 
-            // 3. Если Google Drive недоступен, пробуем встроенные ресурсы
-            if (await TryLoadFromEmbeddedResourcesAsync())
-            {
-                return;
-            }
-
-            // 4. Если ничего не помогло, используем локальную БД
+            // 3. Если ничего не помогло, используем локальную БД или создаем новую
             await LoadFromLocalAsync();
         }
 
@@ -148,106 +140,24 @@ namespace TBMFurn
         }
 
         /// <summary>
-        /// Попытка загрузки из Google Drive (резервный вариант)
+        /// Попытка загрузки из папки Resources
         /// </summary>
-        private async Task<bool> TryLoadFromGoogleDriveAsync()
+        private async Task<bool> TryLoadFromResourcesAsync()
         {
             try
             {
-                StatusChanged?.Invoke("Сетевой диск недоступен, пробую Google Drive...");
+                StatusChanged?.Invoke("Сетевой диск недоступен, проверяю встроенную БД...");
 
-                var folderId = GetGoogleDriveFolderId();
-
-                if (string.IsNullOrEmpty(folderId))
-                {
-                    StatusChanged?.Invoke("Google Drive не настроен");
-                    return false;
-                }
-
-                _driveSync = new GoogleDriveSync(folderId, _fileName);
-                _driveSync.StatusChanged += (msg) => StatusChanged?.Invoke(msg);
-
-                var connected = await _driveSync.InitializeAsync();
-
-                if (!connected)
-                {
-                    StatusChanged?.Invoke("Не удалось подключиться к Google Drive");
-                    return false;
-                }
-
-                var fileExists = await _driveSync.FileExistsAsync();
-
-                if (!fileExists)
-                {
-                    StatusChanged?.Invoke("Файл в Google Drive не найден");
-                    return false;
-                }
-
-                var fileInfo = await _driveSync.GetFileInfoAsync();
-                var localFileInfo = new FileInfo(_localDbPath);
-
-                bool needDownload = false;
-
-                if (!localFileInfo.Exists)
-                {
-                    needDownload = true;
-                    StatusChanged?.Invoke($"Локальная БД не найдена, скачиваю из Google Drive...");
-                }
-                else if (fileInfo.ModifiedTime > localFileInfo.LastWriteTime)
-                {
-                    needDownload = true;
-                    StatusChanged?.Invoke($"Обнаружена новая версия БД в Google Drive (от {fileInfo.ModifiedTime:dd.MM.yyyy HH:mm})");
-                }
-
-                if (needDownload)
-                {
-                    var success = await _driveSync.DownloadFileAsync(_localDbPath);
-                    if (success)
-                    {
-                        CurrentSource = DbSource.GoogleDrive;
-                        StatusChanged?.Invoke($"БД скачана из Google Drive (от {fileInfo.ModifiedTime:dd.MM.yyyy HH:mm})");
-                        InitializeDatabase();
-                        return true;
-                    }
-                }
-                else
-                {
-                    CurrentSource = DbSource.GoogleDrive;
-                    StatusChanged?.Invoke($"БД актуальна (Google Drive, версия от {localFileInfo.LastWriteTime:dd.MM.yyyy HH:mm})");
-                    return true;
-                }
-
-                return false;
-            }
-            catch (Exception ex)
-            {
-                StatusChanged?.Invoke($"Ошибка доступа к Google Drive: {ex.Message}");
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Попытка загрузки из встроенных ресурсов (папка Resources)
-        /// </summary>
-        private async Task<bool> TryLoadFromEmbeddedResourcesAsync()
-        {
-            try
-            {
-                StatusChanged?.Invoke("Google Drive недоступен, проверяю встроенную БД...");
-
-                // Путь к файлу в папке Resources
-                string embeddedDbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "catalog.db");
-
-                if (!File.Exists(embeddedDbPath))
+                if (!File.Exists(_resourcesDbPath))
                 {
                     StatusChanged?.Invoke("Встроенная БД не найдена в папке Resources");
                     return false;
                 }
 
-                var embeddedFileInfo = new FileInfo(embeddedDbPath);
+                var resourcesFileInfo = new FileInfo(_resourcesDbPath);
 
                 // Проверяем, что файл не пустой
-                if (embeddedFileInfo.Length == 0)
+                if (resourcesFileInfo.Length == 0)
                 {
                     StatusChanged?.Invoke("Встроенная БД пуста");
                     return false;
@@ -260,25 +170,25 @@ namespace TBMFurn
                 if (!localFileInfo.Exists)
                 {
                     needCopy = true;
-                    StatusChanged?.Invoke($"Локальная БД не найдена, копирую из встроенных ресурсов...");
+                    StatusChanged?.Invoke($"Локальная БД не найдена, копирую из встроенной...");
                 }
-                else if (embeddedFileInfo.LastWriteTime > localFileInfo.LastWriteTime)
+                else if (resourcesFileInfo.LastWriteTime > localFileInfo.LastWriteTime)
                 {
                     needCopy = true;
-                    StatusChanged?.Invoke($"Обнаружена новая версия встроенной БД (от {embeddedFileInfo.LastWriteTime:dd.MM.yyyy HH:mm})");
+                    StatusChanged?.Invoke($"Обнаружена новая версия встроенной БД (от {resourcesFileInfo.LastWriteTime:dd.MM.yyyy HH:mm})");
                 }
                 else
                 {
-                    CurrentSource = DbSource.EmbeddedResources;
+                    CurrentSource = DbSource.Resources;
                     StatusChanged?.Invoke($"БД актуальна (встроенная, версия от {localFileInfo.LastWriteTime:dd.MM.yyyy HH:mm})");
                 }
 
                 if (needCopy)
                 {
                     // Копируем файл из Resources
-                    File.Copy(embeddedDbPath, _localDbPath, true);
-                    CurrentSource = DbSource.EmbeddedResources;
-                    StatusChanged?.Invoke($"БД скопирована из встроенных ресурсов (размер: {embeddedFileInfo.Length / 1024} КБ)");
+                    File.Copy(_resourcesDbPath, _localDbPath, true);
+                    CurrentSource = DbSource.Resources;
+                    StatusChanged?.Invoke($"БД скопирована из встроенных ресурсов (размер: {resourcesFileInfo.Length / 1024} КБ)");
                 }
 
                 InitializeDatabase();
@@ -296,7 +206,7 @@ namespace TBMFurn
         /// </summary>
         private async Task LoadFromLocalAsync()
         {
-            StatusChanged?.Invoke("Сетевой диск, Google Drive и встроенная БД недоступны, использую локальную БД");
+            StatusChanged?.Invoke("Сетевой диск и встроенная БД недоступны, использую локальную БД");
 
             if (!File.Exists(_localDbPath))
             {
@@ -311,36 +221,6 @@ namespace TBMFurn
                 var fileInfo = new FileInfo(_localDbPath);
                 StatusChanged?.Invoke($"Использую локальную БД (от {fileInfo.LastWriteTime:dd.MM.yyyy HH:mm})");
             }
-        }
-
-        private string GetGoogleDriveFolderId()
-        {
-            try
-            {
-                var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
-
-                if (File.Exists(configPath))
-                {
-                    string jsonContent = File.ReadAllText(configPath);
-                    using (var doc = System.Text.Json.JsonDocument.Parse(jsonContent))
-                    {
-                        var root = doc.RootElement;
-                        if (root.TryGetProperty("GoogleDrive", out var googleDrive))
-                        {
-                            if (googleDrive.TryGetProperty("FolderId", out var folderId))
-                            {
-                                return folderId.GetString() ?? "";
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Ошибка чтения конфигурации: {ex.Message}");
-            }
-
-            return "";
         }
 
         private void InitializeDatabase()
@@ -369,7 +249,7 @@ namespace TBMFurn
         }
 
         /// <summary>
-        /// Сохранение каталога (сохраняется локально + на сетевой диск + в Google Drive)
+        /// Сохранение каталога (сохраняется локально + на сетевой диск)
         /// </summary>
         public async Task SaveAllCatalogAsync(Dictionary<string, CatalogItem> catalog)
         {
@@ -413,9 +293,6 @@ namespace TBMFurn
 
             // Копируем на сетевой диск (если доступен)
             await CopyToNetworkDriveAsync();
-
-            // Синхронизируем с Google Drive (если доступен)
-            await SyncToGoogleDriveAsync();
         }
 
         /// <summary>
@@ -443,28 +320,6 @@ namespace TBMFurn
             catch (Exception ex)
             {
                 StatusChanged?.Invoke($"Не удалось скопировать БД на сетевой диск: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Синхронизация с Google Drive
-        /// </summary>
-        private async Task SyncToGoogleDriveAsync()
-        {
-            try
-            {
-                if (_driveSync != null && _driveSync.IsConnected)
-                {
-                    var uploaded = await _driveSync.UploadFileAsync(_localDbPath);
-                    if (uploaded)
-                    {
-                        StatusChanged?.Invoke("БД синхронизирована с Google Drive");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                StatusChanged?.Invoke($"Ошибка синхронизации с Google Drive: {ex.Message}");
             }
         }
 
@@ -513,9 +368,7 @@ namespace TBMFurn
             {
                 case DbSource.NetworkDrive:
                     return "🌐 Сетевой диск R:\\";
-                case DbSource.GoogleDrive:
-                    return "☁️ Google Drive";
-                case DbSource.EmbeddedResources:
+                case DbSource.Resources:
                     return "📦 Встроенная БД (Resources)";
                 case DbSource.Local:
                     return "💻 Локальная копия";

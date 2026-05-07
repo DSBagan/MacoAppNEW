@@ -48,7 +48,7 @@ namespace MacoApp
         private CalculationWindowAlu _secondWindow5;
         private ExcelReplacer _secondWindow6;
 
-        // Добавляем локальную БД
+        // Локальная БД
         private LocalCatalogDatabase _localDb;
 
         public EntryiWindow()
@@ -123,7 +123,7 @@ namespace MacoApp
         {
             try
             {
-                // Получаем каталог из локальной БД (она сама синхронизируется с сетевым диском и Google Drive)
+                // Получаем каталог из локальной БД
                 var catalog = await _localDb.GetAllCatalogAsync();
 
                 // Обновляем статус с информацией об источнике
@@ -172,11 +172,6 @@ namespace MacoApp
                             TxtStatusIcon.Kind = PackIconKind.ServerNetwork;
                             TxtStatusIcon.Foreground = (Brush)new BrushConverter().ConvertFrom("#FF1976D2");
                         }
-                        else if (message.Contains("Google Drive"))
-                        {
-                            TxtStatusIcon.Kind = PackIconKind.GoogleDrive;
-                            TxtStatusIcon.Foreground = (Brush)new BrushConverter().ConvertFrom("#FF1976D2");
-                        }
                         else if (message.Contains("локальную") || message.Contains("Локальная"))
                         {
                             TxtStatusIcon.Kind = PackIconKind.Laptop;
@@ -203,19 +198,16 @@ namespace MacoApp
         {
             try
             {
-                // Получаем встроенный ресурс
                 var assembly = Assembly.GetExecutingAssembly();
                 var resourceName = "MacoApp.Resources.Furnapp.db";
 
                 Stream resourceStream = null;
                 try
                 {
-                    // Пытаемся получить ресурс по ожидаемому имени
                     resourceStream = assembly.GetManifestResourceStream(resourceName);
 
                     if (resourceStream == null)
                     {
-                        // Попробуем найти ресурс с другим именем
                         resourceName = assembly.GetManifestResourceNames()
                             .FirstOrDefault(name => name.EndsWith("Furnapp.db"));
 
@@ -225,7 +217,6 @@ namespace MacoApp
                         resourceStream = assembly.GetManifestResourceStream(resourceName);
                     }
 
-                    // Сохраняем на диск
                     using (FileStream fileStream = new FileStream(targetPath, FileMode.Create))
                     {
                         resourceStream.CopyTo(fileStream);
@@ -233,19 +224,14 @@ namespace MacoApp
                 }
                 finally
                 {
-                    // Закрываем stream вручную, так как он не в using блоке
                     resourceStream?.Dispose();
                 }
-
-                /*MessageBox.Show("База данных успешно инициализирована!", "Информация",
-                    MessageBoxButton.OK, MessageBoxImage.Information);*/
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Ошибка инициализации базы данных: {ex.Message}", "Ошибка",
                     MessageBoxButton.OK, MessageBoxImage.Error);
 
-                // Создаем пустую базу как запасной вариант
                 CreateEmptyDatabase(targetPath);
             }
         }
@@ -254,20 +240,17 @@ namespace MacoApp
         {
             try
             {
-                // Создаем минимальную структуру базы данных SQLite
                 SQLiteConnection.CreateFile(dbPath);
 
                 using (var connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
                 {
                     connection.Open();
 
-                    // Создаем базовые таблицы (пример)
                     string[] createTables =
                     {
-                "CREATE TABLE IF NOT EXISTS Fittings (Id INTEGER PRIMARY KEY, Name TEXT, Price REAL)",
-                "CREATE TABLE IF NOT EXISTS Categories (Id INTEGER PRIMARY KEY, Name TEXT)",
-                // Добавьте другие необходимые таблицы
-            };
+                        "CREATE TABLE IF NOT EXISTS Fittings (Id INTEGER PRIMARY KEY, Name TEXT, Price REAL)",
+                        "CREATE TABLE IF NOT EXISTS Categories (Id INTEGER PRIMARY KEY, Name TEXT)",
+                    };
 
                     foreach (var sql in createTables)
                     {
@@ -285,7 +268,6 @@ namespace MacoApp
             }
         }
 
-
         private async void InitTasks()
         {
             try
@@ -294,13 +276,13 @@ namespace MacoApp
             }
             catch (Exception ex)
             {
-                //Error handling
+                // Error handling
             }
         }
-        //Удаление старых версий программы
+
+        // Удаление старых версий программы
         public static void CleanOldVersions()
         {
-
             string path = AppDomain.CurrentDomain.BaseDirectory;
             int lastSlash = path.LastIndexOf(@"\");
             path = path.Substring(0, lastSlash);
@@ -317,7 +299,6 @@ namespace MacoApp
 
             foreach (DirectoryInfo subDirInfo in directories)
             {
-
                 int first_ = subDirInfo.Name.IndexOf("_");
                 if (first_ < 0) continue;
                 string appID = subDirInfo.Name.Substring(first_ + 1, 21);
@@ -350,7 +331,6 @@ namespace MacoApp
                         }
                         catch (UnauthorizedAccessException)
                         {
-
                         }
                     }
                 }
@@ -367,8 +347,7 @@ namespace MacoApp
             }
         }
 
-
-        //Отображение прогрессбара во время обновления базы
+        // Отображение прогрессбара во время обновления базы
         private void UpdateProgress(ProgressDialogWindow progressDialog, int value)
         {
             progressDialog.Dispatcher.Invoke(() =>
@@ -378,15 +357,11 @@ namespace MacoApp
             });
         }
 
-
-        //Сворачиваем в трей окно входа при выборе одного из калькуляторов
-
+        // Сворачиваем в трей окно входа при выборе одного из калькуляторов
         private void Window_Closed(object sender, System.EventArgs e)
         {
             this.Show();
         }
-
-
 
         private void ButtonEditor_Click(object sender, RoutedEventArgs e)
         {
@@ -394,13 +369,12 @@ namespace MacoApp
             windowPassword.Show();
             this.Close();
         }
+
         private void ButtonCalculationAlu_Click(object sender, RoutedEventArgs e)
         {
-            /*CalculationWindow calculationWindow = new CalculationWindow();
-            calculationWindow.Show();
-            this.Close();*/
             ShowCalculationWindowAlu();
         }
+
         private void ShowCalculationWindowAlu()
         {
             _secondWindow5 = new CalculationWindowAlu();
@@ -408,13 +382,12 @@ namespace MacoApp
             _secondWindow5.Show();
             this.Hide();
         }
+
         private void ButtonCalculation_Click(object sender, RoutedEventArgs e)
         {
-            /*CalculationWindow calculationWindow = new CalculationWindow();
-            calculationWindow.Show();
-            this.Close();*/
             ShowCalculationWindow();
         }
+
         private void ShowCalculationWindow()
         {
             _secondWindow4 = new CalculationWindow();
@@ -430,11 +403,9 @@ namespace MacoApp
 
         private void ButtonBoxCalculation_Click(object sender, RoutedEventArgs e)
         {
-            /*BoxCalculation boxCalculation = new BoxCalculation();
-            boxCalculation.Show();
-            this.Close();*/
             ShowBoxCalculation();
         }
+
         private void ShowBoxCalculation()
         {
             _secondWindow3 = new BoxCalculation();
@@ -447,16 +418,13 @@ namespace MacoApp
         {
             FeedbackWindow feedbackWindow = new FeedbackWindow();
             feedbackWindow.Show();
-            //this.Close();
         }
 
         private void ButtonAntipanic_Click(object sender, RoutedEventArgs e)
         {
-            /*WindowAntipanic windowAntipanic = new WindowAntipanic();
-            windowAntipanic.Show();
-            this.Close();*/
             ShowWindowAntipanic();
         }
+
         private void ShowWindowAntipanic()
         {
             _secondWindow2 = new WindowAntipanic();
@@ -467,11 +435,9 @@ namespace MacoApp
 
         private void ButtonPortalCalculation_Click(object sender, RoutedEventArgs e)
         {
-            /*PortalWindow portalWindow = new PortalWindow();
-            portalWindow.Show();
-            this.Close();*/
             ShowPortalWindow();
         }
+
         private void ShowPortalWindow()
         {
             _secondWindow1 = new PortalWindow();
