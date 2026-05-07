@@ -14,7 +14,6 @@ namespace TBMFurn
 
         public event Action<string> StatusChanged;
 
-        // Источник, откуда была загружена БД
         public enum DbSource
         {
             NetworkDrive,
@@ -28,62 +27,51 @@ namespace TBMFurn
         public LocalCatalogDatabase()
         {
             _localDbPath = GetLocalDatabasePath();
-            Directory.CreateDirectory(Path.GetDirectoryName(_localDbPath));
 
-            // Путь к БД на сетевом диске
-            _networkDbPath = @"R:\NOVOSIBIRSK\Обмен-филиалы\НСК расчет фурнитуры\БД\FurnApp.db";
+            string localDir = Path.GetDirectoryName(_localDbPath);
+            if (!string.IsNullOrEmpty(localDir) && !Directory.Exists(localDir))
+            {
+                Directory.CreateDirectory(localDir);
+            }
 
-            // Путь к БД в папке Resources
-            _resourcesDbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "FurnApp.db");
+            _networkDbPath = @"R:\NOVOSIBIRSK\Обмен-филиалы\НСК расчет фурнитуры\БД\Furnapp.db";
+            _resourcesDbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "Furnapp.db");
 
-            // Запускаем синхронизацию
             Task.Run(async () => await InitializeSyncAsync());
         }
 
         private string GetLocalDatabasePath()
         {
-            return Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "TBMFurn",
-                "FurnApp.db"
-            );
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Furnapp.db");
         }
 
         private async Task InitializeSyncAsync()
         {
-            // 1. Пробуем загрузить с сетевого диска
             if (await TryLoadFromNetworkDriveAsync())
             {
                 return;
             }
 
-            // 2. Если сетевой диск недоступен, пробуем из Resources
             if (await TryLoadFromResourcesAsync())
             {
                 return;
             }
 
-            // 3. Если ничего не помогло, используем локальную БД или создаем новую
             await LoadFromLocalAsync();
         }
 
-        /// <summary>
-        /// Попытка загрузки с сетевого диска
-        /// </summary>
         private async Task<bool> TryLoadFromNetworkDriveAsync()
         {
             try
             {
                 StatusChanged?.Invoke("Проверка сетевого диска R:\\...");
 
-                // Проверяем, доступен ли сетевой диск
                 if (!Directory.Exists("R:\\"))
                 {
                     StatusChanged?.Invoke("Сетевой диск R:\\ не найден");
                     return false;
                 }
 
-                // Проверяем, существует ли папка и файл
                 string networkDir = Path.GetDirectoryName(_networkDbPath);
                 if (!Directory.Exists(networkDir))
                 {
@@ -93,21 +81,19 @@ namespace TBMFurn
 
                 if (!File.Exists(_networkDbPath))
                 {
-                    StatusChanged?.Invoke("Файл БД не найден на сетевом диске");
+                    StatusChanged?.Invoke("Файл Furnapp.db не найден на сетевом диске");
                     return false;
                 }
 
-                // Получаем информацию о файле на сетевом диске
                 var networkFileInfo = new FileInfo(_networkDbPath);
                 var localFileInfo = new FileInfo(_localDbPath);
 
-                // Проверяем, нужно ли обновлять локальную копию
                 bool needCopy = false;
 
                 if (!localFileInfo.Exists)
                 {
                     needCopy = true;
-                    StatusChanged?.Invoke($"Локальная БД не найдена, копирую с сетевого диска...");
+                    StatusChanged?.Invoke($"Локальная БД не найдена, копирую полный файл с сетевого диска...");
                 }
                 else if (networkFileInfo.LastWriteTime > localFileInfo.LastWriteTime)
                 {
@@ -122,14 +108,26 @@ namespace TBMFurn
 
                 if (needCopy)
                 {
-                    // Копируем файл с сетевого диска
                     File.Copy(_networkDbPath, _localDbPath, true);
+
+                    try
+                    {
+                        string resourcesDir = Path.GetDirectoryName(_resourcesDbPath);
+                        if (!string.IsNullOrEmpty(resourcesDir) && !Directory.Exists(resourcesDir))
+                        {
+                            Directory.CreateDirectory(resourcesDir);
+                        }
+                        File.Copy(_networkDbPath, _resourcesDbPath, true);
+                        StatusChanged?.Invoke($"БД скопирована с сетевого диска и обновлен резерв");
+                    }
+                    catch (Exception ex)
+                    {
+                        StatusChanged?.Invoke($"БД скопирована локально, но не удалось обновить резерв: {ex.Message}");
+                    }
+
                     CurrentSource = DbSource.NetworkDrive;
-                    StatusChanged?.Invoke($"БД скопирована с сетевого диска (размер: {networkFileInfo.Length / 1024} КБ)");
                 }
 
-                // Инициализируем БД (создаем таблицы, если нужно)
-                InitializeDatabase();
                 return true;
             }
             catch (Exception ex)
@@ -139,121 +137,68 @@ namespace TBMFurn
             }
         }
 
-        /// <summary>
-        /// Попытка загрузки из папки Resources
-        /// </summary>
         private async Task<bool> TryLoadFromResourcesAsync()
         {
             try
             {
-                StatusChanged?.Invoke("Сетевой диск недоступен, проверяю встроенную БД...");
+                StatusChanged?.Invoke("Сетевой диск недоступен, проверяю резервную БД...");
 
                 if (!File.Exists(_resourcesDbPath))
                 {
-                    StatusChanged?.Invoke("Встроенная БД не найдена в папке Resources");
+                    StatusChanged?.Invoke("Резервная БД не найдена");
                     return false;
                 }
 
                 var resourcesFileInfo = new FileInfo(_resourcesDbPath);
 
-                // Проверяем, что файл не пустой
                 if (resourcesFileInfo.Length == 0)
                 {
-                    StatusChanged?.Invoke("Встроенная БД пуста");
+                    StatusChanged?.Invoke("Резервная БД пуста");
                     return false;
                 }
 
                 var localFileInfo = new FileInfo(_localDbPath);
 
-                bool needCopy = false;
-
-                if (!localFileInfo.Exists)
+                if (localFileInfo.Exists && localFileInfo.LastWriteTime > resourcesFileInfo.LastWriteTime)
                 {
-                    needCopy = true;
-                    StatusChanged?.Invoke($"Локальная БД не найдена, копирую из встроенной...");
-                }
-                else if (resourcesFileInfo.LastWriteTime > localFileInfo.LastWriteTime)
-                {
-                    needCopy = true;
-                    StatusChanged?.Invoke($"Обнаружена новая версия встроенной БД (от {resourcesFileInfo.LastWriteTime:dd.MM.yyyy HH:mm})");
-                }
-                else
-                {
-                    CurrentSource = DbSource.Resources;
-                    StatusChanged?.Invoke($"БД актуальна (встроенная, версия от {localFileInfo.LastWriteTime:dd.MM.yyyy HH:mm})");
+                    StatusChanged?.Invoke($"Локальная БД новее резервной, использую локальную");
+                    CurrentSource = DbSource.Local;
+                    return true;
                 }
 
-                if (needCopy)
-                {
-                    // Копируем файл из Resources
-                    File.Copy(_resourcesDbPath, _localDbPath, true);
-                    CurrentSource = DbSource.Resources;
-                    StatusChanged?.Invoke($"БД скопирована из встроенных ресурсов (размер: {resourcesFileInfo.Length / 1024} КБ)");
-                }
+                File.Copy(_resourcesDbPath, _localDbPath, true);
+                CurrentSource = DbSource.Resources;
+                StatusChanged?.Invoke($"БД восстановлена из резервной копии (от {resourcesFileInfo.LastWriteTime:dd.MM.yyyy HH:mm})");
 
-                InitializeDatabase();
                 return true;
             }
             catch (Exception ex)
             {
-                StatusChanged?.Invoke($"Ошибка доступа к встроенной БД: {ex.Message}");
+                StatusChanged?.Invoke($"Ошибка доступа к резервной БД: {ex.Message}");
                 return false;
             }
         }
 
-        /// <summary>
-        /// Загрузка из локальной БД
-        /// </summary>
         private async Task LoadFromLocalAsync()
         {
-            StatusChanged?.Invoke("Сетевой диск и встроенная БД недоступны, использую локальную БД");
-
-            if (!File.Exists(_localDbPath))
+            if (File.Exists(_localDbPath))
             {
-                StatusChanged?.Invoke("Локальная БД не найдена, создаю новую...");
-                InitializeDatabase();
-                CurrentSource = DbSource.Created;
+                var fileInfo = new FileInfo(_localDbPath);
+                CurrentSource = DbSource.Local;
+                StatusChanged?.Invoke($"Использую локальную БД (от {fileInfo.LastWriteTime:dd.MM.yyyy HH:mm})");
             }
             else
             {
-                InitializeDatabase();
-                CurrentSource = DbSource.Local;
-                var fileInfo = new FileInfo(_localDbPath);
-                StatusChanged?.Invoke($"Использую локальную БД (от {fileInfo.LastWriteTime:dd.MM.yyyy HH:mm})");
-            }
-        }
-
-        private void InitializeDatabase()
-        {
-            using (var connection = new SqliteConnection($"Data Source={_localDbPath}"))
-            {
-                connection.Open();
-
-                var command = connection.CreateCommand();
-                command.CommandText = @"
-                    CREATE TABLE IF NOT EXISTS catalog_replacements (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        old_article TEXT NOT NULL UNIQUE,
-                        replacement_article TEXT NOT NULL,
-                        quantity_factor REAL NOT NULL DEFAULT 1,
-                        is_seal INTEGER NOT NULL DEFAULT 0,
-                        shipping_standard REAL NOT NULL DEFAULT 0,
-                        created_at TEXT,
-                        updated_at TEXT
-                    );
-                    
-                    CREATE INDEX IF NOT EXISTS idx_old_article ON catalog_replacements(old_article);
-                ";
-                command.ExecuteNonQuery();
+                CurrentSource = DbSource.Created;
+                StatusChanged?.Invoke("Локальная БД не найдена, будет создана при первом сохранении");
             }
         }
 
         /// <summary>
-        /// Сохранение каталога (сохраняется локально + на сетевой диск)
+        /// Сохранение каталога замен (только таблица catalog_replacements)
         /// </summary>
         public async Task SaveAllCatalogAsync(Dictionary<string, CatalogItem> catalog)
         {
-            // Сохраняем локально
             await Task.Run(() =>
             {
                 using (var connection = new SqliteConnection($"Data Source={_localDbPath}"))
@@ -270,16 +215,15 @@ namespace TBMFurn
                         {
                             var insertCmd = connection.CreateCommand();
                             insertCmd.CommandText = @"
-                                INSERT INTO catalog_replacements 
-                                (old_article, replacement_article, quantity_factor, is_seal, shipping_standard, created_at, updated_at)
-                                VALUES ($old_article, $replacement_article, $quantity_factor, $is_seal, $shipping_standard, $created_at, $updated_at)
+                                INSERT OR REPLACE INTO catalog_replacements 
+                                (old_article, replacement_article, quantity_factor, is_seal, shipping_standard, updated_at)
+                                VALUES ($old_article, $replacement_article, $quantity_factor, $is_seal, $shipping_standard, $updated_at)
                             ";
                             insertCmd.Parameters.AddWithValue("$old_article", item.Key);
                             insertCmd.Parameters.AddWithValue("$replacement_article", item.Value.ReplacementArticle);
                             insertCmd.Parameters.AddWithValue("$quantity_factor", item.Value.QuantityFactor);
                             insertCmd.Parameters.AddWithValue("$is_seal", item.Value.IsSeal ? 1 : 0);
                             insertCmd.Parameters.AddWithValue("$shipping_standard", item.Value.ShippingStandard);
-                            insertCmd.Parameters.AddWithValue("$created_at", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                             insertCmd.Parameters.AddWithValue("$updated_at", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                             insertCmd.ExecuteNonQuery();
                         }
@@ -289,17 +233,22 @@ namespace TBMFurn
                 }
             });
 
-            StatusChanged?.Invoke($"Сохранено {catalog.Count} записей локально");
+            StatusChanged?.Invoke($"Сохранено {catalog.Count} записей в таблицу catalog_replacements");
 
-            // Копируем на сетевой диск (если доступен)
             await CopyToNetworkDriveAsync();
         }
 
         /// <summary>
-        /// Копирование БД на сетевой диск
+        /// Копирование БД на сетевой диск (при сохранении изменений)
         /// </summary>
-        private async Task CopyToNetworkDriveAsync()
+        public async Task CopyToNetworkDriveAsync()
         {
+            if (!File.Exists(_localDbPath))
+            {
+                StatusChanged?.Invoke("Локальная БД не найдена, копирование не выполнено");
+                return;
+            }
+
             try
             {
                 if (!Directory.Exists("R:\\"))
@@ -316,6 +265,21 @@ namespace TBMFurn
 
                 File.Copy(_localDbPath, _networkDbPath, true);
                 StatusChanged?.Invoke("БД скопирована на сетевой диск");
+
+                try
+                {
+                    string resourcesDir = Path.GetDirectoryName(_resourcesDbPath);
+                    if (!string.IsNullOrEmpty(resourcesDir) && !Directory.Exists(resourcesDir))
+                    {
+                        Directory.CreateDirectory(resourcesDir);
+                    }
+                    File.Copy(_localDbPath, _resourcesDbPath, true);
+                    StatusChanged?.Invoke("Резервная копия БД обновлена");
+                }
+                catch (Exception ex)
+                {
+                    StatusChanged?.Invoke($"Не удалось обновить резерв: {ex.Message}");
+                }
             }
             catch (Exception ex)
             {
@@ -323,45 +287,6 @@ namespace TBMFurn
             }
         }
 
-        /// <summary>
-        /// Загрузка каталога
-        /// </summary>
-        public async Task<Dictionary<string, CatalogItem>> GetAllCatalogAsync()
-        {
-            var catalog = new Dictionary<string, CatalogItem>();
-
-            await Task.Run(() =>
-            {
-                using (var connection = new SqliteConnection($"Data Source={_localDbPath}"))
-                {
-                    connection.Open();
-
-                    var command = connection.CreateCommand();
-                    command.CommandText = "SELECT old_article, replacement_article, quantity_factor, is_seal, shipping_standard FROM catalog_replacements";
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var oldArticle = reader.GetString(0);
-                            catalog[oldArticle] = new CatalogItem
-                            {
-                                ReplacementArticle = reader.GetString(1),
-                                QuantityFactor = (decimal)reader.GetDouble(2),
-                                IsSeal = reader.GetInt32(3) == 1,
-                                ShippingStandard = (decimal)reader.GetDouble(4)
-                            };
-                        }
-                    }
-                }
-            });
-
-            return catalog;
-        }
-
-        /// <summary>
-        /// Получение источника БД для отображения в статус-баре
-        /// </summary>
         public string GetSourceDescription()
         {
             switch (CurrentSource)
@@ -369,14 +294,20 @@ namespace TBMFurn
                 case DbSource.NetworkDrive:
                     return "🌐 Сетевой диск R:\\";
                 case DbSource.Resources:
-                    return "📦 Встроенная БД (Resources)";
+                    return "📦 Резервная копия";
                 case DbSource.Local:
                     return "💻 Локальная копия";
                 case DbSource.Created:
-                    return "🆕 Создана новая БД";
+                    return "🆕 Будет создана";
                 default:
                     return "❓ Неизвестно";
             }
+        }
+
+        public async Task<Dictionary<string, CatalogItem>> GetAllCatalogAsync()
+        {
+            await Task.CompletedTask;
+            return new Dictionary<string, CatalogItem>();
         }
 
         public async Task ForceSyncAsync()
