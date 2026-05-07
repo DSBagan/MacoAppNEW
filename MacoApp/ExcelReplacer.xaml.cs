@@ -68,33 +68,23 @@ namespace TBMFurn
 
                 Catalog = await _localDb.GetAllCatalogAsync();
 
+                // ОТЛАДКА
+                System.Diagnostics.Debug.WriteLine($"=== CATALOG COUNT = {Catalog?.Count ?? 0} ===");
+
+                // Показываем окно с результатом
+                MessageBox.Show($"Загружено записей: {Catalog?.Count ?? 0}", "Отладка", MessageBoxButton.OK, MessageBoxImage.Information);
+
                 if (TxtStatus != null)
                     TxtStatus.Text = $"Загружено {Catalog.Count} записей из каталога";
 
-                if (Catalog.Count == 0)
-                {
-                    LoadTestData();
-                }
             }
             catch (Exception ex)
             {
-                if (TxtStatus != null)
-                    TxtStatus.Text = $"Ошибка загрузки: {ex.Message}";
-                MessageBox.Show($"Ошибка загрузки каталога: {ex.Message}", "Ошибка",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Diagnostics.Debug.WriteLine($"Ошибка: {ex.Message}");
             }
         }
 
-        private async void LoadTestData()
-        {
-            Catalog["641125"] = new CatalogItem { ReplacementArticle = "641125NEW", QuantityFactor = 1.0m };
-            Catalog["770425"] = new CatalogItem { ReplacementArticle = "ALM770425", QuantityFactor = 1.0m };
-
-            await _localDb.SaveAllCatalogAsync(Catalog);
-
-            if (TxtStatus != null)
-                TxtStatus.Text = $"Создан тестовый каталог ({Catalog.Count} записей)";
-        }
+        
 
         private void BtnPasteFromClipboard_Click(object sender, RoutedEventArgs e)
         {

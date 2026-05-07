@@ -303,16 +303,57 @@ namespace TBMFurn
                     return "❓ Неизвестно";
             }
         }
-
         public async Task<Dictionary<string, CatalogItem>> GetAllCatalogAsync()
         {
-            await Task.CompletedTask;
-            return new Dictionary<string, CatalogItem>();
-        }
+            var catalog = new Dictionary<string, CatalogItem>();
 
-        public async Task ForceSyncAsync()
-        {
-            await InitializeSyncAsync();
+            await Task.Run(() =>
+            {
+                try
+                {
+                    using (var connection = new SqliteConnection($"Data Source={_localDbPath}"))
+                    {
+                        connection.Open();
+
+                        // Читаем все нужные столбцы
+                        var command = connection.CreateCommand();
+                        command.CommandText = @"
+                    SELECT old_article, replacement_article, quantity_factor, is_seal, shipping_standard 
+                    FROM catalog_replacements
+                ";
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var oldArticle = reader.GetString(0);
+                                var replacementArticle = reader.GetString(1);
+                                var quantityFactor = (decimal)reader.GetDouble(2);
+                                var isSeal = reader.GetInt32(3) == 1;
+                                var shippingStandard = (decimal)reader.GetDouble(4);
+
+                                catalog[oldArticle] = new CatalogItem
+                                {
+                                    ReplacementArticle = replacementArticle,
+                                    QuantityFactor = quantityFactor,
+                                    IsSeal = isSeal,
+                                    ShippingStandard = shippingStandard
+                                };
+
+                                System.Diagnostics.Debug.WriteLine($"Чтение: {oldArticle} -> {replacementArticle}");
+                            }
+                        }
+                    }
+
+                    System.Diagnostics.Debug.WriteLine($"ИТОГО загружено: {catalog.Count} записей");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"ОШИБКА: {ex.Message}");
+                }
+            });
+
+            return catalog;
         }
     }
 }
