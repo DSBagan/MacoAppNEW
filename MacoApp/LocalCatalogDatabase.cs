@@ -31,10 +31,10 @@ namespace TBMFurn
             Directory.CreateDirectory(Path.GetDirectoryName(_localDbPath));
 
             // Путь к БД на сетевом диске
-            _networkDbPath = @"R:\NOVOSIBIRSK\Обмен-филиалы\НСК расчет фурнитуры\БД\catalog.db";
+            _networkDbPath = @"R:\NOVOSIBIRSK\Обмен-филиалы\НСК расчет фурнитуры\БД\FurnApp.db";
 
             // Путь к БД в папке Resources
-            _resourcesDbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "catalog.db");
+            _resourcesDbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "FurnApp.db");
 
             // Запускаем синхронизацию
             Task.Run(async () => await InitializeSyncAsync());
@@ -45,7 +45,7 @@ namespace TBMFurn
             return Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "TBMFurn",
-                "catalog.db"
+                "FurnApp.db"
             );
         }
 
