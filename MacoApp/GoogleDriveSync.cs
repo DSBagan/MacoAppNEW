@@ -85,6 +85,72 @@ namespace TBMFurn
             }
         }
 
+        /// Загрузка файла в Google Drive
+        /// </summary>
+        public async Task<bool> UploadFileAsync(string localFilePath)
+        {
+            if (!_isInitialized)
+            {
+                StatusChanged?.Invoke("Google Drive не инициализирован");
+                return false;
+            }
+
+            if (!System.IO.File.Exists(localFilePath))
+            {
+                StatusChanged?.Invoke($"Файл не найден: {localFilePath}");
+                return false;
+            }
+
+            try
+            {
+                StatusChanged?.Invoke($"Загрузка файла {_fileName} в Google Drive...");
+
+                // Ищем существующий файл
+                var listRequest = _driveService.Files.List();
+                listRequest.Q = $"name='{_fileName}' and '{_folderId}' in parents and trashed=false";
+                listRequest.Fields = "files(id, name)";
+                listRequest.PageSize = 1;
+
+                var result = await listRequest.ExecuteAsync();
+
+                using (var fileStream = new FileStream(localFilePath, FileMode.Open, FileAccess.Read))
+                {
+                    if (result.Files != null && result.Files.Count > 0)
+                    {
+                        // Обновляем существующий файл
+                        var updateRequest = _driveService.Files.Update(
+                            new Google.Apis.Drive.v3.Data.File(),
+                            result.Files[0].Id,
+                            fileStream,
+                            "application/octet-stream"
+                        );
+                        await updateRequest.UploadAsync();
+                        StatusChanged?.Invoke($"Файл обновлен в Google Drive: {_fileName}");
+                    }
+                    else
+                    {
+                        // Создаем новый файл
+                        var fileMetadata = new Google.Apis.Drive.v3.Data.File
+                        {
+                            Name = _fileName,
+                            Parents = new[] { _folderId }
+                        };
+
+                        var createRequest = _driveService.Files.Create(fileMetadata, fileStream, "application/octet-stream");
+                        await createRequest.UploadAsync();
+                        StatusChanged?.Invoke($"Файл загружен в Google Drive: {_fileName}");
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                StatusChanged?.Invoke($"Ошибка загрузки в Google Drive: {ex.Message}");
+                return false;
+            }
+        }
+
         public async Task<bool> DownloadFileAsync(string localFilePath)
         {
             if (!_isInitialized)

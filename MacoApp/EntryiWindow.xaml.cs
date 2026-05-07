@@ -26,7 +26,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System.Net.NetworkInformation;
 using Hardcodet.Wpf.TaskbarNotification;
-using Microsoft.Extensions.Configuration; // Добавьте для чтения конфигурации
+using MaterialDesignThemes.Wpf;
+using System.Text.Json;
 
 namespace MacoApp
 {
@@ -47,9 +48,8 @@ namespace MacoApp
         private CalculationWindowAlu _secondWindow5;
         private ExcelReplacer _secondWindow6;
 
-
-        // Добавьте поле для синхронизации
-        private GoogleDriveSync _driveSync;
+        // Добавляем локальную БД
+        private LocalCatalogDatabase _localDb;
 
         public EntryiWindow()
         {
@@ -100,133 +100,40 @@ namespace MacoApp
                 }
             }
 
-            // Сначала синхронизация БД из Google Drive, затем инициализация
-            await SyncDatabaseFromCloudAsync();
+            // Создаем экземпляр LocalCatalogDatabase
+            _localDb = new LocalCatalogDatabase();
+            _localDb.StatusChanged += OnDatabaseStatusChanged;
 
-            InitializeDatabase();
+            // Инициализируем базу данных
+            await InitializeDatabaseAsync();
+
             InitTasks();
         }
 
-        /// <summary>
-        /// Синхронизация базы данных из Google Drive
-        /// </summary>
-        private async Task SyncDatabaseFromCloudAsync()
+        private void OnDatabaseStatusChanged(string statusMessage)
         {
-            try
+            // Обновляем статус в UI
+            Dispatcher.BeginInvoke(new Action(() =>
             {
-                UpdateStatus("Проверка обновлений базы данных...", "#FF6B6B6B");
-
-                // Читаем настройки из конфигурации
-                var folderId = GetGoogleDriveFolderId();
-                var fileName = "Furnapp.db";
-
-                if (string.IsNullOrEmpty(folderId))
-                {
-                    UpdateStatus("Google Drive не настроен, использую локальную БД", "#FFAA6F00");
-                    return;
-                }
-
-                _driveSync = new GoogleDriveSync(folderId, fileName);
-                _driveSync.StatusChanged += (msg) => UpdateStatus(msg, "#FF6B6B6B");
-
-                var connected = await _driveSync.InitializeAsync();
-
-                if (!connected)
-                {
-                    UpdateStatus("Не удалось подключиться к Google Drive, использую локальную БД", "#FFAA6F00");
-                    return;
-                }
-
-                // Проверяем, есть ли файл в облаке
-                var fileExists = await _driveSync.FileExistsAsync();
-
-                if (!fileExists)
-                {
-                    UpdateStatus("Файл базы данных не найден в Google Drive, создам новый при необходимости", "#FFAA6F00");
-                    return;
-                }
-
-                var fileInfo = await _driveSync.GetFileInfoAsync();
-                var localFileInfo = new FileInfo(path);
-
-                // Проверяем, нужно ли обновлять локальную копию
-                bool needDownload = false;
-
-                if (!localFileInfo.Exists)
-                {
-                    needDownload = true;
-                    UpdateStatus($"Локальная БД не найдена, скачиваю из облака...", "#FF6B6B6B");
-                }
-                else if (fileInfo.ModifiedTime > localFileInfo.LastWriteTime)
-                {
-                    needDownload = true;
-                    UpdateStatus($"Обнаружена новая версия БД (от {fileInfo.ModifiedTime:dd.MM.yyyy HH:mm}), скачиваю...", "#FF6B6B6B");
-                }
-                else
-                {
-                    UpdateStatus($"База данных актуальна (локальная: {localFileInfo.LastWriteTime:dd.MM.yyyy HH:mm})", "#FF2E7D32");
-                }
-
-                if (needDownload)
-                {
-                    // Скачиваем файл
-                    var downloadPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Furnapp.db_temp");
-                    var success = await _driveSync.DownloadFileAsync(downloadPath);
-
-                    if (success)
-                    {
-                        // Заменяем существующий файл
-                        if (localFileInfo.Exists)
-                        {
-                            localFileInfo.Delete();
-                        }
-                        File.Move(downloadPath, path);
-                        UpdateStatus($"База данных обновлена из облака (от {fileInfo.ModifiedTime:dd.MM.yyyy HH:mm})", "#FF2E7D32");
-                    }
-                    else
-                    {
-                        UpdateStatus("Ошибка при скачивании базы данных, использую локальную версию", "#FFD32F2F");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Ошибка синхронизации: {ex.Message}");
-                UpdateStatus($"Ошибка синхронизации: {ex.Message}", "#FFD32F2F");
-            }
+                UpdateStatus(statusMessage);
+            }));
         }
 
-        /// <summary>
-        /// Получение ID папки из appsettings.json
-        /// </summary>
-        private string GetGoogleDriveFolderId()
+        private async Task InitializeDatabaseAsync()
         {
             try
             {
-                var configPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
+                // Получаем каталог из локальной БД (она сама синхронизируется с сетевым диском и Google Drive)
+                var catalog = await _localDb.GetAllCatalogAsync();
 
-                if (System.IO.File.Exists(configPath))
-                {
-                    string jsonContent = System.IO.File.ReadAllText(configPath);
-                    using (var doc = System.Text.Json.JsonDocument.Parse(jsonContent))
-                    {
-                        var root = doc.RootElement;
-                        if (root.TryGetProperty("GoogleDrive", out var googleDrive))
-                        {
-                            if (googleDrive.TryGetProperty("FolderId", out var folderId))
-                            {
-                                return folderId.GetString() ?? "";
-                            }
-                        }
-                    }
-                }
+                // Обновляем статус с информацией об источнике
+                string sourceInfo = _localDb.GetSourceDescription();
+                UpdateStatus($"База данных загружена, записей: {catalog.Count} | Источник: {sourceInfo}", "#FF2E7D32");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Ошибка чтения конфигурации: {ex.Message}");
+                UpdateStatus($"Ошибка инициализации базы данных: {ex.Message}", "#FFD32F2F");
             }
-
-            return "";
         }
 
         /// <summary>
@@ -234,7 +141,8 @@ namespace MacoApp
         /// </summary>
         private void UpdateStatus(string message, string colorHex = "#FF6B6B6B")
         {
-            Dispatcher.Invoke(() =>
+            // Выполняем в UI потоке
+            Dispatcher.BeginInvoke(new Action(() =>
             {
                 if (TxtStatus != null)
                 {
@@ -246,56 +154,49 @@ namespace MacoApp
                     {
                         if (message.Contains("Ошибка") || message.Contains("не удалось"))
                         {
-                            TxtStatusIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Error;
+                            TxtStatusIcon.Kind = PackIconKind.Error;
                             TxtStatusIcon.Foreground = (Brush)new BrushConverter().ConvertFrom("#FFD32F2F");
                         }
-                        else if (message.Contains("офлайн") || message.Contains("нет подключения"))
+                        else if (message.Contains("офлайн") || message.Contains("нет подключения") || message.Contains("недоступен"))
                         {
-                            TxtStatusIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.CloudOffOutline;
+                            TxtStatusIcon.Kind = PackIconKind.CloudOffOutline;
                             TxtStatusIcon.Foreground = (Brush)new BrushConverter().ConvertFrom("#FFAA6F00");
                         }
-                        else if (message.Contains("обновлена") || message.Contains("актуальна"))
+                        else if (message.Contains("обновлена") || message.Contains("актуальна") || message.Contains("скопирована") || message.Contains("загружена"))
                         {
-                            TxtStatusIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.CloudCheck;
+                            TxtStatusIcon.Kind = PackIconKind.CloudCheck;
                             TxtStatusIcon.Foreground = (Brush)new BrushConverter().ConvertFrom("#FF2E7D32");
                         }
-                        else if (message.Contains("Google Drive не настроен"))
+                        else if (message.Contains("Сетевой диск") || message.Contains("сетевого диска"))
                         {
-                            TxtStatusIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Settings;
+                            TxtStatusIcon.Kind = PackIconKind.ServerNetwork;
+                            TxtStatusIcon.Foreground = (Brush)new BrushConverter().ConvertFrom("#FF1976D2");
+                        }
+                        else if (message.Contains("Google Drive"))
+                        {
+                            TxtStatusIcon.Kind = PackIconKind.GoogleDrive;
+                            TxtStatusIcon.Foreground = (Brush)new BrushConverter().ConvertFrom("#FF1976D2");
+                        }
+                        else if (message.Contains("локальную") || message.Contains("Локальная"))
+                        {
+                            TxtStatusIcon.Kind = PackIconKind.Laptop;
                             TxtStatusIcon.Foreground = (Brush)new BrushConverter().ConvertFrom("#FF6B6B6B");
                         }
-                        else if (message.Contains("загружена") || message.Contains("Загрузка"))
+                        else if (message.Contains("Создана"))
                         {
-                            TxtStatusIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.CloudDownload;
-                            TxtStatusIcon.Foreground = (Brush)new BrushConverter().ConvertFrom("#FF1976D2");
+                            TxtStatusIcon.Kind = PackIconKind.DatabasePlus;
+                            TxtStatusIcon.Foreground = (Brush)new BrushConverter().ConvertFrom("#FF2E7D32");
                         }
                         else
                         {
-                            TxtStatusIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Cloud;
+                            TxtStatusIcon.Kind = PackIconKind.CloudSync;
                             TxtStatusIcon.Foreground = (Brush)new BrushConverter().ConvertFrom("#FF6B6B6B");
                         }
                     }
                 }
+            }));
 
-                System.Diagnostics.Debug.WriteLine(message);
-            });
-        }
-
-        private void InitializeDatabase()
-        {
-            string dbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Furnapp.db");
-
-            if (File.Exists(dbPath) && new FileInfo(dbPath).Length > 0)
-            {
-                path = dbPath;
-                UpdateStatus($"База данных загружена, размер: {new FileInfo(dbPath).Length / 1024} КБ", "#FF2E7D32");
-                return;
-            }
-
-            UpdateStatus("Создание новой базы данных...", "#FF6B6B6B");
-            ExtractDatabaseFromResources(dbPath);
-            path = dbPath;
-            UpdateStatus("Новая база данных создана", "#FF2E7D32");
+            System.Diagnostics.Debug.WriteLine(message);
         }
 
         private void ExtractDatabaseFromResources(string targetPath)
