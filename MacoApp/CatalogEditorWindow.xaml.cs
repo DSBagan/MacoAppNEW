@@ -37,7 +37,8 @@ namespace TBMFurn
                     NewArticle = item.Value.ReplacementArticle,
                     Factor = item.Value.QuantityFactor,
                     IsSeal = item.Value.IsSeal,
-                    ShippingStandard = item.Value.ShippingStandard
+                    ShippingStandard = item.Value.ShippingStandard,
+                    IsFastener = item.Value.IsFastener
                 });
             }
 
@@ -289,7 +290,8 @@ namespace TBMFurn
                             ReplacementArticle = entry.NewArticle,
                             QuantityFactor = entry.Factor,
                             IsSeal = entry.IsSeal,
-                            ShippingStandard = entry.ShippingStandard
+                            ShippingStandard = entry.ShippingStandard,
+                            IsFastener = entry.IsFastener
                         };
                     }
                 }
@@ -404,6 +406,7 @@ namespace TBMFurn
         private decimal _factor = 1;
         private bool _isSeal = false;
         private decimal _shippingStandard = 0;
+        private bool _isFastener = false;
 
         public string OldArticle
         {
@@ -433,6 +436,12 @@ namespace TBMFurn
         {
             get => _shippingStandard;
             set { _shippingStandard = value; OnPropertyChanged(nameof(ShippingStandard)); }
+        }
+
+        public bool IsFastener
+        {
+            get => _isFastener;
+            set { _isFastener = value; OnPropertyChanged(nameof(IsFastener)); }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

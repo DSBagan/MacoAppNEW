@@ -139,60 +139,116 @@ namespace TBMFurn
         /// <param name="originalQuantity">Исходное количество</param>
         /// <param name="shippingStandard">Норма отгрузки</param>
         /// <returns>Рассчитанное количество после применения правил</returns>
-        private decimal CalculateSealQuantity(decimal originalQuantity, decimal shippingStandard)
+        /// Расчет количества для уплотнителя по заданным правилам
+        /// </summary>
+        private decimal CalculateSealQuantity(decimal originalQuantity, decimal shippingStandard, string article = "")
         {
+            // ИСКЛЮЧЕНИЕ ДЛЯ КОНКРЕТНОГО АРТИКУЛА
+            if (article == "ALM770071-02/1" || article == "ALM770071-02")
+            {
+                decimal result = Math.Ceiling(originalQuantity / 35) * 35;
+                System.Diagnostics.Debug.WriteLine($"ИСКЛЮЧЕНИЕ: Артикул {article} → округлен до {result} (кратно 35)");
+                return result;
+            }
+
             if (shippingStandard <= 0)
-                return originalQuantity; // Если норма не задана, возвращаем как есть
+                return originalQuantity;
 
-            decimal remainder = originalQuantity % shippingStandard;
-
-            // Условие 1: Остаток более 2/3 нормы отгрузки
-            if (remainder > (shippingStandard * 2 / 3))
+            // Если количество больше нормы отгрузки
+            if (originalQuantity > shippingStandard)
             {
-                decimal result = originalQuantity + (shippingStandard - remainder);
-                System.Diagnostics.Debug.WriteLine($"Уплотнитель: остаток {remainder} > 2/3 нормы ({shippingStandard * 2 / 3}), округляем до {result}");
+                // Разбиваем на целые нормы и остаток
+                decimal fullStandards = Math.Floor(originalQuantity / shippingStandard);
+                decimal remainder = originalQuantity % shippingStandard;
+
+                decimal result = 0;
+
+                // Целые нормы оставляем без изменений
+                result += fullStandards * shippingStandard;
+
+                // К остатку применяем правила
+                if (remainder > 0)
+                {
+                    // Условие 1: Остаток более 2/3 нормы отгрузки
+                    if (remainder > (shippingStandard * 2 / 3))
+                    {
+                        result += shippingStandard;
+                        System.Diagnostics.Debug.WriteLine($"Уплотнитель: остаток {remainder} > 2/3 нормы, добавляем полную норму");
+                    }
+                    // Условие 2: Остаток от 10% до 2/3 нормы
+                    else if (remainder > (shippingStandard * 0.1m))
+                    {
+                        decimal increase = remainder * 0.1m;
+                        decimal newRemainder = remainder + increase;
+
+                        if (originalQuantity >= 20)
+                        {
+                            newRemainder = Math.Ceiling(newRemainder / 5) * 5;
+                        }
+                        result += newRemainder;
+                        System.Diagnostics.Debug.WriteLine($"Уплотнитель: остаток {remainder} между 10% и 2/3 нормы, увеличили на 10% → {newRemainder}");
+                    }
+                    // Условие 3: Остаток менее 10% нормы
+                    else
+                    {
+                        decimal increase = remainder * 0.1m;
+                        decimal newRemainder = remainder + increase;
+
+                        if (originalQuantity >= 20)
+                        {
+                            newRemainder = Math.Ceiling(newRemainder / 5) * 5;
+                        }
+                        result += newRemainder;
+                        System.Diagnostics.Debug.WriteLine($"Уплотнитель: остаток {remainder} < 10% нормы, увеличили на 10% → {newRemainder}");
+                    }
+                }
+
                 return result;
             }
-            // Условие 2: Остаток от 10% до 2/3 нормы
-            else if (remainder > (shippingStandard * 0.1m))
-            {
-                decimal increase = originalQuantity * 0.1m;
-                decimal result = originalQuantity + increase;
-
-                // Округляем до 5, если исходное количество >= 20
-                if (originalQuantity >= 20)
-                {
-                    decimal oldResult = result;
-                    result = Math.Ceiling(result / 5) * 5;
-                    System.Diagnostics.Debug.WriteLine($"Уплотнитель: остаток {remainder} между 10% и 2/3 нормы, увеличили на 10%: {oldResult} → округлили до 5: {result}");
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine($"Уплотнитель: остаток {remainder} между 10% и 2/3 нормы, увеличили на 10%: {result} (округление до 5 не применяется, т.к. количество < 20)");
-                }
-
-                return result;
-            }
-            // Условие 3: Остаток менее 10% нормы
             else
             {
-                decimal increase = originalQuantity * 0.1m;
-                decimal result = originalQuantity + increase;
+                // Исходная логика для количества <= нормы
+                decimal remainder = originalQuantity % shippingStandard;
 
-                // Округляем до 5, если исходное количество >= 20
-                if (originalQuantity >= 20)
+                if (remainder > (shippingStandard * 2 / 3))
                 {
-                    decimal oldResult = result;
-                    result = Math.Ceiling(result / 5) * 5;
-                    System.Diagnostics.Debug.WriteLine($"Уплотнитель: остаток {remainder} < 10% нормы, увеличили на 10%: {oldResult} → округлили до 5: {result}");
+                    return originalQuantity + (shippingStandard - remainder);
+                }
+                else if (remainder > (shippingStandard * 0.1m))
+                {
+                    decimal increase = originalQuantity * 0.1m;
+                    decimal result = originalQuantity + increase;
+
+                    if (originalQuantity >= 20)
+                    {
+                        result = Math.Ceiling(result / 5) * 5;
+                    }
+                    return result;
                 }
                 else
                 {
-                    System.Diagnostics.Debug.WriteLine($"Уплотнитель: остаток {remainder} < 10% нормы, увеличили на 10%: {result} (округление до 5 не применяется, т.к. количество < 20)");
-                }
+                    decimal increase = originalQuantity * 0.1m;
+                    decimal result = originalQuantity + increase;
 
-                return result;
+                    if (originalQuantity >= 20)
+                    {
+                        result = Math.Ceiling(result / 5) * 5;
+                    }
+                    return result;
+                }
             }
+        }
+
+        /// Расчет количества для крепежа (округление до сотни вверх)
+        /// </summary>
+        private decimal CalculateFastenerQuantity(decimal originalQuantity)
+        {
+            if (originalQuantity <= 0)
+                return 0;
+
+            decimal result = Math.Ceiling(originalQuantity / 100) * 100;
+            System.Diagnostics.Debug.WriteLine($"Крепеж: {originalQuantity} → округлено до сотен: {result}");
+            return result;
         }
 
         private void LoadFromExcel(string filePath)
@@ -268,13 +324,11 @@ namespace TBMFurn
                 return;
             }
 
-            // Сначала суммируем дубликаты из пользовательского списка
             var summedItems = UserItems
                 .GroupBy(x => x.Article)
                 .Select(g => new UserItem { Article = g.Key, Quantity = g.Sum(x => x.Quantity) })
                 .ToList();
 
-            // Применяем замены из каталога
             var processedItems = new Dictionary<string, FinalItem>();
 
             foreach (var item in summedItems)
@@ -282,8 +336,6 @@ namespace TBMFurn
                 string finalArticle = item.Article;
                 decimal finalQuantity = item.Quantity;
                 bool isReplaced = false;
-                bool isSeal = false;
-                decimal shippingStandard = 0;
 
                 if (Catalog.ContainsKey(item.Article))
                 {
@@ -291,24 +343,27 @@ namespace TBMFurn
                     finalArticle = catalogItem.ReplacementArticle;
                     finalQuantity = item.Quantity * catalogItem.QuantityFactor;
                     isReplaced = true;
-                    isSeal = catalogItem.IsSeal;
-                    shippingStandard = catalogItem.ShippingStandard;
 
-                    // Если это уплотнитель и есть норма отгрузки, применяем специальный расчет
-                    if (isSeal && shippingStandard > 0)
+                    // Проверяем на крепеж (приоритет выше, чем уплотнитель)
+                    if (catalogItem.IsFastener)
+                    {
+                        finalQuantity = CalculateFastenerQuantity(finalQuantity);
+                    }
+                    // Если это уплотнитель и есть норма отгрузки
+                    else if (catalogItem.IsSeal && catalogItem.ShippingStandard > 0)
                     {
                         System.Diagnostics.Debug.WriteLine($"=== ОБРАБОТКА УПЛОТНИТЕЛЯ ===");
                         System.Diagnostics.Debug.WriteLine($"Артикул: {item.Article}");
                         System.Diagnostics.Debug.WriteLine($"Исходное количество: {finalQuantity}");
-                        System.Diagnostics.Debug.WriteLine($"Норма отгрузки: {shippingStandard}");
+                        System.Diagnostics.Debug.WriteLine($"Норма отгрузки: {catalogItem.ShippingStandard}");
 
-                        finalQuantity = CalculateSealQuantity(finalQuantity, shippingStandard);
+                        // ПЕРЕДАЕМ АРТИКУЛ В МЕТОД РАСЧЕТА
+                        finalQuantity = CalculateSealQuantity(finalQuantity, catalogItem.ShippingStandard, item.Article);
 
                         System.Diagnostics.Debug.WriteLine($"Итоговое количество: {finalQuantity}");
                     }
                 }
 
-                // Округляем до целого числа
                 finalQuantity = Math.Round(finalQuantity, 0);
 
                 if (processedItems.ContainsKey(finalArticle))
@@ -520,5 +575,6 @@ namespace TBMFurn
         public decimal QuantityFactor { get; set; }
         public bool IsSeal { get; set; } = false;
         public decimal ShippingStandard { get; set; } = 0;
+        public bool IsFastener { get; set; } = false;
     }
 }

@@ -1,7 +1,7 @@
 ﻿<Window x:Class="TBMFurn.CatalogEditorWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Редактор каталога замен" Height="500" Width="800"
+        Title="Редактор каталога замен" Height="550" Width="1000"
         WindowStartupLocation="CenterOwner">
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -15,12 +15,11 @@
         <!-- Верхняя панель с кнопками -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
             <Button x:Name="BtnPasteFromClipboard" Content="📋 Вставить из буфера" 
-            Click="BtnPasteFromClipboard_Click" Height="30" Margin="5" Width="180"
-            Style="{StaticResource MaterialDesignPaperLightButton}"/>
+                    Click="BtnPasteFromClipboard_Click" Height="30" Margin="5" Width="180"
+                    Style="{StaticResource MaterialDesignPaperLightButton}"/>
             <Button x:Name="BtnDeleteSelected" Content="🗑 Удалить выбранные" 
-            Click="BtnDeleteSelected_Click" Height="30" Margin="5" Width="180" Background="LightCoral"
-            Style="{StaticResource MaterialDesignPaperLightButton}"/>
-
+                    Click="BtnDeleteSelected_Click" Height="30" Margin="5" Width="180" Background="LightCoral"
+                    Style="{StaticResource MaterialDesignPaperLightButton}"/>
         </StackPanel>
 
         <!-- Панель поиска -->
@@ -47,21 +46,26 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Старый артикул" Binding="{Binding OldArticle}" Width="2*"/>
                 <DataGridTextColumn Header="Артикул замена" Binding="{Binding NewArticle}" Width="2*"/>
-                <DataGridTextColumn Header="Коэффициент количества" Binding="{Binding Factor}" Width="*"/>
+                <DataGridTextColumn Header="Коэффициент" Binding="{Binding Factor}" Width="2*"/>
+
+                <!-- НОВЫЕ КОЛОНКИ -->
+                <DataGridCheckBoxColumn Header="Уплотнитель" Binding="{Binding IsSeal}" Width="2*"/>
+                <DataGridTextColumn Header="Норма отгрузки" Binding="{Binding ShippingStandard}" Width="2*"/>
+                <DataGridCheckBoxColumn Header="Крепеж" Binding="{Binding IsFastener}" Width="2*"/>
             </DataGrid.Columns>
         </DataGrid>
 
         <!-- Кнопки сохранения/отмены -->
         <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
             <Button x:Name="BtnBackup" Content="💾 Создать бэкап"
-                    Click="BtnBackup_Click" Height="30" Margin="5" Width="222" Background="LightBlue"
+                    Click="BtnBackup_Click" Height="30" Margin="5" Width="170" Background="LightBlue"
                     Style="{StaticResource MaterialDesignPaperLightButton}"/>
             <Button x:Name="BtnRestoreFromBackup" Content="🔄 Восстановить из бэкапа"
-                    Click="BtnRestoreFromBackup_Click" Height="30" Margin="5" Width="227" Background="LightYellow"
+                    Click="BtnRestoreFromBackup_Click" Height="30" Margin="5" Width="220" Background="LightYellow"
                     Style="{StaticResource MaterialDesignPaperLightButton}"/>
-            <Button x:Name="BtnSave" Content="Сохранить в БД" Click="BtnSave_Click" Width="150" Height="30" Margin="5" Background="LightGreen"
+            <Button x:Name="BtnSave" Content="💾 Сохранить в БД" Click="BtnSave_Click" Width="170" Height="30" Margin="5" Background="LightGreen"
                     Style="{StaticResource MaterialDesignPaperLightButton}"/>
-            <Button x:Name="BtnCancel" Content="Отмена" Click="BtnCancel_Click" Width="100" Height="30" Margin="5"
+            <Button x:Name="BtnCancel" Content="❌ Отмена" Click="BtnCancel_Click" Width="170" Height="30" Margin="5"
                     Style="{StaticResource MaterialDesignPaperLightButton}"/>
         </StackPanel>
     </Grid>

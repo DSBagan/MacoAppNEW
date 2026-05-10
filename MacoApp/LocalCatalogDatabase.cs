@@ -215,15 +215,18 @@ namespace TBMFurn
                         {
                             var insertCmd = connection.CreateCommand();
                             insertCmd.CommandText = @"
-                                INSERT OR REPLACE INTO catalog_replacements 
-                                (old_article, replacement_article, quantity_factor, is_seal, shipping_standard, updated_at)
-                                VALUES ($old_article, $replacement_article, $quantity_factor, $is_seal, $shipping_standard, $updated_at)
-                            ";
+                        INSERT OR REPLACE INTO catalog_replacements 
+                        (old_article, replacement_article, quantity_factor, 
+                         is_seal, shipping_standard, is_fastener, updated_at)
+                        VALUES ($old_article, $replacement_article, $quantity_factor, 
+                                $is_seal, $shipping_standard, $is_fastener, $updated_at)
+                    ";
                             insertCmd.Parameters.AddWithValue("$old_article", item.Key);
                             insertCmd.Parameters.AddWithValue("$replacement_article", item.Value.ReplacementArticle);
                             insertCmd.Parameters.AddWithValue("$quantity_factor", item.Value.QuantityFactor);
                             insertCmd.Parameters.AddWithValue("$is_seal", item.Value.IsSeal ? 1 : 0);
                             insertCmd.Parameters.AddWithValue("$shipping_standard", item.Value.ShippingStandard);
+                            insertCmd.Parameters.AddWithValue("$is_fastener", item.Value.IsFastener ? 1 : 0);
                             insertCmd.Parameters.AddWithValue("$updated_at", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                             insertCmd.ExecuteNonQuery();
                         }
@@ -234,7 +237,6 @@ namespace TBMFurn
             });
 
             StatusChanged?.Invoke($"Сохранено {catalog.Count} записей в таблицу catalog_replacements");
-
             await CopyToNetworkDriveAsync();
         }
 
@@ -315,10 +317,11 @@ namespace TBMFurn
                     {
                         connection.Open();
 
-                        // Читаем все нужные столбцы
+                        // Добавляем is_fastener в запрос
                         var command = connection.CreateCommand();
                         command.CommandText = @"
-                    SELECT old_article, replacement_article, quantity_factor, is_seal, shipping_standard 
+                    SELECT old_article, replacement_article, quantity_factor, 
+                           is_seal, shipping_standard, is_fastener 
                     FROM catalog_replacements
                 ";
 
@@ -331,16 +334,16 @@ namespace TBMFurn
                                 var quantityFactor = (decimal)reader.GetDouble(2);
                                 var isSeal = reader.GetInt32(3) == 1;
                                 var shippingStandard = (decimal)reader.GetDouble(4);
+                                var isFastener = reader.GetInt32(5) == 1;
 
                                 catalog[oldArticle] = new CatalogItem
                                 {
                                     ReplacementArticle = replacementArticle,
                                     QuantityFactor = quantityFactor,
                                     IsSeal = isSeal,
-                                    ShippingStandard = shippingStandard
+                                    ShippingStandard = shippingStandard,
+                                    IsFastener = isFastener
                                 };
-
-                                System.Diagnostics.Debug.WriteLine($"Чтение: {oldArticle} -> {replacementArticle}");
                             }
                         }
                     }
