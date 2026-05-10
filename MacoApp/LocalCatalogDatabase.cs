@@ -86,46 +86,28 @@ namespace TBMFurn
                 }
 
                 var networkFileInfo = new FileInfo(_networkDbPath);
-                var localFileInfo = new FileInfo(_localDbPath);
 
-                bool needCopy = false;
+                // ВСЕГДА КОПИРУЕМ ФАЙЛ С СЕТЕВОГО ДИСКА
+                StatusChanged?.Invoke($"Копирование БД с сетевого диска (от {networkFileInfo.LastWriteTime:dd.MM.yyyy HH:mm})...");
 
-                if (!localFileInfo.Exists)
-                {
-                    needCopy = true;
-                    StatusChanged?.Invoke($"Локальная БД не найдена, копирую полный файл с сетевого диска...");
-                }
-                else if (networkFileInfo.LastWriteTime > localFileInfo.LastWriteTime)
-                {
-                    needCopy = true;
-                    StatusChanged?.Invoke($"Обнаружена новая версия БД на сетевом диске (от {networkFileInfo.LastWriteTime:dd.MM.yyyy HH:mm})");
-                }
-                else
-                {
-                    CurrentSource = DbSource.NetworkDrive;
-                    StatusChanged?.Invoke($"БД актуальна (сетевой диск, версия от {localFileInfo.LastWriteTime:dd.MM.yyyy HH:mm})");
-                }
+                // Копируем с сетевого диска в корень приложения
+                File.Copy(_networkDbPath, _localDbPath, true);
+                CurrentSource = DbSource.NetworkDrive;
+                StatusChanged?.Invoke($"БД скопирована с сетевого диска (размер: {networkFileInfo.Length / 1024} КБ)");
 
-                if (needCopy)
+                // Обновляем резервную копию (если нужно)
+                try
                 {
-                    File.Copy(_networkDbPath, _localDbPath, true);
-
-                    try
+                    string resourcesDir = Path.GetDirectoryName(_resourcesDbPath);
+                    if (!string.IsNullOrEmpty(resourcesDir) && !Directory.Exists(resourcesDir))
                     {
-                        string resourcesDir = Path.GetDirectoryName(_resourcesDbPath);
-                        if (!string.IsNullOrEmpty(resourcesDir) && !Directory.Exists(resourcesDir))
-                        {
-                            Directory.CreateDirectory(resourcesDir);
-                        }
-                        File.Copy(_networkDbPath, _resourcesDbPath, true);
-                        StatusChanged?.Invoke($"БД скопирована с сетевого диска и обновлен резерв");
+                        Directory.CreateDirectory(resourcesDir);
                     }
-                    catch (Exception ex)
-                    {
-                        StatusChanged?.Invoke($"БД скопирована локально, но не удалось обновить резерв: {ex.Message}");
-                    }
-
-                    CurrentSource = DbSource.NetworkDrive;
+                    File.Copy(_networkDbPath, _resourcesDbPath, true);
+                }
+                catch (Exception ex)
+                {
+                    StatusChanged?.Invoke($"БД скопирована локально, но не удалось обновить резерв: {ex.Message}");
                 }
 
                 return true;
