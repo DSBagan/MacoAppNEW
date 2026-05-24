@@ -337,6 +337,11 @@ namespace TBMFurn
                 decimal finalQuantity = item.Quantity;
                 bool isReplaced = false;
 
+                // Сохраняем свойства исходного артикула (если они есть)
+                bool isSeal = false;
+                bool isFastener = false;
+                decimal shippingStandard = 0;
+
                 if (Catalog.ContainsKey(item.Article))
                 {
                     var catalogItem = Catalog[item.Article];
@@ -344,24 +349,45 @@ namespace TBMFurn
                     finalQuantity = item.Quantity * catalogItem.QuantityFactor;
                     isReplaced = true;
 
-                    // Проверяем на крепеж (приоритет выше, чем уплотнитель)
-                    if (catalogItem.IsFastener)
-                    {
-                        finalQuantity = CalculateFastenerQuantity(finalQuantity);
-                    }
-                    // Если это уплотнитель и есть норма отгрузки
-                    else if (catalogItem.IsSeal && catalogItem.ShippingStandard > 0)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"=== ОБРАБОТКА УПЛОТНИТЕЛЯ ===");
-                        System.Diagnostics.Debug.WriteLine($"Артикул: {item.Article}");
-                        System.Diagnostics.Debug.WriteLine($"Исходное количество: {finalQuantity}");
-                        System.Diagnostics.Debug.WriteLine($"Норма отгрузки: {catalogItem.ShippingStandard}");
+                    // Сохраняем свойства ИСХОДНОГО артикула
+                    isSeal = catalogItem.IsSeal;
+                    isFastener = catalogItem.IsFastener;
+                    shippingStandard = catalogItem.ShippingStandard;
 
-                        // ПЕРЕДАЕМ АРТИКУЛ В МЕТОД РАСЧЕТА
-                        finalQuantity = CalculateSealQuantity(finalQuantity, catalogItem.ShippingStandard, item.Article);
-
-                        System.Diagnostics.Debug.WriteLine($"Итоговое количество: {finalQuantity}");
+                    System.Diagnostics.Debug.WriteLine($"\n--- Обработка артикула: {item.Article} → замена: {finalArticle}");
+                    System.Diagnostics.Debug.WriteLine($"  Исходное количество: {finalQuantity}");
+                    System.Diagnostics.Debug.WriteLine($"  IsSeal: {isSeal}, IsFastener: {isFastener}, Норма: {shippingStandard}");
+                }
+                else
+                {
+                    // Если артикул не найден в каталоге, проверяем его свойства (вдруг он есть как артикул-замена?)
+                    if (Catalog.ContainsKey(finalArticle))
+                    {
+                        var catalogItem = Catalog[finalArticle];
+                        isSeal = catalogItem.IsSeal;
+                        isFastener = catalogItem.IsFastener;
+                        shippingStandard = catalogItem.ShippingStandard;
+                        System.Diagnostics.Debug.WriteLine($"\n--- Обработка артикула: {finalArticle}");
+                        System.Diagnostics.Debug.WriteLine($"  IsSeal: {isSeal}, IsFastener: {isFastener}, Норма: {shippingStandard}");
                     }
+                }
+
+                // Применяем расчеты на основе сохраненных свойств
+                if (isFastener)
+                {
+                    finalQuantity = CalculateFastenerQuantity(finalQuantity);
+                    System.Diagnostics.Debug.WriteLine($"  Артикул (или его замена) является крепежом, применено округление: {finalQuantity}");
+                }
+                else if (isSeal && shippingStandard > 0)
+                {
+                    System.Diagnostics.Debug.WriteLine($"  === ПРИМЕНЕНИЕ ПРАВИЛ УПЛОТНИТЕЛЯ ===");
+                    System.Diagnostics.Debug.WriteLine($"  Артикул: {item.Article} (замена: {finalArticle})");
+                    System.Diagnostics.Debug.WriteLine($"  Количество до расчета: {finalQuantity}");
+                    System.Diagnostics.Debug.WriteLine($"  Норма отгрузки: {shippingStandard}");
+
+                    finalQuantity = CalculateSealQuantity(finalQuantity, shippingStandard, item.Article);
+
+                    System.Diagnostics.Debug.WriteLine($"  Итоговое количество: {finalQuantity}");
                 }
 
                 finalQuantity = Math.Round(finalQuantity, 0);
