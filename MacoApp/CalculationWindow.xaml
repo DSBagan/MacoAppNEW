@@ -374,6 +374,7 @@
             <ComboBoxItem Content="Roto_NT"/>
             <ComboBoxItem Content="Roto_NX"/>
             <ComboBoxItem Content="Internika"/>
+            <ComboBoxItem Content="Internika_New"/>
             <ComboBoxItem Content="Akpen"/>
         </ComboBox>
 

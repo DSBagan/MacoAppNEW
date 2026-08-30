@@ -15,7 +15,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Drawing;
-using Microsoft.Vbe.Interop.Forms;
 using System.Collections.ObjectModel;
 using Microsoft.Data.Sqlite;
 using MaterialDesignMessageBox;

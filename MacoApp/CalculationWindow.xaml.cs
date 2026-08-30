@@ -158,6 +158,7 @@ namespace MacoApp
             backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/RotoFon.png")));
             backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/RotoFonNX.png")));
             backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/internikaFon.png")));
+            backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/internikaFon.png")));
             backgroundsFON.Add(new BitmapImage(new Uri("pack://application:,,,/images/AkpenFon.png")));
 
             backgroundsButtons.Add(new BitmapImage(new Uri("pack://application:,,,/images/P_OL.png")));
