@@ -529,7 +529,16 @@
                 Height="29" 
                 Margin="0,0,15,10">
             <StackPanel Orientation="Horizontal">
-                <materialDesign:PackIcon Kind="ExitToApp" Margin="0,0,10,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <materialDesign:PackIcon Kind="ExitToApp" Margin="0,0,10,0" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5" Width="19" >
+                    <materialDesign:PackIcon.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="-1"/>
+                            <SkewTransform/>
+                            <RotateTransform/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </materialDesign:PackIcon.RenderTransform>
+                </materialDesign:PackIcon>
                 <TextBlock Text="Назад"/>
             </StackPanel>
         </Button>

@@ -6,32 +6,33 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Data.Sqlite;
 using Microsoft.Office.Interop.Outlook;
 using Microsoft.Win32;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Runtime.Serialization;
+using System.Security.Policy;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using TBMFurn;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Net.WebRequestMethods;
-using System.Runtime.Serialization;
-using System.Reflection;
-using System.Security.Policy;
-using System.Windows.Media.Animation;
-using System.Drawing;
 using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
-using System.Reflection.Emit;
-using TBMFurn;
-using MySql.Data.MySqlClient;
 
 
 namespace MacoApp
@@ -943,14 +944,23 @@ namespace MacoApp
                 {
                     TBShablonRama.Text = "1080391";
                     TBShablonStvorka.Text = "1080369";
-
                     ButtonStulp.IsEnabled = false;
                 }
                 if (index == 7)
                 {
+                    TBShablonRama.Text = "1080391";
+                    TBShablonStvorka.Text = "1080369";
+                    ButtonStulp.IsEnabled = false;
+
+                    MessageBox.Show("Это версия фурнитуры Internika с угловиком (взамен шпингалета)\n и прямым средним запором",
+                          "Внимание",
+                          MessageBoxButton.OK,
+                          MessageBoxImage.Information);
+                }
+                if (index == 8)
+                {
                     TBShablonRama.Text = "ELM0030200";
                     TBShablonStvorka.Text = "ELM0030100";
-
                     ButtonStulp.IsEnabled = false;
                 }
             }
@@ -976,6 +986,7 @@ namespace MacoApp
         }
 
         // Останавливать таймер, когда окно не активно
+        [DebuggerNonUserCode]
         private void OnWindowDeactivated(object sender, EventArgs e)
         {
             if (_textTimer != null && _textTimer.IsEnabled)
@@ -985,6 +996,7 @@ namespace MacoApp
         }
 
         // Запускать таймер, когда окно становится активным
+        [DebuggerNonUserCode]
         private void OnWindowActivated(object sender, EventArgs e)
         {
             if (_textTimer != null && !_textTimer.IsEnabled)
