@@ -951,11 +951,8 @@ namespace MacoApp
                     TBShablonRama.Text = "1080391";
                     TBShablonStvorka.Text = "1080369";
                     ButtonStulp.IsEnabled = false;
-
-                    MessageBox.Show("Это версия фурнитуры Internika с угловиком (взамен шпингалета)\n и прямым средним запором",
-                          "Внимание",
-                          MessageBoxButton.OK,
-                          MessageBoxImage.Information);
+                    
+                    MaterialMessageBox.ShowDialog("Это версия фурнитуры Internika считается с угловиком взамен шпингалета и прямым средним запором");
                 }
                 if (index == 8)
                 {
