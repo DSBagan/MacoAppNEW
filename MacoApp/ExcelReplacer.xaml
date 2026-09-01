@@ -22,13 +22,15 @@
         <!-- Кнопки управления -->
         <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Vertical" VerticalAlignment="Top" Margin="10">
             <Button x:Name="BtnPasteFromClipboard" Content="📋 Вставить из буфера" Click="BtnPasteFromClipboard_Click" Height="35" Margin="5"
-                    Style="{StaticResource MaterialDesignPaperLightButton}"/>
-            <Button x:Name="BtnSaveExcel" Content="💾 Сохранить в Excel" Click="BtnSaveExcel_Click" Height="35" Margin="5"
-                    Style="{StaticResource MaterialDesignPaperLightButton}"/>
+            Style="{StaticResource MaterialDesignPaperLightButton}"/>
+            <Button x:Name="BtnSaveExcel" Content="💾 Сохранить в Excel для КП в КИС 2.0" Click="BtnSaveExcel_Click" Height="35" Margin="5"
+            Style="{StaticResource MaterialDesignPaperLightButton}"/>
+            <Button x:Name="BtnSaveExcelForKIS" Content="💾 Сохранить в Excel для КП в КИС" Click="BtnSaveExcelForKIS_Click" Height="35" Margin="5"
+            Style="{StaticResource MaterialDesignPaperLightButton}"/>
             <Button x:Name="BtnEditCatalog" Content="⚙ Редактировать каталог" Click="BtnEditCatalog_Click" Height="35" Margin="5"
-                    Style="{StaticResource MaterialDesignPaperLightButton}"/>
+            Style="{StaticResource MaterialDesignPaperLightButton}"/>
             <Button x:Name="BtnProcess" Content="🔄 Обработать" Click="BtnProcess_Click" Height="35" Margin="5" Background="LightGreen"
-                    Style="{StaticResource MaterialDesignPaperLightButton}"/>
+            Style="{StaticResource MaterialDesignPaperLightButton}"/>
         </StackPanel>
 
         <!-- Таблица пользователя -->

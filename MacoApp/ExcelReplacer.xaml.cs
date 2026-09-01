@@ -71,9 +71,9 @@ namespace TBMFurn
                 // ОТЛАДКА
                 System.Diagnostics.Debug.WriteLine($"=== CATALOG COUNT = {Catalog?.Count ?? 0} ===");
 
-                // Показываем окно с результатом
+                /*// Показываем окно с результатом
                 MessageBox.Show($"Загружено записей: {Catalog?.Count ?? 0}", "Отладка", MessageBoxButton.OK, MessageBoxImage.Information);
-
+                */
                 if (TxtStatus != null)
                     TxtStatus.Text = $"Загружено {Catalog.Count} записей из каталога";
 
@@ -84,7 +84,7 @@ namespace TBMFurn
             }
         }
 
-        
+
 
         private void BtnPasteFromClipboard_Click(object sender, RoutedEventArgs e)
         {
@@ -183,7 +183,8 @@ namespace TBMFurn
 
                         if (originalQuantity >= 20)
                         {
-                            newRemainder = Math.Ceiling(newRemainder / 5) * 5;
+                            // Округляем до 5 в бОльшую сторону
+                            newRemainder = Math.Ceiling(newRemainder / 5m) * 5m;
                         }
                         result += newRemainder;
                         System.Diagnostics.Debug.WriteLine($"Уплотнитель: остаток {remainder} между 10% и 2/3 нормы, увеличили на 10% → {newRemainder}");
@@ -196,7 +197,8 @@ namespace TBMFurn
 
                         if (originalQuantity >= 20)
                         {
-                            newRemainder = Math.Ceiling(newRemainder / 5) * 5;
+                            // Округляем до 5 в бОльшую сторону
+                            newRemainder = Math.Ceiling(newRemainder / 5m) * 5m;
                         }
                         result += newRemainder;
                         System.Diagnostics.Debug.WriteLine($"Уплотнитель: остаток {remainder} < 10% нормы, увеличили на 10% → {newRemainder}");
@@ -221,7 +223,8 @@ namespace TBMFurn
 
                     if (originalQuantity >= 20)
                     {
-                        result = Math.Ceiling(result / 5) * 5;
+                        // Округляем до 5 в бОльшую сторону
+                        result = Math.Ceiling(result / 5m) * 5m;
                     }
                     return result;
                 }
@@ -232,7 +235,8 @@ namespace TBMFurn
 
                     if (originalQuantity >= 20)
                     {
-                        result = Math.Ceiling(result / 5) * 5;
+                        // Округляем до 5 в бОльшую сторону
+                        result = Math.Ceiling(result / 5m) * 5m;
                     }
                     return result;
                 }
@@ -436,6 +440,19 @@ namespace TBMFurn
             SaveToExcel(savePath);
         }
 
+        // Новая кнопка для сохранения в .xls
+        private void BtnSaveExcelForKIS_Click(object sender, RoutedEventArgs e)
+        {
+            if (FinalItems.Count == 0)
+            {
+                MessageBox.Show("Нет данных для сохранения. Сначала загрузите данные и обработайте их.");
+                return;
+            }
+
+            string savePath = GetSavePathForKIS();
+            SaveToExcelOldFormat(savePath);
+        }
+
         private string GetSavePath()
         {
             string driveXPath = @"X:\Подгрузка в КИС";
@@ -459,6 +476,33 @@ namespace TBMFurn
                 if (!Directory.Exists(driveCPath))
                     Directory.CreateDirectory(driveCPath);
                 return Path.Combine(driveCPath, $"export_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx");
+            }
+        }
+
+        // Новый метод для получения пути сохранения для КИС (.xls)
+        private string GetSavePathForKIS()
+        {
+            string driveXPath = @"X:\Подгрузка в КИС";
+            string driveCPath = @"C:\Подгрузка в КИС";
+
+            bool isDriveXAvailable = false;
+            try
+            {
+                isDriveXAvailable = Directory.Exists("X:\\");
+            }
+            catch { }
+
+            if (isDriveXAvailable)
+            {
+                if (!Directory.Exists(driveXPath))
+                    Directory.CreateDirectory(driveXPath);
+                return Path.Combine(driveXPath, $"export_{DateTime.Now:yyyyMMdd_HHmmss}.xls");
+            }
+            else
+            {
+                if (!Directory.Exists(driveCPath))
+                    Directory.CreateDirectory(driveCPath);
+                return Path.Combine(driveCPath, $"export_{DateTime.Now:yyyyMMdd_HHmmss}.xls");
             }
         }
 
@@ -496,6 +540,45 @@ namespace TBMFurn
             catch (Exception ex)
             {
                 MessageBox.Show($"Ошибка сохранения Excel: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        // Новый метод для сохранения в формате .xls
+        private void SaveToExcelOldFormat(string filePath)
+        {
+            try
+            {
+                if (!filePath.EndsWith(".xls", StringComparison.OrdinalIgnoreCase))
+                {
+                    filePath = Path.ChangeExtension(filePath, ".xls");
+                }
+
+                IWorkbook workbook = new HSSFWorkbook();
+                ISheet sheet = workbook.CreateSheet("Результат");
+
+                for (int i = 0; i < FinalItems.Count; i++)
+                {
+                    IRow dataRow = sheet.CreateRow(i);
+                    dataRow.CreateCell(0).SetCellValue(FinalItems[i].Article);
+                    long roundedQuantity = (long)Math.Round(FinalItems[i].Quantity, 0);
+                    dataRow.CreateCell(1).SetCellValue(roundedQuantity);
+                }
+
+                sheet.AutoSizeColumn(0);
+                sheet.AutoSizeColumn(1);
+
+                using (FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                {
+                    workbook.Write(fs);
+                }
+
+                MessageBox.Show($"Файл успешно сохранен в формате .xls:\n{filePath}\n\nЗаписей: {FinalItems.Count}",
+                    "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка сохранения Excel (.xls): {ex.Message}", "Ошибка",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
