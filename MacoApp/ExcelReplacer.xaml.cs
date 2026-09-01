@@ -84,7 +84,7 @@ namespace TBMFurn
             }
         }
 
-
+        
 
         private void BtnPasteFromClipboard_Click(object sender, RoutedEventArgs e)
         {
@@ -120,7 +120,7 @@ namespace TBMFurn
                 {
                     UpdateRowNumbers();
                     ProcessData();
-                    MessageBox.Show($"Загружено {UserItems.Count} строк из буфера обмена");
+                    //MessageBox.Show($"Загружено {UserItems.Count} строк из буфера обмена");
                 }
                 else
                 {
@@ -183,8 +183,7 @@ namespace TBMFurn
 
                         if (originalQuantity >= 20)
                         {
-                            // Округляем до 5 в бОльшую сторону
-                            newRemainder = Math.Ceiling(newRemainder / 5m) * 5m;
+                            newRemainder = Math.Ceiling(newRemainder / 5) * 5;
                         }
                         result += newRemainder;
                         System.Diagnostics.Debug.WriteLine($"Уплотнитель: остаток {remainder} между 10% и 2/3 нормы, увеличили на 10% → {newRemainder}");
@@ -197,8 +196,7 @@ namespace TBMFurn
 
                         if (originalQuantity >= 20)
                         {
-                            // Округляем до 5 в бОльшую сторону
-                            newRemainder = Math.Ceiling(newRemainder / 5m) * 5m;
+                            newRemainder = Math.Ceiling(newRemainder / 5) * 5;
                         }
                         result += newRemainder;
                         System.Diagnostics.Debug.WriteLine($"Уплотнитель: остаток {remainder} < 10% нормы, увеличили на 10% → {newRemainder}");
@@ -223,8 +221,7 @@ namespace TBMFurn
 
                     if (originalQuantity >= 20)
                     {
-                        // Округляем до 5 в бОльшую сторону
-                        result = Math.Ceiling(result / 5m) * 5m;
+                        result = Math.Ceiling(result / 5) * 5;
                     }
                     return result;
                 }
@@ -235,8 +232,7 @@ namespace TBMFurn
 
                     if (originalQuantity >= 20)
                     {
-                        // Округляем до 5 в бОльшую сторону
-                        result = Math.Ceiling(result / 5m) * 5m;
+                        result = Math.Ceiling(result / 5) * 5;
                     }
                     return result;
                 }
@@ -328,6 +324,19 @@ namespace TBMFurn
                 return;
             }
 
+            // Собираем информацию о дубликатах ДО группировки
+            var duplicateGroups = UserItems
+                .GroupBy(x => x.Article)
+                .Where(g => g.Count() > 1)
+                .Select(g => new
+                {
+                    Article = g.Key,
+                    Count = g.Count(),
+                    TotalQuantity = g.Sum(x => x.Quantity),
+                    OriginalQuantities = string.Join(", ", g.Select(x => x.Quantity.ToString("N0")))
+                })
+                .ToList();
+
             var summedItems = UserItems
                 .GroupBy(x => x.Article)
                 .Select(g => new UserItem { Article = g.Key, Quantity = g.Sum(x => x.Quantity) })
@@ -340,11 +349,13 @@ namespace TBMFurn
                 string finalArticle = item.Article;
                 decimal finalQuantity = item.Quantity;
                 bool isReplaced = false;
+                string replacementInfo = "Нет";
 
                 // Сохраняем свойства исходного артикула (если они есть)
                 bool isSeal = false;
                 bool isFastener = false;
                 decimal shippingStandard = 0;
+                decimal originalQuantity = item.Quantity;
 
                 if (Catalog.ContainsKey(item.Article))
                 {
@@ -381,6 +392,7 @@ namespace TBMFurn
                 {
                     finalQuantity = CalculateFastenerQuantity(finalQuantity);
                     System.Diagnostics.Debug.WriteLine($"  Артикул (или его замена) является крепежом, применено округление: {finalQuantity}");
+                    replacementInfo = $"Крепеж: {originalQuantity} → {finalQuantity}";
                 }
                 else if (isSeal && shippingStandard > 0)
                 {
@@ -391,7 +403,13 @@ namespace TBMFurn
 
                     finalQuantity = CalculateSealQuantity(finalQuantity, shippingStandard, item.Article);
 
+                    replacementInfo = $"В заявке: {originalQuantity}, округлил до: {finalQuantity}";
+
                     System.Diagnostics.Debug.WriteLine($"  Итоговое количество: {finalQuantity}");
+                }
+                else if (isReplaced)
+                {
+                    replacementInfo = "Да";
                 }
 
                 finalQuantity = Math.Round(finalQuantity, 0);
@@ -400,6 +418,10 @@ namespace TBMFurn
                 {
                     processedItems[finalArticle].Quantity += finalQuantity;
                     processedItems[finalArticle].IsReplaced = processedItems[finalArticle].IsReplaced || isReplaced;
+                    if (isReplaced && processedItems[finalArticle].ReplacementInfo == "Нет")
+                    {
+                        processedItems[finalArticle].ReplacementInfo = replacementInfo;
+                    }
                 }
                 else
                 {
@@ -407,7 +429,8 @@ namespace TBMFurn
                     {
                         Article = finalArticle,
                         Quantity = finalQuantity,
-                        IsReplaced = isReplaced
+                        IsReplaced = isReplaced,
+                        ReplacementInfo = replacementInfo
                     };
                 }
             }
@@ -420,7 +443,21 @@ namespace TBMFurn
 
             UpdateRowNumbers();
 
-            MessageBox.Show($"Обработано {UserItems.Count} строк. Получено {FinalItems.Count} уникальных артикулов.");
+            // Формируем сообщение о дубликатах
+            string duplicateMessage = "";
+            if (duplicateGroups.Count > 0)
+            {
+                duplicateMessage = "\n\n=== Объединенные дубликаты ===\n";
+                foreach (var dup in duplicateGroups)
+                {
+                    duplicateMessage += $"Артикул: {dup.Article}\n";
+                    duplicateMessage += $"  Вхождений: {dup.Count}\n";
+                    duplicateMessage += $"  Суммарно: {dup.TotalQuantity:N0}\n";
+                    duplicateMessage += $"  Значения: {dup.OriginalQuantities}\n\n";
+                }
+            }
+
+            MessageBox.Show($"Обработано {UserItems.Count} строк. Получено {FinalItems.Count} уникальных артикулов.{duplicateMessage}");
         }
 
         private void OnUserItemsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -649,6 +686,7 @@ namespace TBMFurn
         private string _article;
         private bool _isReplaced;
         private int _rowNumber;
+        private string _replacementInfo; // Новое свойство для информации о замене
 
         public int RowNumber
         {
@@ -672,6 +710,12 @@ namespace TBMFurn
         {
             get => _isReplaced;
             set { _isReplaced = value; OnPropertyChanged(nameof(IsReplaced)); }
+        }
+
+        public string ReplacementInfo
+        {
+            get => _replacementInfo;
+            set { _replacementInfo = value; OnPropertyChanged(nameof(ReplacementInfo)); }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
