@@ -579,15 +579,15 @@ namespace MacoApp
                 try
                 {
                     // Проверяем есть диск X и папка aTBMFURN, если нет- создаем
-                    Directory.CreateDirectory(@"X:\aTBMFURN\");
-                    SavePathTXT = @"X:\aTBMFURN\";
+                    Directory.CreateDirectory(@"X:\Подгрузка в КИС");
+                    SavePathTXT = @"X:\Подгрузка в КИС";
                 }
                 catch (System.Exception)
                 {
                     // Проверяем есть ли на диске С папка aTBMFURN, если нет- создаем
-                    Directory.CreateDirectory(@"C:\aTBMFURN\");
-                    MaterialMessageBox.ShowDialog("Нет доступа к диску X, файл ,будет сохранен в папку aTBMFURN на диске C");
-                    SavePathTXT = @"C:\aTBMFURN\";
+                    Directory.CreateDirectory(@"C:\Подгрузка в КИС");
+                    MaterialMessageBox.ShowDialog("Нет доступа к диску X, файл ,будет сохранен в папку Подгрузка в КИС на диске C");
+                    SavePathTXT = @"C:\Подгрузка в КИС";
                 }
 
                 String date = DateTime.Now.ToString(" dd.MM.yyyy HH-mm-ss");

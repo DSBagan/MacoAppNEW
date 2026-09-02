@@ -22,22 +22,24 @@
         <!-- Кнопки управления -->
         <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Vertical" VerticalAlignment="Top" Margin="10,5,10,5">
             <Button x:Name="BtnPasteFromClipboard" Content="📋 Вставить из буфера" Click="BtnPasteFromClipboard_Click" Height="35" Margin="5"
-                    Style="{StaticResource MaterialDesignPaperLightButton}"/>
+            Style="{StaticResource MaterialDesignPaperLightButton}"/>
             <Button x:Name="BtnSaveExcel" Content="💾 Сохранить в Excel для КП в КИС 2.0" Click="BtnSaveExcel_Click" Height="35" Margin="5"
-                    Style="{StaticResource MaterialDesignPaperLightButton}"/>
+            Style="{StaticResource MaterialDesignPaperLightButton}"/>
             <Button x:Name="BtnSaveExcelForKIS" Content="💾 Сохранить в Excel для КП в КИС" Click="BtnSaveExcelForKIS_Click" Height="35" Margin="5"
-                    Style="{StaticResource MaterialDesignPaperLightButton}"/>
+            Style="{StaticResource MaterialDesignPaperLightButton}"/>
+            <Button x:Name="BtnSaveTXT" Content="📄 Сохранить для подгрузки в счет" Click="BtnSaveTXT_Click" Height="35" Margin="5"
+            Style="{StaticResource MaterialDesignPaperLightButton}"/>
             <Button x:Name="BtnEditCatalog" Content="⚙ Редактировать каталог" Click="BtnEditCatalog_Click" Height="35" Margin="5"
-                    Style="{StaticResource MaterialDesignPaperLightButton}"/>
+            Style="{StaticResource MaterialDesignPaperLightButton}"/>
             <Button x:Name="BtnProcess" Content="🔄 Обработать" Click="BtnProcess_Click" Height="35" Margin="5" Background="LightGreen"
-                    Style="{StaticResource MaterialDesignPaperLightButton}"/>
+            Style="{StaticResource MaterialDesignPaperLightButton}"/>
         </StackPanel>
 
         <!-- Таблица пользователя -->
         <Border Grid.Row="1" Grid.Column="0" Margin="5" CornerRadius="8" Background="White" Padding="2">
             <DataGrid x:Name="UserDataGrid" AutoGenerateColumns="False" 
                       CanUserAddRows="True" IsReadOnly="False"
-                      BorderThickness="0">
+                      BorderThickness="0" Margin="0,-237,0,0">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="№" Binding="{Binding RowNumber}" Width="50" IsReadOnly="True">
                         <DataGridTextColumn.ElementStyle>
@@ -57,7 +59,7 @@
         <!-- Финальная таблица -->
         <Border Grid.Row="1" Grid.Column="2" Margin="5" CornerRadius="8" Background="White" Padding="2">
             <DataGrid x:Name="FinalDataGrid" AutoGenerateColumns="False" IsReadOnly="True"
-                      BorderThickness="0">
+                      BorderThickness="0" Margin="0,-237,0,0">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="№" Binding="{Binding RowNumber}" Width="50" IsReadOnly="True">
                         <DataGridTextColumn.ElementStyle>

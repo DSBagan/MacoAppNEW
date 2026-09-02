@@ -1,4 +1,5 @@
-﻿using NPOI.HSSF.UserModel;
+﻿using Microsoft.Win32;
+using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System;
@@ -7,11 +8,11 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
-using Microsoft.Win32;
 using TBMFurn;
 
 namespace TBMFurn
@@ -458,6 +459,108 @@ namespace TBMFurn
             }
 
             MessageBox.Show($"Обработано {UserItems.Count} строк. Получено {FinalItems.Count} уникальных артикулов.{duplicateMessage}");
+        }
+
+        private void BtnSaveTXT_Click(object sender, RoutedEventArgs e)
+        {
+            if (FinalItems.Count == 0)
+            {
+                MessageBox.Show("Нет данных для сохранения. Сначала загрузите данные и обработайте их.");
+                return;
+            }
+
+            // Диалог для ввода кода фирмы
+            string firmCode = Microsoft.VisualBasic.Interaction.InputBox(
+                "Введите шифр фирмы (например: 005677):",
+                "Шифр фирмы",
+                "005677",
+                -1, -1);
+
+            if (string.IsNullOrWhiteSpace(firmCode))
+            {
+                return; // Пользователь отменил ввод
+            }
+
+            string savePath = GetSavePathTXT(firmCode);
+            SaveToTXT(savePath, firmCode);
+        }
+
+        private string GetSavePathTXT(string firmCode)
+        {
+            string driveXPath = @"X:\Подгрузка в КИС";
+            string driveCPath = @"C:\Подгрузка в КИС";
+            string date = DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss");
+
+            bool isDriveXAvailable = false;
+            try
+            {
+                isDriveXAvailable = Directory.Exists("X:\\");
+            }
+            catch { }
+
+            string basePath = isDriveXAvailable ? driveXPath : driveCPath;
+
+            if (!Directory.Exists(basePath))
+                Directory.CreateDirectory(basePath);
+
+            return Path.Combine(basePath, $"Z{firmCode}  {date}.txt");
+        }
+
+        private void SaveToTXT(string filePath, string firmCode)
+        {
+            try
+            {
+                string date = DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss");
+
+                using (StreamWriter streamWriter = new StreamWriter(filePath, false, Encoding.Default))
+                {
+                    // Заголовок
+                    streamWriter.WriteLine($"Шифр фирмы {firmCode}");
+                    streamWriter.WriteLine("                    Фирма 123");
+                    streamWriter.WriteLine("                    Заявка №");
+                    streamWriter.WriteLine("                    Название");
+                    streamWriter.WriteLine($"                    Дата заявки {date}");
+
+                    streamWriter.WriteLine("--------------------------------------------------------------------------------");
+                    streamWriter.WriteLine("    Артикул                       Название                      Кол.  Ед.изм.");
+                    streamWriter.WriteLine("--------------------------------------------------------------------------------");
+
+                    // Находим максимальную длину артикула
+                    int maxArtLength = 16;
+                    foreach (var item in FinalItems)
+                    {
+                        if (item.Article.Length > maxArtLength)
+                            maxArtLength = item.Article.Length;
+                    }
+                    // Добавляем небольшой запас
+                    maxArtLength += 2;
+
+                    foreach (var item in FinalItems)
+                    {
+                        string art = item.Article;
+                        int quantity = (int)Math.Round(item.Quantity, 0);
+
+                        // Выравниваем до максимальной длины
+                        art = art.PadRight(maxArtLength);
+
+                        // Формируем отступы
+                        string spaces = new string(' ', 48);
+                        streamWriter.WriteLine(art + spaces + quantity);
+                    }
+
+                    streamWriter.WriteLine("--------------------------------------------------------------------------------");
+                    streamWriter.WriteLine();
+                    streamWriter.WriteLine("                    Заявку составил________________________");
+                }
+
+                MessageBox.Show($"Файл успешно сохранен:\n{filePath}\n\nЗаписей: {FinalItems.Count}",
+                    "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка сохранения файла: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void OnUserItemsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

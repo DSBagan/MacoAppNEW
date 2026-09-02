@@ -8,16 +8,30 @@
         xmlns:tb="http://www.hardcodet.net/taskbar"
         
         mc:Ignorable="d"
-        Title="" Height="530" Width="800">
+        Title="" Height="560" Width="800">
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
+        <!-- Верхний баннер с предупреждением -->
+        <Border Grid.Row="0" Background="#FFF3E0" BorderBrush="#FFE0B2" BorderThickness="1" Padding="10,5" Margin="5,5,5,0" CornerRadius="4">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <materialDesign:PackIcon Kind="Alert" Width="20" Height="20" Foreground="#D32F2F" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="1" Text="⚠ Все расчеты теперь сохраняются на диск X в папку &quot;Подгрузка в КИС&quot;, а при его недоступности на диск C в такую же папку &quot;Подгрузка в КИС&quot;" 
+                           FontSize="12" Foreground="#D32F2F" FontWeight="Bold" TextWrapping="Wrap"/>
+            </Grid>
+        </Border>
+
         <!-- Основной контент -->
-        <Grid Grid.Row="0" Effect="{DynamicResource MaterialDesignElevationShadow16}">
+        <Grid Grid.Row="1" Effect="{DynamicResource MaterialDesignElevationShadow16}">
             <!-- Ваш существующий Grid с кнопками -->
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
@@ -117,9 +131,8 @@
         </Grid>
 
         <!-- СТАТУС-БАР -->
-        <Border Grid.Row="1" Margin="5" Padding="5,3" CornerRadius="3" Background="#F5F5F5" BorderBrush="#DDD" BorderThickness="1">
+        <Border Grid.Row="2" Margin="5" Padding="5,3" CornerRadius="3" Background="#F5F5F5" BorderBrush="#DDD" BorderThickness="1">
             <StackPanel Orientation="Horizontal">
-                <!-- Иконка статуса из MaterialDesign -->
                 <materialDesign:PackIcon x:Name="TxtStatusIcon" Kind="CloudSync" Width="14" Height="14" Margin="0,0,5,0" Foreground="#FF2E7D32" VerticalAlignment="Center"/>
                 <TextBlock x:Name="TxtStatus" Text="Готов" FontSize="11" Foreground="Black" VerticalAlignment="Center"/>
             </StackPanel>
