@@ -69,8 +69,6 @@ namespace MacoApp
 
         private async void EntryiWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            IntOn.Visibility = Visibility.Collapsed;
-            IntOff.Visibility = Visibility.Collapsed;
             ButtonEditor.Visibility = Visibility.Collapsed;
 
             System.Windows.Application.Current.MainWindow.ShowActivated = true;
@@ -452,6 +450,13 @@ namespace MacoApp
             _secondWindow6.Closed += Window_Closed;
             _secondWindow6.Show();
             this.Hide();
+        }
+
+        private void ButtonChangelog_Click(object sender, RoutedEventArgs e)
+        {
+            ChangelogWindow changelogWindow = new ChangelogWindow();
+            changelogWindow.Owner = this;
+            changelogWindow.ShowDialog();
         }
     }
 }

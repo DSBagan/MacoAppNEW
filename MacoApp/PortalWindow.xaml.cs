@@ -274,16 +274,16 @@ namespace TBMFurn
             try
             {
                 // Проверяем есть диск X и папка aTBMFURN, если нет- создаем
-                Directory.CreateDirectory(@"X:\Подгрузка в КИС");
-                SavePathTXT = @"X:\Подгрузка в КИС";
+                Directory.CreateDirectory(@"X:\Подгрузка в КИС\");
+                SavePathTXT = @"X:\Подгрузка в КИС\";
                 SaveMetod();
             }
             catch (System.Exception)
             {
                 // Проверяем есть ли на диске C папка aTBMFURN, если нет- создаем
-                Directory.CreateDirectory(@"C:\Подгрузка в КИС");
+                Directory.CreateDirectory(@"C:\Подгрузка в КИС\");
                 MessageBox.Show("Нет доступа к диску X, файл будет сохранен в папку Подгрузка в КИС на диске C");
-                SavePathTXT = @"C:\Подгрузка в КИС";
+                SavePathTXT = @"C:\Подгрузка в КИС\";
                 SaveMetod();
             }
         }
